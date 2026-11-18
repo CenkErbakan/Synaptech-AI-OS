@@ -1,0 +1,336 @@
+{
+  "ok": true,
+  "apply": false,
+  "blocked": false,
+  "at": "2026-11-18T19:56:07.919Z",
+  "stopResult": {
+    "killEnabled": true,
+    "permanentLocalAutonomy": false,
+    "killSource": "database"
+  },
+  "backup": {
+    "ok": true,
+    "hostPath": "C:\\Users\\cenke\\Desktop\\Projeler\\Synaptech AI OS\\reports\\ops\\mssql-backups\\synaptech-pre-reset-2026-11-18T19-56-06-548Z.bak",
+    "containerPath": "/var/opt/mssql/backup/synaptech-pre-reset-2026-11-18T19-56-06-548Z.bak",
+    "verify": "RESTORE VERIFYONLY valid",
+    "sha256": "0acfe9dd413f3a9db92d15f4111974f1eb0712e53fc455b613876cf2fd8a46d1",
+    "bytes": 26345472
+  },
+  "deleteTables": [
+    "AgentMessage",
+    "TaskEvent",
+    "TaskAssignment",
+    "AgentRun",
+    "ApprovalEvent",
+    "Approval",
+    "Task",
+    "Opportunity",
+    "Lead",
+    "ScheduledJobRun",
+    "WorkerLease"
+  ],
+  "unlistedOperationalLeftIntact": [
+    "SeoFinding",
+    "ContentDraftRecord",
+    "AdProposal",
+    "GrowthScanRun"
+  ],
+  "resetSettingKeys": [
+    "operation_epoch",
+    "deferred_llm_queue",
+    "ceo_event_pending",
+    "ceo_provider_circuit",
+    "controlled_autonomy_window"
+  ],
+  "countsBefore": {
+    "Task": 586,
+    "TaskEvent": 1021,
+    "TaskAssignment": 391,
+    "Approval": 108,
+    "ApprovalEvent": 181,
+    "AgentRun": 95,
+    "AgentMessage": 822,
+    "Opportunity": 5,
+    "Lead": 4,
+    "ScheduledJobRun": 794,
+    "WorkerLease": 0,
+    "SeoFinding": 4,
+    "ContentDraftRecord": 2,
+    "AdProposal": 2,
+    "GrowthScanRun": 95,
+    "Agent": 9,
+    "Project": 4,
+    "CompanyGoal": 4,
+    "User": 1,
+    "AuditLog": 3335,
+    "AutonomyPolicy": 3,
+    "ScheduledJob": 4,
+    "IntegrationConnection": 3,
+    "SystemSetting": 6,
+    "WorkerInstance": 33
+  },
+  "countsAfter": null,
+  "pendingApprovalsBefore": 48,
+  "unexpectedDbo": [],
+  "crm": {
+    "blocked": false,
+    "leads": [
+      {
+        "id": "0839b08b-65d6-43f9-9324-16e522697cf6",
+        "companyName": "SubifyTR &#x2014; AI Destekli Otomatik Video Altyaz&#x131; Platformu",
+        "sourceKind": "public_company_page",
+        "status": "new",
+        "notes": "Kişisel veri toplanmadı. Otomatik ileti yok.",
+        "projectSlug": "synaptech",
+        "cls": "delete_test_or_self"
+      },
+      {
+        "id": "eadce6ef-a903-4c50-9f64-3b068bca312d",
+        "companyName": "KOB&#x130; CRM &#x2013; &#xD6;rnek &#xC7;&#xF6;z&#xFC;m | SynapTech &#xD6;rnek &#xC7;&#xF6;z&#xFC;m",
+        "sourceKind": "public_company_page",
+        "status": "new",
+        "notes": "Kişisel veri toplanmadı. Otomatik ileti yok.",
+        "projectSlug": "synaptech",
+        "cls": "delete_test_or_self"
+      },
+      {
+        "id": "1f4213de-3c5a-4af9-bef2-801694cb10ff",
+        "companyName": "EBSO - Ege Bölgesi Sanayi Odası",
+        "sourceKind": "public_company_page",
+        "status": "new",
+        "notes": "Kişisel veri toplanmadı. Otomatik ileti yok.\ncrmjson:{\"productFit\":\"marivo\",\"contactChannel\":\"none\",\"outreachConsent\":\"unknown\",\"salesStage\":\"research\",\"lastTouchAt\":null,\"verifiedSource\":true,\"qualifiedLead\":false,\"outreachEligible\":false}",
+        "projectSlug": "marivo",
+        "cls": "delete_test_or_self"
+      },
+      {
+        "id": "e68c940d-d218-45b2-934d-8af523b774ae",
+        "companyName": "Hizmetler - SynapTech",
+        "sourceKind": "public_company_page",
+        "status": "new",
+        "notes": "Kişisel veri toplanmadı. Otomatik ileti yok.",
+        "projectSlug": "synaptech",
+        "cls": "delete_test_or_self"
+      }
+    ],
+    "opportunities": [
+      {
+        "id": "7b3ad91c-b12e-47de-a365-1bfe97b43fc1",
+        "title": "Subify: operasyonel değerlendirme fırsatı",
+        "sourceKind": "mssql_project_snapshot",
+        "projectSlug": "subify",
+        "verified": true,
+        "cls": "delete_test_or_self"
+      },
+      {
+        "id": "9d1e7b14-ed97-4ff4-b2b4-467b9b7da395",
+        "title": "SynapTech AI OS: operasyonel değerlendirme fırsatı",
+        "sourceKind": "mssql_project_snapshot",
+        "projectSlug": "synaptech-ai-os",
+        "verified": true,
+        "cls": "delete_test_or_self"
+      },
+      {
+        "id": "f3a4d318-ff52-4147-be91-5ac7ef801708",
+        "title": "SynapTech: operasyonel değerlendirme fırsatı",
+        "sourceKind": "mssql_project_snapshot",
+        "projectSlug": "synaptech",
+        "verified": true,
+        "cls": "delete_test_or_self"
+      },
+      {
+        "id": "0d736a48-df83-4601-9c61-5b1a1384566c",
+        "title": "Marivo: operasyonel değerlendirme fırsatı",
+        "sourceKind": "mssql_project_snapshot",
+        "projectSlug": "marivo",
+        "verified": true,
+        "cls": "delete_test_or_self"
+      },
+      {
+        "id": "07a6ce71-55ef-475b-9828-c4953884486c",
+        "title": "SynapTech: başarısız/stale run temizliği",
+        "sourceKind": "mssql_agent_run",
+        "projectSlug": "synaptech",
+        "verified": true,
+        "cls": "delete_test_or_self"
+      }
+    ]
+  },
+  "preserved": {
+    "agents": [
+      {
+        "id": "ads-manager",
+        "name": "AI Ads Manager",
+        "enabled": true
+      },
+      {
+        "id": "ceo",
+        "name": "AI CEO",
+        "enabled": true
+      },
+      {
+        "id": "content-manager",
+        "name": "AI Content Manager",
+        "enabled": true
+      },
+      {
+        "id": "cto",
+        "name": "AI CTO",
+        "enabled": true
+      },
+      {
+        "id": "developer",
+        "name": "AI Developer",
+        "enabled": true
+      },
+      {
+        "id": "growth-lead",
+        "name": "AI Growth Lead",
+        "enabled": true
+      },
+      {
+        "id": "security",
+        "name": "AI Security",
+        "enabled": true
+      },
+      {
+        "id": "seo-specialist",
+        "name": "AI SEO Specialist",
+        "enabled": true
+      },
+      {
+        "id": "tester",
+        "name": "AI Tester",
+        "enabled": true
+      }
+    ],
+    "projects": [
+      {
+        "slug": "subify",
+        "githubRepoUrl": "https://github.com/CenkErbakan/Subify",
+        "cloudAgentEnabled": false
+      },
+      {
+        "slug": "synaptech-ai-os",
+        "githubRepoUrl": null,
+        "cloudAgentEnabled": false
+      },
+      {
+        "slug": "marivo",
+        "githubRepoUrl": null,
+        "cloudAgentEnabled": false
+      },
+      {
+        "slug": "synaptech",
+        "githubRepoUrl": null,
+        "cloudAgentEnabled": false
+      }
+    ],
+    "goals": [
+      {
+        "goalKey": "os-reliability",
+        "projectSlug": "synaptech-ai-os",
+        "status": "active"
+      },
+      {
+        "goalKey": "subify-quality",
+        "projectSlug": "subify",
+        "status": "active"
+      },
+      {
+        "goalKey": "marivo-growth",
+        "projectSlug": "marivo",
+        "status": "active"
+      },
+      {
+        "goalKey": "website-seo",
+        "projectSlug": "synaptech",
+        "status": "active"
+      }
+    ],
+    "settingKeys": [
+      "ceo_event_pending",
+      "ceo_provider_circuit",
+      "deferred_llm_queue",
+      "kill_switch",
+      "operation_epoch",
+      "owner_capability_grants"
+    ]
+  },
+  "jobsBefore": [
+    {
+      "jobKey": "local-agent-pass",
+      "enabled": true
+    },
+    {
+      "jobKey": "run-reconciliation",
+      "enabled": true
+    },
+    {
+      "jobKey": "daily-ceo-review",
+      "enabled": true
+    },
+    {
+      "jobKey": "growth-cycle",
+      "enabled": true
+    }
+  ],
+  "verify": {
+    "task": 586,
+    "approval": 108,
+    "agentMessage": 822,
+    "agent": 9,
+    "project": 4,
+    "companyGoal": 4,
+    "auditLog": 3335,
+    "kill": {
+      "enabled": true,
+      "reason": "Owner tam operasyon sıfırlaması — yeni görev ve dispatch durduruldu",
+      "changedBy": "Owner",
+      "changedAt": "2026-11-18T19:56:06.821Z",
+      "source": "database"
+    },
+    "grants": {
+      "githubRepoCreate": false,
+      "githubPushDraftPr": false,
+      "customerOutreach": false,
+      "productionDeploy": false,
+      "financialSpend": false,
+      "permanentLocalAutonomy": false
+    },
+    "epoch": {
+      "id": "ops-2026-11-18",
+      "startedAt": "2026-11-18T16:05:49.393Z",
+      "previousId": null,
+      "note": "Owner onaylı fresh start. SystemSetting only. Silme yok."
+    },
+    "jobs": [
+      {
+        "jobKey": "local-agent-pass",
+        "enabled": false
+      },
+      {
+        "jobKey": "run-reconciliation",
+        "enabled": false
+      },
+      {
+        "jobKey": "daily-ceo-review",
+        "enabled": false
+      },
+      {
+        "jobKey": "growth-cycle",
+        "enabled": false
+      }
+    ],
+    "runtime": {
+      "timerActive": false,
+      "ticking": false,
+      "lastTickAt": null,
+      "lastTickTrigger": "none",
+      "lastTickSummary": null,
+      "workerId": "worker-Cenk-8196-2f5f74aa",
+      "leaseKey": "scheduler:tick",
+      "processRole": "http_only_or_script"
+    }
+  },
+  "note": "Dry-run. Silme yok."
+}

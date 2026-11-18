@@ -94,6 +94,23 @@ export async function systemRoutes(app: FastifyInstance) {
     };
   });
 
+  app.get("/api/system/kill-switch", async (request) => {
+    requireAuth(request);
+    const kill = await getKillSwitch();
+    return {
+      source: "api" as const,
+      authority: kill.source,
+      operationalEnabled: kill.enabled,
+      conflict: kill.conflict,
+      dbEnabled: kill.dbEnabled,
+      fileEnabled: kill.fileEnabled,
+      killSwitch: kill,
+      ownerFileProcedure:
+        "Ajan config/kill-switch.json yazmaz. Owner dosyayı elle DB ile aynı enabled değerine çeker veya PATCH /api/system/kill-switch kullanır (dosya senkronu hook izin verirse).",
+      note: "Çelişkide fail-safe OR: herhangi biri açıksa otonomi kapalıdır.",
+    };
+  });
+
   app.patch("/api/system/kill-switch", async (request) => {
     const principal = requireOwner(request);
     const body = z

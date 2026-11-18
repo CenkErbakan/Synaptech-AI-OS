@@ -1,6 +1,38 @@
 import { getPrisma } from "../db/prisma.js";
+import { writeAudit } from "./audit.js";
 
-const TERMINAL = new Set(["done", "failed", "awaiting_approval"]);
+const TERMINAL = new Set(["done", "failed", "awaiting_approval", "blocked", "cancelled"]);
+
+export function classifyParentFromChildren(
+  children: Array<{ status: string }>,
+): { status: string; blockedReason: string | null; workflowPhase: string; finished: boolean } {
+  if (children.length === 0) {
+    return { status: "planned", blockedReason: null, workflowPhase: "ready", finished: false };
+  }
+  const open = children.filter((c) => !TERMINAL.has(c.status));
+  if (open.length > 0) {
+    return { status: "in_review", blockedReason: "children_in_flight", workflowPhase: "in_review", finished: false };
+  }
+  const allDone = children.every((c) => c.status === "done");
+  if (allDone) {
+    return { status: "done", blockedReason: null, workflowPhase: "completed", finished: true };
+  }
+  const waitingOwner = children.some((c) => c.status === "awaiting_approval");
+  if (waitingOwner) {
+    return {
+      status: "in_review",
+      blockedReason: "waiting_owner_decision",
+      workflowPhase: "in_review",
+      finished: false,
+    };
+  }
+  return {
+    status: "blocked",
+    blockedReason: "partial_child_failure",
+    workflowPhase: "failed",
+    finished: false,
+  };
+}
 
 /** Child sonuçlarına göre CEO parent'ı kapat; done child yeniden açılmaz. */
 export async function closeParentIfChildrenSettled(parentTaskId: string | null | undefined): Promise<{
@@ -11,7 +43,7 @@ export async function closeParentIfChildrenSettled(parentTaskId: string | null |
   const prisma = getPrisma();
   const parent = await prisma.task.findUnique({
     where: { id: parentTaskId },
-    select: { id: true, status: true, assigneeId: true, parentTaskId: true },
+    select: { id: true, status: true, assigneeId: true, parentTaskId: true, blockedReason: true },
   });
   if (!parent || parent.parentTaskId) return { closed: false, status: parent?.status ?? null };
   if (parent.status === "done" || parent.status === "failed") {
@@ -24,23 +56,36 @@ export async function closeParentIfChildrenSettled(parentTaskId: string | null |
   });
   if (children.length === 0) return { closed: false, status: parent.status };
 
-  const open = children.filter((c) => !TERMINAL.has(c.status));
-  if (open.length > 0) return { closed: false, status: parent.status };
+  const next = classifyParentFromChildren(children);
+  if (next.status === parent.status && next.blockedReason === (parent.blockedReason ?? null)) {
+    return { closed: next.status === "done", status: parent.status };
+  }
 
-  const allDone = children.every((c) => c.status === "done");
-  const anyFailed = children.some((c) => c.status === "failed");
-  const nextStatus = allDone ? "done" : anyFailed ? "blocked" : "in_review";
   await prisma.task.update({
     where: { id: parent.id },
     data: {
-      status: nextStatus,
-      workflowPhase: allDone ? "completed" : anyFailed ? "failed" : "in_review",
+      status: next.status,
+      workflowPhase: next.workflowPhase,
       dispatchState: "not_applicable",
-      finishedAt: allDone ? new Date() : null,
-      blockedReason: allDone ? null : anyFailed ? "child_failed" : "children_not_all_accepted",
+      finishedAt: next.finished ? new Date() : null,
+      blockedReason: next.blockedReason,
     },
   });
-  return { closed: true, status: nextStatus };
+  await writeAudit({
+    category: "autonomy",
+    action: "task.parent_state",
+    actorKind: "system",
+    targetType: "task",
+    targetId: parent.id,
+    summary: `CEO parent ${parent.status} → ${next.status} (${next.blockedReason ?? "ok"})`,
+    metadata: {
+      from: parent.status,
+      to: next.status,
+      blockedReason: next.blockedReason,
+      childStatuses: children.map((c) => c.status),
+    },
+  });
+  return { closed: next.status === "done", status: next.status };
 }
 
 /** Epoch içindeki açık CEO parent'larını child sonuçlarıyla kapat. */

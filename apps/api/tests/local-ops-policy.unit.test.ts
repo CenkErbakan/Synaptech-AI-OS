@@ -7,7 +7,7 @@ process.env.NODE_ENV = "test";
 
 import { evaluateBackoff, evaluateIdleSkip, nextBackoffMs } from "../src/engines/local-ops-policy.js";
 import { evaluateGithubWrite } from "../src/engines/github-write-adapter.js";
-import { parseLeadCrm, embedLeadCrm } from "../src/engines/crm-lead.js";
+import { parseLeadCrm, embedLeadCrm, qualifyPublicLead } from "../src/engines/crm-lead.js";
 import { DEFAULT_OWNER_GRANTS } from "../src/engines/owner-grants.js";
 
 describe("yerel operasyon — boşta iş uydurma", () => {
@@ -36,8 +36,27 @@ describe("yerel operasyon — boşta iş uydurma", () => {
       newestAgentResultAt: new Date("2026-11-19T00:05:00.000Z"),
       minIntervalMs: 1_800_000,
       now: new Date("2026-11-19T00:06:00.000Z"),
+      starvingProjectCount: 0,
     });
     expect(r.reason).toBe("work_in_flight");
+  });
+
+  it("çözülmemiş parent varken yeni plan yok", () => {
+    const r = evaluateIdleSkip({
+      openTaskCount: 2,
+      childOpenCount: 1,
+      queueCap: 48,
+      failedOpenCount: 0,
+      pendingOwnerDecisionCount: 1,
+      lastCeoAt: new Date("2026-11-19T00:00:00.000Z"),
+      newestAgentResultAt: new Date("2026-11-19T00:05:00.000Z"),
+      minIntervalMs: 0,
+      planCooldownMs: 60_000,
+      now: new Date("2026-11-19T00:10:00.000Z"),
+      starvingProjectCount: 2,
+      unresolvedCeoParentCount: 1,
+    });
+    expect(r.reason).toBe("unresolved_ceo_parent");
   });
 
   it("aralık içinde yeni kanıt yoksa skip", () => {
@@ -53,6 +72,24 @@ describe("yerel operasyon — boşta iş uydurma", () => {
       minIntervalMs: 1_800_000,
       planCooldownMs: 60_000,
       now,
+    });
+    expect(r.reason).toBe("idle_no_new_evidence");
+  });
+
+  it("açlık minInterval ve cooldown atlamaz", () => {
+    const r = evaluateIdleSkip({
+      openTaskCount: 1,
+      childOpenCount: 0,
+      queueCap: 48,
+      failedOpenCount: 0,
+      pendingOwnerDecisionCount: 0,
+      lastCeoAt: new Date("2026-11-19T00:00:00.000Z"),
+      newestAgentResultAt: new Date("2026-11-19T00:00:00.000Z"),
+      minIntervalMs: 1_800_000,
+      planCooldownMs: 60_000,
+      now: new Date("2026-11-19T00:10:00.000Z"),
+      starvingProjectCount: 3,
+      unresolvedCeoParentCount: 0,
     });
     expect(r.reason).toBe("idle_no_new_evidence");
   });
@@ -154,5 +191,18 @@ describe("CRM lead profili", () => {
     expect(crm.productFit).toBe("subify");
     expect(crm.outreachConsent).toBe("denied");
     expect(crm.salesStage).toBe("research");
+  });
+
+  it("kamuya açık oda kaynağı qualifiedLead=false", () => {
+    const q = qualifyPublicLead({
+      companyName: "EBSO - Ege Bölgesi Sanayi Odası",
+      needSignal: "Sayfada ihtiyaç sinyali: üretim",
+      projectSlug: "marivo",
+      sourceOk: true,
+    });
+    expect(q.verifiedSource).toBe(true);
+    expect(q.qualifiedLead).toBe(false);
+    expect(q.outreachEligible).toBe(false);
+    expect(q.productFit).toBe("marivo");
   });
 });

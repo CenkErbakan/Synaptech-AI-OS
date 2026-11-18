@@ -3,6 +3,7 @@ import type { CeoPlan } from "@synaptech/shared";
 type CeoPlanTask = CeoPlan["tasks"][number];
 
 import { getPrisma } from "../db/prisma.js";
+import { currentEpochStartedAt, epochActivityFilter, isInCurrentEpoch } from "../engines/operation-epoch.js";
 
 const PROJECT_SLUGS = new Set(["synaptech-ai-os", "synaptech", "subify", "marivo"]);
 const AGENTS = new Set([
@@ -37,6 +38,8 @@ export async function validateAndGroundPlanTasks(plan: CeoPlan): Promise<{
   rejected: TaskValidation[];
 }> {
   const prisma = getPrisma();
+  const epochAt = await currentEpochStartedAt();
+  const activity = epochActivityFilter(epochAt);
   const projects = await prisma.project.findMany({
     where: { slug: { in: [...PROJECT_SLUGS] } },
     select: { id: true, slug: true },
@@ -72,34 +75,47 @@ export async function validateAndGroundPlanTasks(plan: CeoPlan): Promise<{
     } else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(hint)) {
       const [goal, opp, taskRow, seo] = await Promise.all([
         prisma.companyGoal.findUnique({ where: { id: hint }, select: { id: true } }),
-        prisma.opportunity.findUnique({ where: { id: hint }, select: { id: true } }),
-        prisma.task.findUnique({ where: { id: hint }, select: { id: true } }),
-        prisma.seoFinding.findUnique({ where: { id: hint }, select: { id: true } }).catch(() => null),
+        prisma.opportunity.findUnique({
+          where: { id: hint },
+          select: { id: true, createdAt: true, updatedAt: true },
+        }),
+        prisma.task.findUnique({
+          where: { id: hint },
+          select: { id: true, createdAt: true },
+        }),
+        prisma.seoFinding
+          .findUnique({ where: { id: hint }, select: { id: true, createdAt: true, updatedAt: true } })
+          .catch(() => null),
       ]);
       if (goal) {
         verified = true;
         evidenceResolved = `companyGoal:${goal.id}`;
-      } else if (opp) {
+      } else if (opp && isInCurrentEpoch(opp.updatedAt ?? opp.createdAt, epochAt)) {
         verified = true;
         evidenceResolved = `opportunity:${opp.id}`;
-      } else if (taskRow) {
+      } else if (taskRow && isInCurrentEpoch(taskRow.createdAt, epochAt)) {
         verified = true;
         evidenceResolved = `task:${taskRow.id}`;
-      } else if (seo) {
+      } else if (seo && isInCurrentEpoch(seo.updatedAt ?? seo.createdAt, epochAt)) {
         verified = true;
         evidenceResolved = `seoFinding:${seo.id}`;
+      } else if (opp || taskRow || seo) {
+        reasons.push("legacy_epoch_evidence");
       } else {
         reasons.push("evidence_uuid_not_found");
       }
     } else if (hint.toLowerCase().startsWith("mssql:")) {
       const table = hint.slice("mssql:".length).trim().toLowerCase();
       let count = 0;
-      if (table === "opportunity") count = await prisma.opportunity.count();
+      if (table === "opportunity") count = await prisma.opportunity.count({ where: activity });
       else if (table === "companygoal") count = await prisma.companyGoal.count();
-      else if (table === "task") count = await prisma.task.count({ where: { archivedAt: null } });
-      else if (table === "seofinding") count = await prisma.seoFinding.count();
-      else if (table === "scheduledjobrun") count = await prisma.scheduledJobRun.count();
-      else if (table === "lead") count = await prisma.lead.count();
+      else if (table === "task") count = await prisma.task.count({ where: { archivedAt: null, ...activity } });
+      else if (table === "seofinding") count = await prisma.seoFinding.count({ where: activity });
+      else if (table === "scheduledjobrun")
+        count = await prisma.scheduledJobRun.count({
+          where: epochAt ? { startedAt: { gte: epochAt } } : {},
+        });
+      else if (table === "lead") count = await prisma.lead.count({ where: activity });
       else if (table === "project") count = await prisma.project.count();
       else reasons.push("unknown_mssql_evidence_table");
 

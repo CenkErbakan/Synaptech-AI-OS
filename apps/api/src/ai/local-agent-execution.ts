@@ -193,6 +193,17 @@ export async function executeOneLocalAgentTask(
     };
   }
 
+  if (task.status === "done") {
+    return {
+      ...base,
+      assigneeId: task.assigneeId,
+      channel: "blocked",
+      realAiExecution: false,
+      status: "done",
+      skippedReason: "already_done",
+    };
+  }
+
   const role = getAgentRoleConfig(task.assigneeId);
   if (!role) {
     return {
@@ -205,8 +216,23 @@ export async function executeOneLocalAgentTask(
     };
   }
 
-  // Owner yetkisi: OWNER-APPROVAL policy → çalıştırma
-  if ((task.executionPolicy ?? "AUTO") === "OWNER-APPROVAL") {
+  const { parseOwnerRetryRemaining, retryBudgetExhausted, withOwnerRetryRemaining } = await import("./retry-budget.js");
+  const ownerRetryRemaining = parseOwnerRetryRemaining(task.executionPolicy);
+  const spentProviderCalls = Math.max(
+    task.attempts ?? 0,
+    await prisma.agentMessage.count({
+      where: { taskId, kind: "evidence", fromAgentId: task.assigneeId },
+    }),
+  );
+  const maxRetries = env.CONTROLLED_AUTONOMY_MAX_RETRIES;
+  const budgetDead = retryBudgetExhausted({
+    spentProviderCalls,
+    maxRetries,
+    ownerRetryRemaining,
+  });
+
+  // Owner yetkisi: OWNER-APPROVAL policy → çalıştırma (sınırlı OWNER-RETRY hariç)
+  if ((task.executionPolicy ?? "AUTO") === "OWNER-APPROVAL" && ownerRetryRemaining <= 0) {
     return {
       ...base,
       assigneeId: task.assigneeId,
@@ -214,6 +240,40 @@ export async function executeOneLocalAgentTask(
       realAiExecution: false,
       status: task.status,
       skippedReason: "owner_approval_required",
+    };
+  }
+
+  if (task.status === "awaiting_approval" && ownerRetryRemaining <= 0) {
+    return {
+      ...base,
+      assigneeId: task.assigneeId,
+      channel: "pending",
+      realAiExecution: false,
+      status: task.status,
+      skippedReason: "retry_budget_exhausted",
+    };
+  }
+
+  if (budgetDead && ownerRetryRemaining <= 0) {
+    await prisma.task.update({
+      where: { id: taskId },
+      data: {
+        status: "awaiting_approval",
+        dispatchState: "blocked",
+        workflowPhase: "failed",
+        blockedReason: "retry_budget_exhausted",
+        executionPolicy: "OWNER-APPROVAL",
+      },
+    });
+    const { closeParentIfChildrenSettled } = await import("../engines/parent-task-lifecycle.js");
+    await closeParentIfChildrenSettled(task.parentTaskId);
+    return {
+      ...base,
+      assigneeId: task.assigneeId,
+      channel: "blocked",
+      realAiExecution: false,
+      status: "awaiting_approval",
+      skippedReason: "retry_budget_exhausted",
     };
   }
 
@@ -487,7 +547,10 @@ export async function executeOneLocalAgentTask(
 
     if (role.agentId === "growth-lead") {
       const { runGrowthLeadResearch, isSelfPropertyUrl } = await import("../engines/growth-engine.js");
-      const research = await runGrowthLeadResearch({ maxNewPerRun: 3 });
+      const research = await runGrowthLeadResearch({
+        maxNewPerRun: 3,
+        projectSlug: task.project.slug,
+      });
       const prismaLeads = getPrisma();
       const loadedLeads = research.leadIds.length
         ? await prismaLeads.lead.findMany({ where: { id: { in: research.leadIds } } })
@@ -525,14 +588,16 @@ export async function executeOneLocalAgentTask(
       }
     }
 
+    let scanCreatedCount = 0;
     if (role.agentId === "seo-specialist") {
       const { runTechnicalSeoScan } = await import("../engines/seo-engine.js");
       const scan = await runTechnicalSeoScan({ chainId: task.chainId });
+      scanCreatedCount = scan.createdCount;
       evidence.push({
         kind: "public_fetch",
         projectSlug: task.project.slug,
         path: "seo_scan",
-        summary: `seo status=${scan.status} findings=${Array.isArray(scan.findings) ? scan.findings.length : 0}`.slice(0, 500),
+        summary: `seo status=${scan.status} findings=${Array.isArray(scan.findings) ? scan.findings.length : 0} created=${scan.createdCount} reused=${scan.reusedCount}`.slice(0, 500),
         trusted: scan.status !== "failed",
         at: new Date().toISOString(),
       });
@@ -655,10 +720,8 @@ export async function executeOneLocalAgentTask(
     }
     if (role.agentId === "cto") {
       const blob = [work.summary, work.analysis, work.acceptanceNotes].join("\n");
-      const claimsDefect =
-        /\b(bug|defect|vulnerability|güvenlik açığı|kritik hata|teknik borç|tech debt|broken|regress)\b/i.test(
-          blob,
-        );
+      const { claimsActiveDefect } = await import("./cto-finding.js");
+      const claimsDefect = claimsActiveDefect(blob);
       const kind = work.findingKind ?? "none";
       if ((kind === "none" || !kind) && toolPaths.length >= 2 && !claimsDefect) {
         const dep = toolPaths.some((p) => /package\.json|pnpm-lock|csproj|requirements/i.test(p));
@@ -696,11 +759,13 @@ export async function executeOneLocalAgentTask(
       });
     }
 
+    const { classifyCtoContract } = await import("./cto-finding.js");
     const verified = verifyAcceptanceIndependently({
       agentId: role.agentId,
       work,
       evidence,
       toolsEnabled: toolBundle.toolsEnabled || sandboxMode === "mock",
+      ctoContract: role.agentId === "cto" ? classifyCtoContract(task.acceptanceCriteria, task.title) : undefined,
     });
     work = {
       ...work,
@@ -729,21 +794,37 @@ export async function executeOneLocalAgentTask(
 
     const channel: AgentExecutionChannel = realAi ? "local_llm" : "mock_llm";
     const executionKind = realAi ? "local_llm" : "mock_llm";
-    const maxRetries = env.CONTROLLED_AUTONOMY_MAX_RETRIES;
     const escalate =
-      !work.acceptanceMet && nextAttempts > maxRetries;
+      !work.acceptanceMet && nextAttempts > maxRetries && ownerRetryRemaining <= 0;
+    const ctoContract =
+      role.agentId === "cto" ? classifyCtoContract(task.acceptanceCriteria, task.title) : undefined;
+    const inconclusive =
+      role.agentId === "cto" &&
+      !work.acceptanceMet &&
+      ctoContract === "verified_defect_required" &&
+      (work.findingKind ?? "none") !== "verified_defect";
     const nextStatus = work.acceptanceMet
       ? "done"
-      : escalate
-        ? "awaiting_approval"
-        : "planned";
+      : inconclusive
+        ? "failed"
+        : escalate
+          ? "awaiting_approval"
+          : "planned";
     const blockedReason = work.acceptanceMet
       ? null
-      : escalate
-        ? "escalation_owner_max_retries"
-        : role.agentId === "tester"
-          ? "tester_failed_or_incomplete"
-          : "acceptance_not_met";
+      : inconclusive
+        ? "no_finding_inconclusive"
+        : escalate
+          ? "escalation_owner_max_retries"
+          : role.agentId === "tester"
+            ? "tester_failed_or_incomplete"
+            : "acceptance_not_met";
+    const nextPolicy =
+      ownerRetryRemaining > 0 && providerInvoked
+        ? withOwnerRetryRemaining(task.executionPolicy, ownerRetryRemaining - 1)
+        : escalate
+          ? "OWNER-APPROVAL"
+          : task.executionPolicy;
 
     // Model önerisi ≠ gerçek araç eylemi — ayrı kaydet
     const modelProposal = {
@@ -818,19 +899,19 @@ export async function executeOneLocalAgentTask(
         finishedAt: work.acceptanceMet ? new Date() : null,
         dispatchState: work.acceptanceMet
           ? "not_applicable"
-          : escalate
+          : inconclusive || escalate
             ? "blocked"
             : "ready",
         workflowPhase: work.acceptanceMet
           ? "completed"
-          : escalate
+          : inconclusive || escalate
             ? "failed"
             : "ready",
         executionKind,
         model: completion.modelId,
         executionResult: JSON.stringify(compactResult),
         blockedReason,
-        executionPolicy: escalate ? "OWNER-APPROVAL" : task.executionPolicy,
+        executionPolicy: nextPolicy,
       },
     });
 
@@ -900,10 +981,24 @@ export async function executeOneLocalAgentTask(
     if (
       role.agentId === "cto" &&
       work.acceptanceMet &&
-      work.findingKind === "verified_defect" &&
-      task.parentTaskId
+      task.parentTaskId &&
+      (work.findingKind === "verified_defect" || (work.proposedPatches?.length ?? 0) > 0)
     ) {
       await spawnDeveloperFollowOn(task);
+    }
+    if (
+      role.agentId === "developer" &&
+      work.acceptanceMet &&
+      work.codeChangeApplied &&
+      task.parentTaskId
+    ) {
+      await spawnTesterFollowOn(task);
+    }
+    if (role.agentId === "seo-specialist" && work.acceptanceMet && task.parentTaskId) {
+      const createdNew = typeof scanCreatedCount === "number" ? scanCreatedCount : 0;
+      if (createdNew > 0) {
+        await spawnSeoTechnicalFollowOn(task);
+      }
     }
 
     const { shouldNotifyOwner, notifyOwnerIfMaterial } = await import("../engines/owner-notify.js");
@@ -1018,15 +1113,29 @@ export async function executeOneLocalAgentTask(
         }),
       }).catch(() => undefined);
     }
+    const hold =
+      retryBudgetExhausted({
+        spentProviderCalls: Math.max(task.attempts ?? 0, spentProviderCalls),
+        maxRetries,
+        ownerRetryRemaining,
+      }) || task.status === "awaiting_approval";
     await prisma.task
       .update({
         where: { id: taskId },
-        data: {
-          status: "planned",
-          dispatchState: "ready",
-          workflowPhase: "failed",
-          blockedReason: msg,
-        },
+        data: hold
+          ? {
+              status: "awaiting_approval",
+              dispatchState: "blocked",
+              workflowPhase: "failed",
+              blockedReason: "retry_budget_exhausted",
+              executionPolicy: "OWNER-APPROVAL",
+            }
+          : {
+              status: "planned",
+              dispatchState: "ready",
+              workflowPhase: "failed",
+              blockedReason: msg,
+            },
       })
       .catch(() => undefined);
     // Kill switch / entegrasyon yok → fail-closed throw; şema vs. soft-fail
@@ -1055,6 +1164,54 @@ export async function executeOneLocalAgentTask(
     await releaseLocalLlmCallLease();
     await releaseTaskExecutionLease(taskId);
   }
+}
+
+async function spawnSeoTechnicalFollowOn(task: {
+  id: string;
+  parentTaskId: string | null;
+  projectId: string;
+  title: string;
+  origin: string | null;
+}): Promise<void> {
+  if (!task.parentTaskId) return;
+  const prisma = getPrisma();
+  const existing = await prisma.task.findFirst({
+    where: {
+      archivedAt: null,
+      OR: [
+        { idempotencyKey: clipFollowOnKey(`followon-seo:${task.id}`) },
+        {
+          parentTaskId: task.parentTaskId,
+          assigneeId: "cto",
+          title: { contains: "SEO teknik" },
+          status: { in: ["planned", "in_progress", "awaiting_approval"] },
+        },
+      ],
+    },
+  });
+  if (existing) return;
+  const childId = randomUUID();
+  await prisma.task.create({
+    data: {
+      id: childId,
+      source: "real",
+      title: "SEO teknik düzeltme (yeni measured finding)".slice(0, 140),
+      description: `Yeni SeoFinding oluştu; meta/robots/canonical uygulaması. Kaynak SEO görev=${task.id}. GSC/GA4 yok; trafik uydurma.`,
+      projectId: task.projectId,
+      assigneeId: "cto",
+      priority: "medium",
+      status: "planned",
+      dispatchState: "ready",
+      executionPolicy: "AUTO",
+      origin: task.origin,
+      parentTaskId: task.parentTaskId,
+      workflowPhase: "ready",
+      executionKind: "real_ai_pending",
+      acceptanceCriteria:
+        "structure_inspection veya dependency_analysis; verified_defect zorunlu değil. Ana repo yazılmaz.",
+      idempotencyKey: clipFollowOnKey(`followon-seo:${task.id}`),
+    },
+  });
 }
 
 async function spawnDeveloperFollowOn(task: {
@@ -1109,6 +1266,63 @@ async function spawnDeveloperFollowOn(task: {
       evidenceRef: `task:${task.id}`,
     },
   });
+}
+
+async function spawnTesterFollowOn(task: {
+  id: string;
+  parentTaskId: string | null;
+  projectId: string;
+  title: string;
+  origin: string | null;
+}): Promise<void> {
+  if (!task.parentTaskId) return;
+  const prisma = getPrisma();
+  const existing = await prisma.task.findFirst({
+    where: {
+      archivedAt: null,
+      OR: [
+        { idempotencyKey: `followon-tester:${task.id}` },
+        { parentTaskId: task.parentTaskId, assigneeId: "tester", status: { in: ["planned", "in_progress"] } },
+      ],
+    },
+  });
+  if (existing) return;
+  const childId = randomUUID();
+  await prisma.task.create({
+    data: {
+      id: childId,
+      source: "real",
+      title: `Doğrula: ${task.title}`.slice(0, 140),
+      description: `Developer sandbox_diff sonrası Docker/test. Kaynak görev=${task.id}`,
+      projectId: task.projectId,
+      assigneeId: "tester",
+      priority: "high",
+      status: "planned",
+      dispatchState: "ready",
+      executionPolicy: "AUTO",
+      origin: task.origin,
+      parentTaskId: task.parentTaskId,
+      workflowPhase: "ready",
+      executionKind: "real_ai_pending",
+      acceptanceCriteria: "İzole Docker test exitCode=0; ana repo değişmez; kanıtsız done yok.",
+      idempotencyKey: clipFollowOnKey(`followon-tester:${task.id}`),
+    },
+  });
+  await prisma.agentMessage.create({
+    data: {
+      fromAgentId: "developer",
+      toAgentId: "tester",
+      taskId: childId,
+      parentTaskId: task.parentTaskId,
+      kind: "handoff",
+      summary: `Developer test görevi açtı: ${task.title}`.slice(0, 400),
+      evidenceRef: `task:${task.id}`,
+    },
+  });
+}
+
+function clipFollowOnKey(raw: string): string {
+  return raw.length <= 128 ? raw : raw.slice(0, 128);
 }
 
 /** Dashboard / status için ajan kanal özeti */

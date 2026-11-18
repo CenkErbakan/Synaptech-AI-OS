@@ -48,7 +48,12 @@ export function KillSwitchIndicator() {
   } else if (snapshot) {
     if (snapshot.killSwitch.ok) {
       enabled = snapshot.killSwitch.data.enabled;
-      label = enabled ? "Kill switch: AÇIK" : "Kill switch: kapalı";
+      const conflict = snapshot.killSwitch.data.conflict === true;
+      label = enabled
+        ? conflict
+          ? "Kill switch: AÇIK (fail-safe)"
+          : "Kill switch: AÇIK"
+        : "Kill switch: kapalı";
       tone = enabled ? "border-destructive/60 bg-destructive/15 text-destructive" : "border-success/40 text-success";
     } else {
       label = "Kill switch dosyası okunamadı";
@@ -67,9 +72,9 @@ export function KillSwitchIndicator() {
         </Badge>
       </TooltipTrigger>
       <TooltipContent className="max-w-xs text-xs leading-relaxed">
-        {
-          "Kaynak: config/kill-switch.json (salt okunur). Açıkken Cursor hook'ları yeni alt ajanları ve okuma dışındaki tüm araçları reddeder. Yalnızca siz, dosyayı elle düzenleyerek değiştirebilirsiniz."
-        }
+        {snapshot?.killSwitch.ok && snapshot.killSwitch.data.conflict
+          ? "Çelişki: DB ve config/kill-switch.json farklı. Fail-safe: kill switch AÇIK, otonomi kapalı. Ajan dosyayı yazmaz; Owner dosyayı DB ile hizalar veya PATCH /api/system/kill-switch kullanır."
+          : "Operasyon otoritesi: API/DB kill switch (fail-safe). config/kill-switch.json yalnızca Cursor hook'ları içindir. Ajan dosyayı yazmaz."}
       </TooltipContent>
     </Tooltip>
   );

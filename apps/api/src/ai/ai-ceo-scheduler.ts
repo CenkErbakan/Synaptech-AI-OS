@@ -7,6 +7,7 @@ import { getKillSwitch } from "../engines/kill-switch.js";
 import { killSwitchActive, integrationUnavailable } from "../lib/errors.js";
 import { getEnv } from "../lib/env.js";
 import { buildLocalCeoSafeContext } from "./local-ceo-context.js";
+import { classifyPersistError } from "./ceo-json-extract.js";
 import { clipIdempotencyKey } from "./ceo-plan-prompt.js";
 import {
   evaluateCeoCircuit,
@@ -25,7 +26,13 @@ import { isRealAiCompletion } from "./model-provider.js";
 import { normalizeLocalCeoPlanJson } from "./providers/local-provider.js";
 import { getModelProvider, requireLocalModelProvider } from "./providers/registry.js";
 import { normalizeTitleKey, validateAndGroundPlanTasks } from "./plan-grounding.js";
-import { applyRoleGateToPlanTasks, pickDiversePersistable } from "./plan-role-gate.js";
+import { applyRoleGateToPlanTasks } from "./plan-role-gate.js";
+import {
+  compactPortfolioPromptSlice,
+  decidePersistableTasks,
+  evaluateCompanyPortfolio,
+  mergeOmittedSelectedTasks,
+} from "./portfolio-eval.js";
 
 export const AI_CEO_SCHEDULER_ORIGIN_PREFIX = "scheduler-ai-ceo:";
 
@@ -48,6 +55,13 @@ export type ScheduledAiCeoResult = {
   } | null;
   archiveCheck: { ok: boolean; activeCount: number; archivedCount: number };
   cloudStarted: false;
+  portfolio?: {
+    selectedSlugs: string[];
+    starvingCount: number;
+    projects: Array<{ slug: string; score: number; selected: boolean; skipReason: string | null; reasons: string[] }>;
+  };
+  persistDrops?: Array<{ title: string; projectSlug: string; reasonCode: string }>;
+  modelTaskCount?: number;
 };
 
 async function verifyTaskBoardArchiveHealth() {
@@ -69,6 +83,8 @@ async function findDuplicateOpenTask(_projectId: string, title: string) {
     where: {
       parentTaskId: { not: null },
       origin: { startsWith: AI_CEO_SCHEDULER_ORIGIN_PREFIX },
+      archivedAt: null,
+      status: { notIn: ["done", "failed", "cancelled"] },
       ...epochFilter,
     },
     select: { id: true, title: true, status: true, archivedAt: true },
@@ -323,8 +339,32 @@ export async function runScheduledAiCeoCycle(input?: {
     await setCeoEventPending(false);
 
     const context = await buildLocalCeoSafeContext();
+    const remainingSlotsPre = Math.max(
+      0,
+      env.LOCAL_OPS_OPEN_TASK_CAP - context.openTasks.filter((t) => t.assigneeId !== "ceo").length,
+    );
+    if (remainingSlotsPre <= 0) {
+      return {
+        mode,
+        planner: mode === "local" ? "local_llm" : "mock_llm",
+        realAiExecution: false,
+        skippedReason: "queue_cap_reached",
+        parentTaskId: null,
+        childTaskIds: [],
+        messageIds: [],
+        plan: null,
+        modelId: null,
+        durationMs: null,
+        jsonValid: null,
+        grounding: null,
+        archiveCheck,
+        cloudStarted: false,
+      };
+    }
+    const portfolio = await evaluateCompanyPortfolio();
     const started = Date.now();
     const quotaCallId = randomUUID();
+    const portfolioSlice = compactPortfolioPromptSlice(portfolio.projects);
     let completion;
     try {
       completion = await provider.generateCeoPlan({
@@ -346,25 +386,27 @@ export async function runScheduledAiCeoCycle(input?: {
         openTaskCount: context.openTasks.length,
         instruction: [
           `cycle=${suffix}`,
-          "Dört proje: synaptech-ai-os, synaptech, subify, marivo. Kanıtsız görev yok.",
+          `epoch=${epochPart}`,
+          portfolioSlice,
           `open=${context.openTasks.length}`,
-          context.recentAgentResults
-            .slice(0, 6)
-            .map((r) => `${r.from}:${r.summary}`)
-            .join("|")
-            .slice(0, 400),
-          `epoch=${context.epochChildTitles
-            .slice(0, 12)
-            .map((t) => `${t.projectSlug}:${t.assigneeId}:${t.status}:${t.title}`)
-            .join("|")
-            .slice(0, 480)}`,
-          "1-5 görev üret (8 zorunlu değil). Kısa acceptanceCriteria + evidenceHint.",
+          "Yalnızca bu epoch ve 4 proje/4 hedef. Eski Faz/test/mock/coordination/GrowthScan/eski Task sonucu kullanma.",
+          "1-5 görev. Seçilen her proje için doğru uzman. Kanıtsız görev yok.",
         ].join(" "),
       });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
+      const extract =
+        error && typeof error === "object" && "extract" in error
+          ? (error as { extract?: { kind?: string; contentLen?: number; contentSha256?: string; hasFence?: boolean } })
+              .extract
+          : undefined;
+      const skippedReason = msg.startsWith("local_llm_") || msg.startsWith("schema_validation_failed")
+        ? msg.split(":")[0]!
+        : msg.includes("local_llm_timeout")
+          ? "local_llm_timeout"
+          : `provider_error:${msg.slice(0, 80)}`;
       if (mode === "local") {
-        await tripCeoProviderCircuit(msg.slice(0, 240));
+        await tripCeoProviderCircuit(skippedReason.slice(0, 240));
       }
       await writeAudit({
         category: "autonomy",
@@ -381,8 +423,12 @@ export async function runScheduledAiCeoCycle(input?: {
           extra: {
             jsonValid: false,
             childCount: 0,
-            providerError: msg.slice(0, 200),
-            timeout: msg.includes("local_llm_timeout") || /aborted/i.test(msg),
+            providerError: skippedReason,
+            parseKind: extract?.kind ?? null,
+            contentLen: extract?.contentLen ?? null,
+            contentSha256: extract?.contentSha256 ?? null,
+            hasFence: extract?.hasFence ?? null,
+            timeout: skippedReason === "local_llm_timeout" || /aborted/i.test(msg),
           },
         }),
       });
@@ -390,7 +436,7 @@ export async function runScheduledAiCeoCycle(input?: {
         mode,
         planner: mode === "local" ? "local_llm" : "mock_llm",
         realAiExecution: false,
-        skippedReason: msg.includes("local_llm_timeout") ? "local_llm_timeout" : `provider_error:${msg.slice(0, 80)}`,
+        skippedReason,
         parentTaskId: null,
         childTaskIds: [],
         messageIds: [],
@@ -401,6 +447,17 @@ export async function runScheduledAiCeoCycle(input?: {
         grounding: null,
         archiveCheck,
         cloudStarted: false,
+        portfolio: {
+          selectedSlugs: portfolio.selectedSlugs,
+          starvingCount: portfolio.starvingCount,
+          projects: portfolio.projects.map((p) => ({
+            slug: p.slug,
+            score: p.score,
+            selected: p.selected,
+            skipReason: p.skipReason,
+            reasons: p.reasons,
+          })),
+        },
       };
     }
 
@@ -449,16 +506,41 @@ export async function runScheduledAiCeoCycle(input?: {
       throw integrationUnavailable("local modda gerçek AI yanıtı yok; mock başarı sayılmadı.");
     }
 
-    const gated = applyRoleGateToPlanTasks(plan.tasks);
+    const modelTaskCount = plan.tasks.length;
+    const merged = mergeOmittedSelectedTasks(plan.tasks, portfolio.projects);
+    const gated = applyRoleGateToPlanTasks(merged.tasks);
     plan = { ...plan, tasks: gated.tasks };
+    const roleRedirects = gated.redirects;
     const grounding = await validateAndGroundPlanTasks(plan);
-    const remainingSlots = Math.max(
-      0,
-      env.LOCAL_OPS_OPEN_TASK_CAP - context.openTasks.filter((t) => t.assigneeId !== "ceo").length,
-    );
+    const remainingSlots = remainingSlotsPre;
     const persistableRaw = [...grounding.accepted, ...grounding.unverified];
-    const persistable =
-      remainingSlots <= 0 ? [] : pickDiversePersistable(persistableRaw, Math.min(8, remainingSlots));
+    const openTitleKeys = new Set(
+      context.epochChildTitles
+        .filter((t) => t.status !== "done" && t.status !== "failed" && t.status !== "cancelled")
+        .map((t) => normalizeTitleKey(t.title)),
+    );
+    const openWorkKeys = new Set(
+      context.openTasks
+        .filter((t) => t.parentTaskId && t.assigneeId !== "ceo")
+        .map((t) => `${t.project.slug}:${t.assigneeId}`),
+    );
+    const decided = decidePersistableTasks({
+      items: persistableRaw,
+      selectedSlugs: portfolio.selectedSlugs,
+      remainingSlots: remainingSlots <= 0 ? 0 : Math.min(8, remainingSlots),
+      isDuplicateTitle: (title) => openTitleKeys.has(normalizeTitleKey(title)),
+      isDuplicateWork: (task) => openWorkKeys.has(`${task.projectSlug}:${task.assigneeId}`),
+    });
+    const persistable = decided.keep;
+    const persistDrops = [
+      ...grounding.rejected.map((r) => ({
+        title: r.task.title,
+        projectSlug: r.task.projectSlug,
+        assigneeId: r.task.assigneeId,
+        reasonCode: r.reasons[0] ?? "grounding_rejected",
+      })),
+      ...decided.drops,
+    ];
 
     if (persistable.length === 0) {
       await writeAudit({
@@ -482,7 +564,9 @@ export async function runScheduledAiCeoCycle(input?: {
               unverified: grounding.unverified.length,
               rejected: grounding.rejected.length,
             },
-            roleGate: gated.redirects,
+            roleGate: roleRedirects,
+            persistDrops: persistDrops.slice(0, 12),
+            selectedSlugs: portfolio.selectedSlugs,
           },
         }),
       });
@@ -505,6 +589,19 @@ export async function runScheduledAiCeoCycle(input?: {
         },
         archiveCheck,
         cloudStarted: false,
+        portfolio: {
+          selectedSlugs: portfolio.selectedSlugs,
+          starvingCount: portfolio.starvingCount,
+          projects: portfolio.projects.map((p) => ({
+            slug: p.slug,
+            score: p.score,
+            selected: p.selected,
+            skipReason: p.skipReason,
+            reasons: p.reasons,
+          })),
+        },
+        persistDrops,
+        modelTaskCount,
       };
     }
 
@@ -515,7 +612,10 @@ export async function runScheduledAiCeoCycle(input?: {
 
     const parentId = randomUUID();
     const contentSha = createHash("sha256").update(completion.content, "utf8").digest("hex");
+    const childTaskIds: string[] = [];
+    const messageIds: string[] = [];
 
+    try {
     await prisma.task.create({
       data: {
         id: parentId,
@@ -538,9 +638,14 @@ export async function runScheduledAiCeoCycle(input?: {
               return acc;
             }, {}),
           )}`,
-          gated.redirects.length
-            ? `roleGate=${JSON.stringify(gated.redirects).slice(0, 800)}`
+          roleRedirects.length
+            ? `roleGate=${JSON.stringify(roleRedirects).slice(0, 800)}`
             : "roleGate=none",
+          `stageA=${JSON.stringify({ selected: portfolio.selectedSlugs, starving: portfolio.starvingCount }).slice(0, 400)}`,
+          persistDrops.length
+            ? `persistDrops=${JSON.stringify(persistDrops).slice(0, 1200)}`
+            : "persistDrops=none",
+          merged.filled.length ? `stageAFilled=${merged.filled.join(",")}` : "stageAFilled=none",
         ].join("\n"),
         projectId: osProject.id,
         assigneeId: "ceo",
@@ -560,15 +665,20 @@ export async function runScheduledAiCeoCycle(input?: {
       },
     });
 
-    const childTaskIds: string[] = [];
-    const messageIds: string[] = [];
-
     for (const item of persistable) {
       const project = await prisma.project.findUnique({ where: { slug: item.task.projectSlug } });
       if (!project) continue;
 
       const dup = await findDuplicateOpenTask(project.id, item.task.title);
-      if (dup) continue;
+      if (dup) {
+        persistDrops.push({
+          title: item.task.title,
+          projectSlug: item.task.projectSlug,
+          assigneeId: item.task.assigneeId,
+          reasonCode: "duplicate_open_title",
+        });
+        continue;
+      }
 
       const childId = randomUUID();
       const validationPayload = {
@@ -631,6 +741,63 @@ export async function runScheduledAiCeoCycle(input?: {
       });
       messageIds.push(msg.id);
     }
+    } catch (persistErr) {
+      const persistCode = classifyPersistError(persistErr);
+      await writeAudit({
+        category: "autonomy",
+        action: "ai.scheduler_ceo_cycle",
+        actorKind: "system",
+        actorAgent: "ceo",
+        targetType: "task",
+        targetId: parentId,
+        summary: "Scheduler AI CEO: JSON geçerli ama MSSQL yazımı başarısız (kısmi kayıt silinmedi).",
+        metadata: buildQuotaAuditMeta({
+          quotaCallId,
+          quotaKind: "scheduler_ceo",
+          realAiExecution: realAi,
+          providerInvoked: true,
+          mode,
+          extra: {
+            jsonValid: true,
+            childCount: childTaskIds.length,
+            persistError: persistCode,
+          },
+        }),
+      });
+      return {
+        mode,
+        planner: mode === "local" ? "local_llm" : "mock_llm",
+        realAiExecution: realAi,
+        skippedReason: persistCode,
+        parentTaskId,
+        childTaskIds,
+        messageIds,
+        plan,
+        modelId: completion.modelId,
+        durationMs,
+        jsonValid: true,
+        grounding: {
+          accepted: grounding.accepted.length,
+          unverified: grounding.unverified.length,
+          rejected: grounding.rejected.length,
+        },
+        archiveCheck,
+        cloudStarted: false,
+        portfolio: {
+          selectedSlugs: portfolio.selectedSlugs,
+          starvingCount: portfolio.starvingCount,
+          projects: portfolio.projects.map((p) => ({
+            slug: p.slug,
+            score: p.score,
+            selected: p.selected,
+            skipReason: p.skipReason,
+            reasons: p.reasons,
+          })),
+        },
+        persistDrops,
+        modelTaskCount,
+      };
+    }
 
     if (mode === "local") {
       await resetCeoProviderCircuit();
@@ -665,6 +832,9 @@ export async function runScheduledAiCeoCycle(input?: {
           childCount: childTaskIds.length,
           cloudStarted: false,
           requiresOwnerApproval: true,
+          selectedSlugs: portfolio.selectedSlugs,
+          persistDrops: persistDrops.slice(0, 12),
+          modelTaskCount,
           inputTokens: completion.usage?.inputTokens ?? null,
           outputTokens: completion.usage?.outputTokens ?? null,
           evidenceRefs: (completion.evidence ?? []).map((e) => e.ref).slice(0, 16),
@@ -690,6 +860,19 @@ export async function runScheduledAiCeoCycle(input?: {
       },
       archiveCheck,
       cloudStarted: false,
+      portfolio: {
+        selectedSlugs: portfolio.selectedSlugs,
+        starvingCount: portfolio.starvingCount,
+        projects: portfolio.projects.map((p) => ({
+          slug: p.slug,
+          score: p.score,
+          selected: p.selected,
+          skipReason: p.skipReason,
+          reasons: p.reasons,
+        })),
+      },
+      persistDrops,
+      modelTaskCount,
     };
   } finally {
     await releaseLocalLlmCallLease();

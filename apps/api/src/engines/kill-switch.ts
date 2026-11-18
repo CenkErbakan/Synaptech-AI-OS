@@ -15,7 +15,37 @@ export interface KillSwitchState {
   reason: string | null;
   changedBy: string | null;
   changedAt: string | null;
-  source: "database" | "file" | "default";
+  source: "database" | "file" | "default" | "fail_safe_or";
+}
+
+export type KillSwitchResolved = KillSwitchState & {
+  conflict: boolean;
+  dbEnabled: boolean | null;
+  fileEnabled: boolean | null;
+};
+
+/** DB veya dosyadan biri açıksa otonomi kapalı (fail-safe OR). */
+export function mergeKillSwitchSources(
+  db: Omit<KillSwitchState, "source"> | null,
+  file: Omit<KillSwitchState, "source"> | null,
+): KillSwitchResolved {
+  const dbEnabled = db ? Boolean(db.enabled) : null;
+  const fileEnabled = file ? Boolean(file.enabled) : null;
+  const conflict = dbEnabled !== null && fileEnabled !== null && dbEnabled !== fileEnabled;
+  const failSafeEnabled = Boolean(dbEnabled) || Boolean(fileEnabled);
+  const primary = dbEnabled ? db : fileEnabled ? file : db ?? file;
+  return {
+    enabled: failSafeEnabled,
+    reason: conflict
+      ? `Kaynak çelişkisi (DB=${dbEnabled}, dosya=${fileEnabled}); fail-safe AÇIK.`
+      : (primary?.reason ?? null),
+    changedBy: primary?.changedBy ?? null,
+    changedAt: primary?.changedAt ?? null,
+    source: conflict ? "fail_safe_or" : db ? "database" : file ? "file" : "default",
+    conflict,
+    dbEnabled,
+    fileEnabled,
+  };
 }
 
 async function readFileMirror(): Promise<KillSwitchState | null> {
@@ -66,20 +96,33 @@ async function writeFileMirror(state: Omit<KillSwitchState, "source">): Promise<
   await fs.writeFile(filePath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
 }
 
-export async function getKillSwitch(): Promise<KillSwitchState> {
+export async function getKillSwitch(): Promise<KillSwitchResolved> {
   const prisma = getPrisma();
+  let db: Omit<KillSwitchState, "source"> | null = null;
   const row = await prisma.systemSetting.findUnique({ where: { key: KEY } });
   if (row) {
     try {
       const parsed = JSON.parse(row.value) as Omit<KillSwitchState, "source">;
-      return { ...parsed, source: "database" };
+      db = {
+        enabled: Boolean(parsed.enabled),
+        reason: parsed.reason ?? null,
+        changedBy: parsed.changedBy ?? null,
+        changedAt: parsed.changedAt ?? null,
+      };
     } catch {
-      /* fall through */
+      db = null;
     }
   }
   const file = await readFileMirror();
-  if (file) return file;
-  return { enabled: false, reason: null, changedBy: null, changedAt: null, source: "default" };
+  const filePlain = file
+    ? {
+        enabled: file.enabled,
+        reason: file.reason,
+        changedBy: file.changedBy,
+        changedAt: file.changedAt,
+      }
+    : null;
+  return mergeKillSwitchSources(db, filePlain);
 }
 
 export async function setKillSwitch(

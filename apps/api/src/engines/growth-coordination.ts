@@ -251,7 +251,7 @@ export async function executeGrowthStep(taskId: string): Promise<{
   unlockedTaskId?: string | null;
 }> {
   const prisma = getPrisma();
-  const task = await prisma.task.findUnique({ where: { id: taskId } });
+  const task = await prisma.task.findUnique({ where: { id: taskId }, include: { project: true } });
   if (!task?.chainId || !task.chainStep || !task.parentTaskId) {
     return { ok: false, reason: "not_growth_step" };
   }
@@ -278,7 +278,10 @@ export async function executeGrowthStep(taskId: string): Promise<{
       };
       resultText = "CEO brifi: segmentler ve güvenlik kısıtları kaydedildi.";
     } else if (step === "growth_research") {
-      engineResult = await runGrowthLeadResearch({ chainId: task.chainId });
+      engineResult = await runGrowthLeadResearch({
+        chainId: task.chainId,
+        projectSlug: task.project?.slug,
+      });
       resultText = JSON.stringify(engineResult).slice(0, 4000);
       if ((engineResult as { status: string }).status === "failed") {
         await failChainStep({
@@ -327,11 +330,14 @@ export async function executeGrowthStep(taskId: string): Promise<{
       resultText = JSON.stringify(engineResult).slice(0, 4000);
     } else {
       // ceo_growth_close
+      const { currentEpochStartedAt, epochActivityFilter } = await import("./operation-epoch.js");
+      const epochAt = await currentEpochStartedAt();
+      const activity = epochActivityFilter(epochAt);
       const [leads, seo, drafts, ads] = await Promise.all([
-        prisma.lead.count(),
-        prisma.seoFinding.count({ where: { findingKind: "measured" } }),
-        prisma.contentDraftRecord.count(),
-        prisma.adProposal.count(),
+        prisma.lead.count({ where: activity }),
+        prisma.seoFinding.count({ where: { findingKind: "measured", ...activity } }),
+        prisma.contentDraftRecord.count({ where: activity }),
+        prisma.adProposal.count({ where: activity }),
       ]);
       engineResult = {
         leads,

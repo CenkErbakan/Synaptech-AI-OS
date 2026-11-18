@@ -17,10 +17,11 @@ export async function buildCommandCenter() {
   const prisma = getPrisma();
   const now = new Date();
   const runtime = getSchedulerRuntimeStatus();
+  const epoch = await readOperationEpoch();
+  const epochAt = epoch ? new Date(epoch.startedAt) : null;
   const [
     kill,
     quota,
-    epoch,
     grants,
     queue,
     deferred,
@@ -31,15 +32,30 @@ export async function buildCommandCenter() {
   ] = await Promise.all([
     getKillSwitch(),
     getQuotaSnapshot(now),
-    readOperationEpoch(),
     readOwnerGrants(),
     listOwnerDecisionQueue(),
     readDeferredLlmQueue(),
     import("./autonomy-window.js").then((m) => m.enforceAutonomyWindow(now)),
-    prisma.lead.findMany({ orderBy: { createdAt: "desc" }, take: 8 }),
-    prisma.contentDraftRecord.count({ where: { status: { not: "published" } } }).catch(() => 0),
+    prisma.lead.findMany({
+      where: epochAt ? { createdAt: { gte: epochAt } } : {},
+      orderBy: { createdAt: "desc" },
+      take: 8,
+    }),
+    prisma.contentDraftRecord
+      .count({
+        where: {
+          status: { not: "published" },
+          ...(epochAt
+            ? { OR: [{ createdAt: { gte: epochAt } }, { updatedAt: { gte: epochAt } }] }
+            : {}),
+        },
+      })
+      .catch(() => 0),
     prisma.auditLog.findMany({
-      where: { action: "ai.scheduler_ceo_cycle" },
+      where: {
+        action: "ai.scheduler_ceo_cycle",
+        ...(epochAt ? { at: { gte: epochAt } } : {}),
+      },
       orderBy: { at: "desc" },
       take: 5,
     }),

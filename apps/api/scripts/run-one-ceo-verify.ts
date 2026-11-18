@@ -1,5 +1,3 @@
-import { randomUUID } from "node:crypto";
-
 import { runScheduledAiCeoCycle } from "../src/ai/ai-ceo-scheduler.js";
 import { LOCAL_LLM_CALL_LEASE_KEY } from "../src/ai/llm-call-guard.js";
 import { disconnectPrisma, getPrisma } from "../src/db/prisma.js";
@@ -41,10 +39,7 @@ async function main() {
     return;
   }
 
-  const result = await runScheduledAiCeoCycle({
-    idempotencySuffix: randomUUID(),
-    ignoreCircuit: true,
-  });
+  const result = await runScheduledAiCeoCycle();
   const leaseAfter = await prisma.workerLease.findUnique({ where: { lockKey: LOCAL_LLM_CALL_LEASE_KEY } });
   const evidence = result.plan
     ? {
@@ -73,6 +68,9 @@ async function main() {
         projectAllocation: evidence?.projectAllocation ?? null,
         assignees: evidence?.assignees ?? null,
         leaseReleased: !leaseAfter || leaseAfter.expiresAt <= new Date(),
+        portfolio: result.portfolio ?? null,
+        persistDrops: result.persistDrops ?? null,
+        modelTaskCount: result.modelTaskCount ?? null,
       },
       null,
       2,

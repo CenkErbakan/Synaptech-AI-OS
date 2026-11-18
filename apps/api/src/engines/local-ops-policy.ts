@@ -19,15 +19,41 @@ export type LocalOpsSkipInput = {
   /** Son gerçek plan yazımından bu yana ms; varsayılan 5 dk. */
   planCooldownMs?: number;
   lastPlanPersistedChildren?: number;
+  /** Açık çocuğu olmayan, yakın zamanda hizmet edilmemiş proje sayısı. */
+  starvingProjectCount?: number;
+  workInFlightCap?: number;
+  /** Çözülmemiş CEO parent (planned/in_review/awaiting_approval/blocked). */
+  unresolvedCeoParentCount?: number;
+  /**
+   * Ajan sonucu bekleyen CEO olayı — yalnızca yeni kanıt sayılır.
+   * Cooldown / kuyruk / çözülmemiş parent atlanmaz.
+   */
+  ceoEventPending?: boolean;
 };
 
+/**
+ * Yeni CEO LLM çağrısı politikası:
+ * - kuyruk tavanı, uçuştaki iş, cooldown, minInterval, boş plan backoff korunur
+ * - çözülmemiş parent varken tekrar plan yok (açlık istisnası: cooldown+minInterval geçmiş
+ *   ve starving>0 ve childOpen=0)
+ * - ceo_event_pending idle atlamaz
+ */
 export function evaluateIdleSkip(input: LocalOpsSkipInput): { skip: boolean; reason?: string } {
   if (input.openTaskCount >= input.queueCap) {
     return { skip: true, reason: "queue_cap_reached" };
   }
 
   const childOpen = input.childOpenCount ?? input.openTaskCount;
-  if (childOpen > 0) {
+  const flightCap = input.workInFlightCap ?? 8;
+  const starving = input.starvingProjectCount ?? 0;
+  const unresolvedParents = input.unresolvedCeoParentCount ?? 0;
+  if (childOpen >= flightCap) {
+    return { skip: true, reason: "work_in_flight" };
+  }
+  if (unresolvedParents >= 1 && (childOpen > 0 || starving <= 0)) {
+    return { skip: true, reason: "unresolved_ceo_parent" };
+  }
+  if (childOpen > 0 && starving <= 0) {
     return { skip: true, reason: "work_in_flight" };
   }
 
@@ -43,14 +69,12 @@ export function evaluateIdleSkip(input: LocalOpsSkipInput): { skip: boolean; rea
 
   if (lastCeo && input.minIntervalMs > 0 && input.now.getTime() - lastCeo < input.minIntervalMs) {
     const newest = input.newestAgentResultAt?.getTime() ?? 0;
-    const hasNewEvidence = newest > lastCeo;
-    const queueExhausted = childOpen === 0;
+    const hasNewEvidence = newest > lastCeo || Boolean(input.ceoEventPending);
+    const queueExhausted = childOpen === 0 && unresolvedParents === 0;
     if (queueExhausted && hasNewEvidence) {
       return { skip: false };
     }
-    if (!hasNewEvidence && input.failedOpenCount === 0 && input.pendingOwnerDecisionCount === 0) {
-      return { skip: true, reason: "idle_no_new_evidence" };
-    }
+    return { skip: true, reason: "idle_no_new_evidence" };
   }
 
   return { skip: false };
@@ -88,9 +112,7 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
     env.NODE_ENV === "test" ? 0 : env.LOCAL_OPS_CEO_MIN_INTERVAL_MS;
 
   const { isCeoEventPending } = await import("./deferred-llm-queue.js");
-  if (await isCeoEventPending()) {
-    return { skip: false };
-  }
+  const ceoEventPending = await isCeoEventPending();
 
   const { readCeoProviderCircuit, evaluateCeoCircuit } = await import("../ai/ceo-provider-circuit.js");
   const circuit = evaluateCeoCircuit(await readCeoProviderCircuit(), now);
@@ -102,14 +124,14 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
   const epoch = await readOperationEpoch();
   const after = epoch ? new Date(epoch.startedAt) : undefined;
 
-  const [openTaskCount, childOpenCount, failedOpenCount, pendingOwnerDecisionCount, lastCeo, newestResult] =
+  const [openTaskCount, childOpenCount, failedOpenCount, pendingOwnerDecisionCount, unresolvedCeoParentCount, lastCeo, newestResult] =
     await Promise.all([
       prisma.task.count({
         where: {
           archivedAt: null,
           source: "real",
           ...(after ? { createdAt: { gte: after } } : {}),
-          status: { in: ["planned", "in_progress", "testing", "in_review", "awaiting_approval"] },
+          status: { in: ["planned", "in_progress", "testing", "in_review", "awaiting_approval", "blocked"] },
         },
       }),
       prisma.task.count({
@@ -118,7 +140,7 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
           source: "real",
           parentTaskId: { not: null },
           ...(after ? { createdAt: { gte: after } } : {}),
-          status: { in: ["planned", "in_progress", "testing", "backlog"] },
+          status: { in: ["planned", "in_progress", "testing", "backlog", "in_review", "awaiting_approval"] },
         },
       }),
       prisma.task.count({
@@ -126,6 +148,16 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
       }),
       prisma.task.count({
         where: { archivedAt: null, source: "real", status: "awaiting_approval" },
+      }),
+      prisma.task.count({
+        where: {
+          archivedAt: null,
+          source: "real",
+          parentTaskId: null,
+          origin: { startsWith: "scheduler-ai-ceo:" },
+          ...(after ? { createdAt: { gte: after } } : {}),
+          status: { in: ["planned", "in_progress", "testing", "in_review", "awaiting_approval", "blocked"] },
+        },
       }),
       prisma.auditLog.findFirst({
         where: {
@@ -156,6 +188,9 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
     }
   }
 
+  const { evaluateCompanyPortfolio } = await import("../ai/portfolio-eval.js");
+  const portfolio = await evaluateCompanyPortfolio(now);
+
   return evaluateIdleSkip({
     openTaskCount,
     childOpenCount,
@@ -167,5 +202,8 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
     minIntervalMs,
     now,
     lastPlanPersistedChildren,
+    starvingProjectCount: portfolio.starvingCount,
+    unresolvedCeoParentCount,
+    ceoEventPending,
   });
 }

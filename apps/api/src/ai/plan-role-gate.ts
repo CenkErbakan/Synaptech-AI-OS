@@ -35,6 +35,9 @@ export function reassignCeoTaskRole(task: CeoPlanTask): {
   if (task.assigneeId === "growth-lead" && TECH_DEBT.test(blob) && !GROWTH.test(blob)) {
     want = "cto";
   }
+  if (task.assigneeId === "ceo") {
+    want = want && want !== "ceo" ? want : "cto";
+  }
 
   if (!want || want === task.assigneeId) {
     return { task, reassignedFrom: null, reason: null };

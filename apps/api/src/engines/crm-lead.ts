@@ -4,6 +4,9 @@ export type LeadCrmProfile = {
   outreachConsent: "unknown" | "allowed" | "denied";
   salesStage: "research" | "qualified" | "contacted" | "negotiation" | "won" | "lost";
   lastTouchAt: string | null;
+  verifiedSource: boolean;
+  qualifiedLead: boolean;
+  outreachEligible: boolean;
 };
 
 export const DEFAULT_LEAD_CRM: LeadCrmProfile = {
@@ -12,7 +15,51 @@ export const DEFAULT_LEAD_CRM: LeadCrmProfile = {
   outreachConsent: "unknown",
   salesStage: "research",
   lastTouchAt: null,
+  verifiedSource: false,
+  qualifiedLead: false,
+  outreachEligible: false,
 };
+
+const CHAMBER =
+  /\b(oda|chamber|borsa|tobb|ebso|izto|sanayi odası|ticaret odası)\b/i;
+
+const PRODUCT_HINTS: Record<string, RegExp> = {
+  marivo: /\b(reklam|ads|kampanya|pazarlama otomasyon|creative)\b/i,
+  subify: /\b(altyazı|subtitle|video|dublaj|dubbing)\b/i,
+  synaptech: /\b(yazılım|erp|crm|portal|otomasyon|web sitesi)\b/i,
+  "synaptech-ai-os": /\b(ajan|agent os|otonom)\b/i,
+};
+
+export function qualifyPublicLead(input: {
+  companyName: string;
+  needSignal: string;
+  projectSlug: string;
+  sourceOk: boolean;
+}): Pick<LeadCrmProfile, "productFit" | "verifiedSource" | "qualifiedLead" | "outreachEligible" | "salesStage"> {
+  const blob = `${input.companyName}\n${input.needSignal}`;
+  const chamber = CHAMBER.test(blob);
+  const fitKey =
+    input.projectSlug === "marivo"
+      ? "marivo"
+      : input.projectSlug === "subify"
+        ? "subify"
+        : input.projectSlug === "synaptech-ai-os"
+          ? "synaptech-ai-os"
+          : "synaptech";
+  const productHit = PRODUCT_HINTS[fitKey]?.test(blob) ?? false;
+  const verifiedSource = input.sourceOk;
+  const qualifiedLead = verifiedSource && !chamber && productHit;
+  return {
+    productFit:
+      fitKey === "synaptech"
+        ? "synaptech-website"
+        : (fitKey as LeadCrmProfile["productFit"]),
+    verifiedSource,
+    qualifiedLead,
+    outreachEligible: false,
+    salesStage: qualifiedLead ? "qualified" : "research",
+  };
+}
 
 const PREFIX = "crmjson:";
 

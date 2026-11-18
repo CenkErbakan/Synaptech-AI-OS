@@ -1,4 +1,5 @@
 import type { AcceptanceVerification, AgentWorkResult, ToolEvidenceRecord } from "@synaptech/shared";
+import { claimsActiveDefect } from "../cto-finding.js";
 
 const DEFECT_CLAIM =
   /\b(bug|defect|vulnerability|güvenlik açığı|kritik hata|teknik borç|tech debt|broken|regress)/i;
@@ -37,6 +38,7 @@ export function verifyAcceptanceIndependently(input: {
   work: AgentWorkResult;
   evidence: ToolEvidenceRecord[];
   toolsEnabled: boolean;
+  ctoContract?: "verified_defect_required" | "inspection_ok";
 }): AcceptanceVerification {
   const kinds = input.evidence.map((e) => e.kind);
   const hasRepoRead = kinds.includes("repo_read");
@@ -99,7 +101,7 @@ export function verifyAcceptanceIndependently(input: {
         ? findingKind
         : "none";
     const cited = citedPaths(input.work, input.evidence);
-    const claimsDefect = DEFECT_CLAIM.test(blobOf(input.work));
+    const claimsDefect = claimsActiveDefect(blobOf(input.work));
 
     if (!input.toolsEnabled || !hasRepoRead) {
       reasons.push("CTO: repo_read yok — kapsamlı denetim sayılmaz");
@@ -138,12 +140,16 @@ export function verifyAcceptanceIndependently(input: {
         );
       }
     } else {
-      // findingKind none + sadece repo_read/yol → kapsamlı denetim sayılmaz
-      reasons.push(
-        "CTO: yalnızca repo_read + yol atfı kapsamlı teknik denetim değildir (findingKind=none)",
-      );
-      acceptanceMet = false;
       modelAcceptanceIgnored = true;
+      if (input.ctoContract === "verified_defect_required") {
+        reasons.push("CTO: sözleşme verified_defect istiyor; no_finding/inconclusive — done değil");
+        acceptanceMet = false;
+      } else {
+        reasons.push(
+          "CTO: yalnızca repo_read + yol atfı kapsamlı teknik denetim değildir (findingKind=none)",
+        );
+        acceptanceMet = false;
+      }
     }
   } else if (input.agentId === "developer") {
     required.push("sandbox_diff");

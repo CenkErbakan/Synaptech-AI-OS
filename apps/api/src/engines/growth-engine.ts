@@ -4,7 +4,7 @@ import { getPrisma } from "../db/prisma.js";
 import { killSwitchActive } from "../lib/errors.js";
 import { writeAudit } from "./audit.js";
 import { getKillSwitch } from "./kill-switch.js";
-import { embedLeadCrm } from "./crm-lead.js";
+import { embedLeadCrm, qualifyPublicLead } from "./crm-lead.js";
 
 /** SynapTech hizmetlerine uygun müşteri segmentleri (kişisel veri yok). */
 export const CUSTOMER_SEGMENTS = [
@@ -125,6 +125,7 @@ export interface GrowthResearchResult {
 export async function runGrowthLeadResearch(input?: {
   chainId?: string | null;
   maxNewPerRun?: number;
+  projectSlug?: string;
 }): Promise<GrowthResearchResult> {
   const kill = await getKillSwitch();
   if (kill.enabled) throw killSwitchActive("Kill switch: growth research yok.");
@@ -158,6 +159,36 @@ export async function runGrowthLeadResearch(input?: {
       if (existing.verified && (existing.sourceUrl || existing.websiteUrl)) {
         leadIds.push(existing.id);
       }
+      const projectSlug = input?.projectSlug;
+      if (
+        projectSlug &&
+        projectSlug !== "synaptech" &&
+        existing.projectSlug === "synaptech"
+      ) {
+        const q = qualifyPublicLead({
+          companyName: existing.companyName,
+          needSignal: existing.needSignal,
+          projectSlug,
+          sourceOk: Boolean(existing.verified && existing.sourceUrl),
+        });
+        await prisma.lead.update({
+          where: { id: existing.id },
+          data: {
+            projectSlug,
+            notes: embedLeadCrm(existing.notes, q),
+          },
+        });
+        await writeAudit({
+          category: "growth",
+          action: "growth.lead_project_rebound",
+          actorKind: "system",
+          actorAgent: "growth-lead",
+          targetType: "lead",
+          targetId: existing.id,
+          summary: `Lead projectSlug synaptech → ${projectSlug} (görev bağlamı; kayıt silinmedi)`,
+          metadata: { from: "synaptech", to: projectSlug, qualifiedLead: q.qualifiedLead },
+        });
+      }
       continue;
     }
 
@@ -190,6 +221,13 @@ export async function runGrowthLeadResearch(input?: {
 
     const confidence = Math.min(95, 40 + matchedHints.length * 15 + (fetched.status === 200 ? 20 : 0));
     const now = new Date();
+    const projectSlug = input?.projectSlug?.trim() || "synaptech";
+    const qualification = qualifyPublicLead({
+      companyName: pageTitle,
+      needSignal,
+      projectSlug,
+      sourceOk: fetched.ok && fetched.status === 200,
+    });
     const lead = await prisma.lead.create({
       data: {
         companyName: pageTitle.slice(0, 200),
@@ -198,25 +236,17 @@ export async function runGrowthLeadResearch(input?: {
         needSignal: needSignal.slice(0, 500),
         sourceUrl: candidate.websiteUrl,
         sourceKind: "public_company_page",
-        confidenceScore: confidence,
-        verified: true,
-        verifiedAt: now,
+        confidenceScore: qualification.qualifiedLead ? confidence : Math.min(confidence, 45),
+        verified: qualification.verifiedSource,
+        verifiedAt: qualification.verifiedSource ? now : null,
         status: "new",
         dedupeHash: hash,
         notes: embedLeadCrm("Kişisel veri toplanmadı. Otomatik ileti yok.", {
-          productFit:
-            candidate.segment === "ai-entegrasyon"
-              ? "synaptech-ai"
-              : candidate.segment === "ozel-yazilim"
-                ? "synaptech-custom"
-                : candidate.segment === "izmir-kobi-uretim"
-                  ? "subify-or-ops"
-                  : "synaptech-web",
+          ...qualification,
           outreachConsent: "unknown",
-          salesStage: "research",
           contactChannel: "none",
         }),
-        projectSlug: "synaptech",
+        projectSlug,
         updatedAt: now,
       },
     });

@@ -51,12 +51,29 @@ export async function startOperationEpoch(input: {
 
 export type EpochScope = "current" | "legacy" | "all";
 
+export async function currentEpochStartedAt(): Promise<Date | null> {
+  const epoch = await readOperationEpoch();
+  return epoch ? new Date(epoch.startedAt) : null;
+}
+
 export async function epochCreatedAtFilter(scope: EpochScope = "current"): Promise<Record<string, unknown>> {
   const epoch = await readOperationEpoch();
   if (!epoch || scope === "all") return {};
   const at = new Date(epoch.startedAt);
   if (scope === "legacy") return { createdAt: { lt: at } };
   return { createdAt: { gte: at } };
+}
+
+/** createdAt veya updatedAt bu epoch'ta — eski pilot satırları güncel listeden düşer. */
+export function epochActivityFilter(after: Date | null): Record<string, unknown> {
+  if (!after) return {};
+  return { OR: [{ createdAt: { gte: after } }, { updatedAt: { gte: after } }] };
+}
+
+export function isInCurrentEpoch(at: Date | null | undefined, epochStartedAt: Date | null): boolean {
+  if (!epochStartedAt) return true;
+  if (!at) return false;
+  return at.getTime() >= epochStartedAt.getTime();
 }
 
 export async function countEpochTasks(epoch: OperationEpoch | null) {

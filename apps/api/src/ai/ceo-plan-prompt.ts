@@ -13,7 +13,8 @@ export const CEO_PLAN_JSON_CONTRACT = [
   "projectSlug: synaptech-ai-os|synaptech|subify|marivo.",
   "assigneeId: cto|developer|tester|security|growth-lead|seo-specialist|content-manager|ads-manager (ceo yazma).",
   "priority: low|medium|high.",
-  "Kanıtsız proje/görev yok. Uydurma metrik yok.",
+    "Kanıtsız proje/görev yok. Uydurma metrik yok.",
+    "Eski Faz/test/mock/coordination Task veya eski GrowthScan kullanma.",
 ].join(" ");
 
 export function compactPlanRequest(request: PlanRequest): PlanRequest {

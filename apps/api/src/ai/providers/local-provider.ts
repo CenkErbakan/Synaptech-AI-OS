@@ -1,6 +1,8 @@
 import { AgentWorkResultSchema, CeoPlanSchema, type ModelCompletion } from "@synaptech/shared";
 
 import { buildCeoPlanPrompt } from "../ceo-plan-prompt.js";
+import { errorCodeForExtract, extractCeoPlanJson } from "../ceo-json-extract.js";
+import { CEO_PLAN_OLLAMA_FORMAT } from "../ceo-plan-json-schema.js";
 import type { AgentWorkRequest, ChatRequest, ModelProvider, PlanRequest } from "../model-provider.js";
 
 export const LOCAL_LLM_GENERATE_TIMEOUT_MS = 180_000;
@@ -220,6 +222,8 @@ export class LocalModelProvider implements ModelProvider {
     prompt: string,
     opts?: {
       json?: boolean;
+      stream?: boolean;
+      format?: unknown;
       timeoutMs?: number;
       numPredict?: number;
       onHeartbeat?: () => void | Promise<void>;
@@ -242,6 +246,8 @@ export class LocalModelProvider implements ModelProvider {
     }, 20_000);
     let aborted = false;
     try {
+      const useStream = opts?.stream ?? !opts?.json;
+      const format = opts?.format ?? (opts?.json ? "json" : undefined);
       const res = await fetchImpl(`${this.baseUrl.replace(/\/$/, "")}/api/generate`, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -249,9 +255,9 @@ export class LocalModelProvider implements ModelProvider {
         body: JSON.stringify({
           model: this.modelId,
           prompt,
-          stream: true,
+          stream: useStream,
           keep_alive: "10m",
-          ...(opts?.json ? { format: "json" } : {}),
+          ...(format !== undefined ? { format } : {}),
           options: {
             temperature: 0.1,
             num_predict: opts?.numPredict ?? CEO_PLAN_NUM_PREDICT,
@@ -261,6 +267,16 @@ export class LocalModelProvider implements ModelProvider {
       });
       if (!res.ok) {
         throw new Error(`local_llm_http_${res.status}`);
+      }
+      if (!useStream) {
+        const json = (await res.json()) as Record<string, unknown>;
+        const text = responseTextFromOllamaPayload(json);
+        return {
+          text,
+          durationMs: Date.now() - started,
+          metrics: metricsFromOllamaChunk(json),
+          aborted: false,
+        };
       }
       const parsedStream = await readOllamaGenerateStream(res, ac.signal);
       if (parsedStream.aborted || ac.signal.aborted) {
@@ -297,18 +313,36 @@ export class LocalModelProvider implements ModelProvider {
     const built = buildCeoPlanPrompt(request);
     const { text: content, durationMs, metrics } = await this.complete(built.prompt, {
       json: true,
+      stream: false,
+      format: CEO_PLAN_OLLAMA_FORMAT,
       timeoutMs: LOCAL_LLM_GENERATE_TIMEOUT_MS,
       numPredict: CEO_PLAN_NUM_PREDICT,
       onHeartbeat: runtime?.onHeartbeat,
     });
+    const extracted = extractCeoPlanJson(content);
+    if (!extracted.jsonText) {
+      throw Object.assign(new Error(errorCodeForExtract(extracted.kind)), {
+        extract: extracted,
+      });
+    }
     let parsed: unknown;
     try {
-      parsed = JSON.parse(content);
+      parsed = JSON.parse(extracted.jsonText);
     } catch {
-      throw new Error("local_llm_invalid_json");
+      throw Object.assign(new Error("local_llm_invalid_json"), { extract: extracted });
     }
     const normalized = normalizeLocalCeoPlanJson(parsed);
-    const parsedPlan = CeoPlanSchema.parse(normalized);
+    let parsedPlan;
+    try {
+      parsedPlan = CeoPlanSchema.parse(normalized);
+    } catch (err) {
+      throw Object.assign(
+        new Error(
+          `schema_validation_failed:${err instanceof Error ? err.message.slice(0, 180) : "zod"}`,
+        ),
+        { extract: extracted },
+      );
+    }
     return {
       providerId: "local",
       modelId: this.modelId,
@@ -320,6 +354,9 @@ export class LocalModelProvider implements ModelProvider {
         { kind: "mssql", ref: "ceo_plan_context" },
         { kind: "artifact", ref: `durationMs:${durationMs}` },
         { kind: "artifact", ref: `promptChars:${built.promptChars}` },
+        { kind: "artifact", ref: `jsonKind:${extracted.kind}` },
+        { kind: "artifact", ref: `contentLen:${extracted.contentLen}` },
+        { kind: "artifact", ref: `contentSha256:${extracted.contentSha256}` },
         ...metricsToEvidence(metrics),
       ],
       usage: {
@@ -442,6 +479,18 @@ export function metricsToEvidence(metrics: OllamaGenerateMetrics) {
   return parts;
 }
 
+export function responseTextFromOllamaPayload(chunk: Record<string, unknown>): string {
+  if (typeof chunk.response === "string") return chunk.response;
+  if (chunk.response && typeof chunk.response === "object") {
+    try {
+      return JSON.stringify(chunk.response);
+    } catch {
+      return "";
+    }
+  }
+  return "";
+}
+
 export async function readOllamaGenerateStream(
   res: Response,
   signal?: AbortSignal,
@@ -487,8 +536,17 @@ export async function readOllamaGenerateStream(
         } catch {
           continue;
         }
-        if (typeof chunk.response === "string") text += chunk.response;
+        text += responseTextFromOllamaPayload(chunk);
         if (chunk.done === true) metrics = metricsFromOllamaChunk(chunk);
+      }
+    }
+    if (buf.trim()) {
+      try {
+        const chunk = JSON.parse(buf.trim()) as Record<string, unknown>;
+        text += responseTextFromOllamaPayload(chunk);
+        if (chunk.done === true) metrics = metricsFromOllamaChunk(chunk);
+      } catch {
+        if (!text) text = buf.trim();
       }
     }
     return { text, metrics, aborted: false };

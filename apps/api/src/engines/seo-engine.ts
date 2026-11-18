@@ -70,6 +70,9 @@ export interface SeoScanResult {
   measured: number;
   recommendations: number;
   findings: Array<{ id: string; title: string; findingKind: string; category: string }>;
+  createdCount: number;
+  reusedCount: number;
+  updatedFindingIds: string[];
   errors: string[];
   gscConnected: false;
   ga4Connected: false;
@@ -98,6 +101,8 @@ export async function runTechnicalSeoScan(input?: {
 
   const errors: string[] = [];
   const created: SeoScanResult["findings"] = [];
+  const reused: SeoScanResult["findings"] = [];
+  const updated: Array<{ id: string; title: string; httpStatus: number | null }> = [];
   const evidence: Record<string, unknown> = { website, fetchedAt: new Date().toISOString() };
 
   const upsertFinding = async (f: {
@@ -113,12 +118,24 @@ export async function runTechnicalSeoScan(input?: {
     const hash = dedupe(["seo", f.category, f.pageUrl, f.title]);
     const existing = await prisma.seoFinding.findUnique({ where: { dedupeHash: hash } });
     if (existing) {
-      created.push({
-        id: existing.id,
-        title: existing.title,
-        findingKind: existing.findingKind,
-        category: existing.category,
+      const row = await prisma.seoFinding.update({
+        where: { id: existing.id },
+        data: {
+          detail: f.detail,
+          evidenceRef: f.evidenceRef?.slice(0, 500) ?? existing.evidenceRef,
+          httpStatus: f.httpStatus ?? existing.httpStatus,
+          severity: f.severity ?? existing.severity,
+          scanRunId: run.id,
+          updatedAt: new Date(),
+        },
       });
+      reused.push({
+        id: row.id,
+        title: row.title,
+        findingKind: row.findingKind,
+        category: row.category,
+      });
+      updated.push({ id: row.id, title: row.title, httpStatus: row.httpStatus });
       return;
     }
     const row = await prisma.seoFinding.create({
@@ -287,8 +304,9 @@ export async function runTechnicalSeoScan(input?: {
     severity: "info",
   });
 
-  const measured = created.filter((c) => c.findingKind === "measured").length;
-  const recommendations = created.filter((c) => c.findingKind === "recommendation").length;
+  const listed = [...created, ...reused];
+  const measured = listed.filter((c) => c.findingKind === "measured").length;
+  const recommendations = listed.filter((c) => c.findingKind === "recommendation").length;
   const status =
     errors.length === 0 ? "succeeded" : measured > 0 ? "partial" : "failed";
 
@@ -297,7 +315,7 @@ export async function runTechnicalSeoScan(input?: {
     data: {
       status,
       finishedAt: new Date(),
-      summary: `SEO tarama ${status}: measured=${measured}, recommendations=${recommendations}, errors=${errors.length}`,
+      summary: `SEO tarama ${status}: measured=${measured}, recommendations=${recommendations}, created=${created.length}, reused=${reused.length}, errors=${errors.length}`,
       evidenceJson: JSON.stringify(evidence).slice(0, 8000),
       errorMessage: errors.length ? errors.join("; ").slice(0, 1000) : null,
     },
@@ -314,6 +332,9 @@ export async function runTechnicalSeoScan(input?: {
       website,
       measured,
       recommendations,
+      createdCount: created.length,
+      reusedCount: reused.length,
+      updatedFindingIds: updated.map((u) => u.id),
       errors,
       realAiExecution: false,
       gscConnected: false,
@@ -329,7 +350,10 @@ export async function runTechnicalSeoScan(input?: {
     status,
     measured,
     recommendations,
-    findings: created,
+    findings: listed,
+    createdCount: created.length,
+    reusedCount: reused.length,
+    updatedFindingIds: updated.map((u) => u.id),
     errors,
     gscConnected: false,
     ga4Connected: false,

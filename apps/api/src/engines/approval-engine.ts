@@ -105,6 +105,7 @@ export async function decideRealApproval(
   decision: "approved" | "rejected",
   actor: Actor,
   note?: string,
+  retryBudget = 0,
 ): Promise<ApprovalRequest & { effectiveStatus: string; execution?: { executed: boolean; message: string } }> {
   const prisma = getPrisma();
   const kill = await getKillSwitch();
@@ -173,24 +174,47 @@ export async function decideRealApproval(
   if (decision === "approved") {
     const localEscalation = row.subjectKind === "task_escalation" && Boolean(row.taskId);
     if (localEscalation && row.taskId) {
-      await prisma.task.update({
-        where: { id: row.taskId },
-        data: {
-          status: "planned",
-          dispatchState: "ready",
-          workflowPhase: "ready",
-          executionPolicy: "AUTO",
-          blockedReason: null,
-          attempts: 0,
-          executionKind: "real_ai_pending",
-          finishedAt: null,
-        },
-      });
-      execution = {
-        executed: false,
-        message:
-          "Yerel ajan görevi tekrar kuyruğa alındı. Cloud / GitHub / e-posta başlatılmadı; sonraki timer tick dağıtır.",
-      };
+      const extra = Math.max(0, Math.min(3, retryBudget));
+      const { withOwnerRetryRemaining } = await import("../ai/retry-budget.js");
+      if (extra <= 0) {
+        await prisma.task.update({
+          where: { id: row.taskId },
+          data: {
+            status: "awaiting_approval",
+            dispatchState: "blocked",
+            workflowPhase: "failed",
+            executionPolicy: "OWNER-APPROVAL",
+            blockedReason: "retry_budget_exhausted",
+            finishedAt: null,
+          },
+        });
+        execution = {
+          executed: false,
+          message:
+            "Onay kaydedildi; otomatik yeniden yürütme yok. Sınırlı deneme için retryBudget>0 gerekir. attempts sıfırlanmadı.",
+        };
+      } else {
+        const current = await prisma.task.findUnique({
+          where: { id: row.taskId },
+          select: { executionPolicy: true, attempts: true },
+        });
+        await prisma.task.update({
+          where: { id: row.taskId },
+          data: {
+            status: "planned",
+            dispatchState: "ready",
+            workflowPhase: "ready",
+            executionPolicy: withOwnerRetryRemaining(current?.executionPolicy, extra),
+            blockedReason: null,
+            executionKind: "real_ai_pending",
+            finishedAt: null,
+          },
+        });
+        execution = {
+          executed: false,
+          message: `Sınırlı yeniden yürütme hakkı: ${extra}. attempts=${current?.attempts ?? "keep"} korundu.`,
+        };
+      }
     } else if (decided.type === "cloud_agent_run") {
       // Cloud run otomatik başlamaz — Owner ayrıca repository ile execute endpoint'ini çağırır.
       execution = {

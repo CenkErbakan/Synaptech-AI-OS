@@ -54,7 +54,7 @@ async function SecurityReal() {
 
       <Card>
         <CardHeader>
-          <SectionTitle title="Kill switch" sources={["config"]} />
+          <SectionTitle title="Kill switch" sources={["api", "config"]} />
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <div className="flex flex-wrap items-center gap-2">
@@ -64,9 +64,15 @@ async function SecurityReal() {
             <SourceBadge source="config" />
           </div>
           <p className="text-muted-foreground">
-            Kaynak: <code>config/kill-switch.json</code>. Dashboard değiştiremez. Açıkken Cursor hook&apos;ları yeni alt
-            ajanları ve okuma dışındaki araçları reddeder.
+            Operasyon otoritesi API/DB (fail-safe OR). <code>config/kill-switch.json</code> Cursor hook&apos;ları içindir;
+            ajan yazmaz. Çelişkide otonomi kapalı kalır.
           </p>
+          {snapshot.killSwitch.ok && snapshot.killSwitch.data.conflict ? (
+            <p className="text-destructive">
+              Çelişki: DB={String(snapshot.killSwitch.data.dbEnabled)} / dosya=
+              {String(snapshot.killSwitch.data.fileEnabled)}. Fail-safe AÇIK.
+            </p>
+          ) : null}
           {snapshot.killSwitch.ok && snapshot.killSwitch.data.reason ? (
             <p>Gerekçe: {snapshot.killSwitch.data.reason}</p>
           ) : null}

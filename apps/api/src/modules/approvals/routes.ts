@@ -47,6 +47,7 @@ export async function approvalRoutes(app: FastifyInstance) {
       .object({
         decision: z.enum(["approved", "rejected"]),
         note: z.string().max(1000).optional(),
+        retryBudget: z.number().int().min(0).max(3).optional(),
       })
       .safeParse(request.body);
     if (!body.success) throw validationError("Karar gövdesi geçersiz.", body.error.flatten());
@@ -55,6 +56,7 @@ export async function approvalRoutes(app: FastifyInstance) {
       body.data.decision,
       actorFromPrincipal(principal),
       body.data.note,
+      body.data.retryBudget ?? 0,
     );
     return result;
   });

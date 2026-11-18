@@ -67,6 +67,12 @@ export async function opsRoutes(app: FastifyInstance) {
     requireAuth(request);
     const env = getEnv();
     const grants = await readOwnerGrants();
+    const { listGrantRuntimeMismatches } = await import("../../engines/grant-runtime-alignment.js");
+    const grantRuntimeMismatches = listGrantRuntimeMismatches({
+      grants,
+      githubWriteMode: env.GITHUB_WRITE_MODE,
+      cloudLiveEnabled: env.CLOUD_AGENT_LIVE_ENABLED,
+    });
     return {
       source: "api" as const,
       pcRequiredForLocalAi: true,
@@ -74,6 +80,7 @@ export async function opsRoutes(app: FastifyInstance) {
       paidApiFallback: false,
       note: "PC veya API kapalıyken yerel Qwen çalışmaz. İşler kuyrukta bekler; Cloud'a geçilmez.",
       githubWriteMode: env.GITHUB_WRITE_MODE,
+      grantRuntimeMismatches,
       githubWrite: evaluateGithubWrite(
         { taskId: "status", projectSlug: "synaptech-ai-os", verifiedRepo: true },
         grants,

@@ -202,6 +202,10 @@ export const KillSwitchSchema = z.object({
   changedBy: z.string().nullable(),
   changedAt: z.string().nullable(),
   note: z.string().optional(),
+  conflict: z.boolean().optional(),
+  dbEnabled: z.boolean().nullable().optional(),
+  fileEnabled: z.boolean().nullable().optional(),
+  authority: z.string().optional(),
 });
 
 export type KillSwitch = z.infer<typeof KillSwitchSchema>;

@@ -14,17 +14,22 @@ import {
 import { runGrowthLeadResearch } from "../../engines/growth-engine.js";
 import { runTechnicalSeoScan } from "../../engines/seo-engine.js";
 import { parseLeadCrm } from "../../engines/crm-lead.js";
+import { currentEpochStartedAt, epochActivityFilter } from "../../engines/operation-epoch.js";
 
 export async function growthRoutes(app: FastifyInstance) {
   app.get("/api/growth/status", async (request) => {
     requireAuth(request);
     const prisma = getPrisma();
-    const [leads, seo, drafts, ads, scans] = await Promise.all([
-      prisma.lead.count(),
+    const epochAt = await currentEpochStartedAt();
+    const activity = epochActivityFilter(epochAt);
+    const scanWhere = epochAt ? { startedAt: { gte: epochAt } } : {};
+    const [leads, seo, drafts, ads, scans, legacySeo] = await Promise.all([
+      prisma.lead.count({ where: activity }),
+      prisma.seoFinding.count({ where: activity }),
+      prisma.contentDraftRecord.count({ where: activity }),
+      prisma.adProposal.count({ where: activity }),
+      prisma.growthScanRun.findMany({ where: scanWhere, orderBy: { startedAt: "desc" }, take: 5 }),
       prisma.seoFinding.count(),
-      prisma.contentDraftRecord.count(),
-      prisma.adProposal.count(),
-      prisma.growthScanRun.findMany({ orderBy: { startedAt: "desc" }, take: 5 }),
     ]);
     return {
       source: "api" as const,
@@ -34,6 +39,8 @@ export async function growthRoutes(app: FastifyInstance) {
       outreachEnabled: false,
       liveAdsEnabled: false,
       blogPublishEnabled: false,
+      epochScoped: true,
+      legacyHidden: Math.max(0, legacySeo - seo),
       counts: { leads, seoFindings: seo, drafts, adProposals: ads },
       recentScans: scans.map((s) => ({
         id: s.id,
@@ -49,7 +56,12 @@ export async function growthRoutes(app: FastifyInstance) {
 
   app.get("/api/growth/leads", async (request) => {
     requireAuth(request);
-    const leads = await getPrisma().lead.findMany({ orderBy: { createdAt: "desc" }, take: 100 });
+    const epochAt = await currentEpochStartedAt();
+    const leads = await getPrisma().lead.findMany({
+      where: epochActivityFilter(epochAt),
+      orderBy: { createdAt: "desc" },
+      take: 100,
+    });
     return {
       source: "api" as const,
       realAiExecution: false,
@@ -74,7 +86,9 @@ export async function growthRoutes(app: FastifyInstance) {
 
   app.get("/api/growth/seo-findings", async (request) => {
     requireAuth(request);
+    const epochAt = await currentEpochStartedAt();
     const findings = await getPrisma().seoFinding.findMany({
+      where: epochActivityFilter(epochAt),
       orderBy: { createdAt: "desc" },
       take: 100,
     });
@@ -88,7 +102,9 @@ export async function growthRoutes(app: FastifyInstance) {
 
   app.get("/api/growth/content-drafts", async (request) => {
     requireAuth(request);
+    const epochAt = await currentEpochStartedAt();
     const drafts = await getPrisma().contentDraftRecord.findMany({
+      where: epochActivityFilter(epochAt),
       orderBy: { createdAt: "desc" },
       take: 100,
     });
@@ -113,7 +129,9 @@ export async function growthRoutes(app: FastifyInstance) {
 
   app.get("/api/growth/ad-proposals", async (request) => {
     requireAuth(request);
+    const epochAt = await currentEpochStartedAt();
     const proposals = await getPrisma().adProposal.findMany({
+      where: epochActivityFilter(epochAt),
       orderBy: { createdAt: "desc" },
       take: 50,
     });
