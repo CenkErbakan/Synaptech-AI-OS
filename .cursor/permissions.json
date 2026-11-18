@@ -1,0 +1,18 @@
+{
+  "autoRun": {
+    "allow_instructions": [
+      "Allow read-only inspections of local files, git status/diff/log, and test runners that do not modify remote state.",
+      "Allow local development commands such as pnpm install/test/build and next/dev on 127.0.0.1 when they stay inside this workspace."
+    ],
+    "block_instructions": [
+      "Block every git push and any attempt to add or change git remotes.",
+      "Block commits, merges, rebases, or resets on main or master, and block git --no-verify.",
+      "Block production deploy and cloud CLIs including vercel, kubectl, terraform apply, aws, az, gcloud, ssh, scp, docker push, and npm/pnpm publish.",
+      "Block GitHub write actions such as gh pr create, gh pr merge, and release publishing.",
+      "Block reading or printing secrets: .env files, *.pem, *.key, credentials.json, secrets directories, and environment dumps.",
+      "Block writing outside this workspace and writing to protected paths (.cursor, AGENTS.md, config, docs/security-policy.md, .synaptech, .github/workflows).",
+      "Block launching or changing live ads campaigns, ad budgets, customer messages, and blog publish to production.",
+      "Block destructive SQL (DROP, TRUNCATE, DELETE without a careful review) and database migration deploy commands."
+    ]
+  }
+}

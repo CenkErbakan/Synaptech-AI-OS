@@ -1,0 +1,176 @@
+{
+  "at": "2026-11-17T23:50:42.039Z",
+  "phase": "5A",
+  "planner": "deterministic",
+  "llmIntegrated": false,
+  "cloudAutoDispatch": false,
+  "tick": {
+    "ok": true,
+    "ran": [],
+    "skipped": [
+      "run-reconciliation",
+      "daily-ceo-review"
+    ]
+  },
+  "cycle": {
+    "ok": true,
+    "planner": "deterministic",
+    "parentTaskId": "1f725888-40db-46ec-9505-a0b2f6b320fa",
+    "subtaskId": "7e68507b-e1b7-48f9-a959-9febd1420192",
+    "opportunityId": "0d736a48-df83-4601-9c61-5b1a1384566c",
+    "messageId": "e97fc4a3-0424-47b5-b6aa-48ca15d65a6a",
+    "skippedReason": null,
+    "opportunitiesCreated": 0
+  },
+  "counts": {
+    "goals": 4,
+    "opportunities": 5,
+    "messages": 4
+  },
+  "jobs": [
+    {
+      "jobKey": "daily-ceo-review",
+      "enabled": true,
+      "cronExpr": "*/2 * * * *",
+      "lastStatus": "succeeded",
+      "lastFinishedAt": "2026-11-17T23:48:42.044Z"
+    },
+    {
+      "jobKey": "run-reconciliation",
+      "enabled": true,
+      "cronExpr": "*/5 * * * *",
+      "lastStatus": "succeeded",
+      "lastFinishedAt": "2026-11-17T23:48:41.719Z"
+    }
+  ],
+  "sampleOpportunity": [
+    {
+      "id": "9d1e7b14-ed97-4ff4-b2b4-467b9b7da395",
+      "title": "SynapTech AI OS: operasyonel değerlendirme fırsatı",
+      "projectSlug": "synaptech-ai-os",
+      "verified": true,
+      "status": "accepted",
+      "evidenceRef": "project:809a65d5-1691-4ead-b73c-74c6d73ca263:openTasks=1"
+    },
+    {
+      "id": "07a6ce71-55ef-475b-9828-c4953884486c",
+      "title": "SynapTech: başarısız/stale run temizliği",
+      "projectSlug": "synaptech",
+      "verified": true,
+      "status": "accepted",
+      "evidenceRef": "project:f671c86b-c45d-4ac7-9bcd-afeee4cde41d:failedRuns=1"
+    },
+    {
+      "id": "f3a4d318-ff52-4147-be91-5ac7ef801708",
+      "title": "SynapTech: operasyonel değerlendirme fırsatı",
+      "projectSlug": "synaptech",
+      "verified": true,
+      "status": "accepted",
+      "evidenceRef": "project:f671c86b-c45d-4ac7-9bcd-afeee4cde41d:openTasks=13"
+    }
+  ],
+  "sampleTasks": [
+    {
+      "id": "7e68507b-e1b7-48f9-a959-9febd1420192",
+      "title": "Alt görev: CEO orchestrator alt görev üretsin",
+      "parentTaskId": "1f725888-40db-46ec-9505-a0b2f6b320fa",
+      "assigneeId": "growth-lead",
+      "origin": "opportunity:0d736a48-df83-4601-9c61-5b1a1384566c",
+      "dispatchState": "ready"
+    },
+    {
+      "id": "1f725888-40db-46ec-9505-a0b2f6b320fa",
+      "title": "CEO plan: Marivo: operasyonel değerlendirme fırsatı",
+      "parentTaskId": null,
+      "assigneeId": "ceo",
+      "origin": "opportunity:0d736a48-df83-4601-9c61-5b1a1384566c",
+      "dispatchState": "not_applicable"
+    },
+    {
+      "id": "7013891d-12fd-4635-adf9-cec049f1c0dc",
+      "title": "Alt görev: CEO orchestrator alt görev üretsin",
+      "parentTaskId": "3c396791-11e8-449e-85f5-66280462e630",
+      "assigneeId": "growth-lead",
+      "origin": "opportunity:7b3ad91c-b12e-47de-a365-1bfe97b43fc1",
+      "dispatchState": "ready"
+    },
+    {
+      "id": "3c396791-11e8-449e-85f5-66280462e630",
+      "title": "CEO plan: Subify: operasyonel değerlendirme fırsatı",
+      "parentTaskId": null,
+      "assigneeId": "ceo",
+      "origin": "opportunity:7b3ad91c-b12e-47de-a365-1bfe97b43fc1",
+      "dispatchState": "not_applicable"
+    },
+    {
+      "id": "81a7c3a1-b087-4f7b-98d7-15bfb1b71286",
+      "title": "Alt görev: CEO orchestrator alt görev üretsin",
+      "parentTaskId": "9936e046-82c8-4fed-8693-c5a2249e749e",
+      "assigneeId": "growth-lead",
+      "origin": "opportunity:f3a4d318-ff52-4147-be91-5ac7ef801708",
+      "dispatchState": "not_applicable"
+    },
+    {
+      "id": "9936e046-82c8-4fed-8693-c5a2249e749e",
+      "title": "CEO plan: SynapTech: operasyonel değerlendirme fırsatı",
+      "parentTaskId": null,
+      "assigneeId": "ceo",
+      "origin": "opportunity:f3a4d318-ff52-4147-be91-5ac7ef801708",
+      "dispatchState": "not_applicable"
+    }
+  ],
+  "sampleMessages": [
+    {
+      "id": "e97fc4a3-0424-47b5-b6aa-48ca15d65a6a",
+      "from": "ceo",
+      "to": "growth-lead",
+      "kind": "handoff",
+      "summary": "CEO → growth-lead: \"Marivo: operasyonel değerlendirme fırsatı\" fırsatı için alt görev devredildi."
+    },
+    {
+      "id": "c3ebede9-e190-4dea-ae0d-3c917ae7fb0f",
+      "from": "ceo",
+      "to": "growth-lead",
+      "kind": "handoff",
+      "summary": "CEO → growth-lead: \"Subify: operasyonel değerlendirme fırsatı\" fırsatı için alt görev devredildi."
+    },
+    {
+      "id": "e13c73bb-a78b-4e15-bb1e-a12f4ed42398",
+      "from": "ceo",
+      "to": "growth-lead",
+      "kind": "handoff",
+      "summary": "CEO → growth-lead: \"SynapTech: operasyonel değerlendirme fırsatı\" fırsatı için alt görev devredildi."
+    },
+    {
+      "id": "89becf43-0f1e-498a-aae5-ea577a4145c8",
+      "from": "ceo",
+      "to": "tester",
+      "kind": "handoff",
+      "summary": "CEO → tester: \"SynapTech: başarısız/stale run temizliği\" fırsatı için alt görev devredildi."
+    },
+    {
+      "id": "4df621dc-0773-4cd2-b834-44972399c353",
+      "from": "ceo",
+      "to": "cto",
+      "kind": "handoff",
+      "summary": "CEO → cto: \"SynapTech AI OS: operasyonel değerlendirme fırsatı\" fırsatı için alt görev devredildi."
+    }
+  ],
+  "auditActions": [
+    "dispatch.auto_ready",
+    "ceo.cycle_completed",
+    "opportunity.scan_completed",
+    "scheduler.tick",
+    "scheduler.tick",
+    "dispatch.auto_ready",
+    "ceo.cycle_completed",
+    "opportunity.scan_completed",
+    "scheduler.tick",
+    "scheduler.tick",
+    "ceo.cycle_completed",
+    "opportunity.scan_completed",
+    "scheduler.tick",
+    "scheduler.tick",
+    "ceo.cycle_completed"
+  ]
+}

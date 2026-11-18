@@ -1,0 +1,118 @@
+# SynapTech AI OS — Otomasyon planı
+#
+# HİÇBİR OTOMASYON ETKİN DEĞİL. Cursor Automations repo dosyasıyla tanımlanamaz;
+# yalnızca cursor.com/automations veya Agents Window arayüzünden kurulur. Bu dosya
+# plan ve kayıt amaçlıdır. Etkinleştirme için docs/automation-plan.md içindeki
+# maliyet kapısı ve ön koşullar tamamlanmalı ve her otomasyon ayrıca onaylanmalıdır.
+#
+# runtime: cloud  -> Cloud Agent (bilgisayar kapalıyken çalışabilir; GitHub deposu gerekir)
+# runtime: local  -> Yerel Cursor oturumu gerekir (yerel veri, bağlı olmayan hesaplar vb.)
+# cron_utc: Türkiye saati UTC+3'tür; saat dilimi Automations editöründe doğrulanmalıdır.
+
+version: 1
+
+global:
+  enabled: false
+  default_model: "composer-2.5[fast=false]"
+  memories: disabled
+
+automations:
+  - id: daily-ceo-review
+    name: "Günlük CEO operasyon değerlendirmesi"
+    enabled: false
+    phase: 5
+    runtime: local
+    runtime_reason: "Görev kayıtları Faz 3 API'sinde tutulacak; bulut ajanı yerel veriye erişemez. Faz 5'te bulut adayı."
+    trigger:
+      type: manual_or_cron
+      schedule_human: "Hafta içi her gün 09:00 (TR)"
+      cron_utc: "0 6 * * 1-5"
+    agents: [ceo]
+    tools: []
+    outputs: ["reports/daily/YYYY-MM-DD-ceo.md"]
+
+  - id: pr-test-review
+    name: "GitHub PR oluştuğunda test incelemesi"
+    enabled: false
+    phase: 4
+    runtime: cloud
+    runtime_reason: "GitHub olayıyla tetiklenir; depo GitHub'da olmalıdır."
+    trigger:
+      type: git
+      schedule_human: "Pull request açıldığında veya yeni commit gönderildiğinde"
+      events: ["Pull request opened", "Pull request pushed"]
+    agents: [tester, cto]
+    tools: ["Comment on pull request"]
+    outputs: ["PR yorumu (yalnızca yorum; onay veya merge yetkisi verilmez)"]
+    notes: "Alternatif: legacy Pro'ya dahil Cursor yönetimli Bugbot. PR Routing & Approval açılmaz."
+
+  - id: weekly-security
+    name: "Haftalık güvenlik analizi"
+    enabled: false
+    phase: 5
+    runtime: cloud
+    runtime_reason: "Depo ve bağımlılık dosyaları üzerinde çalışır."
+    trigger:
+      type: cron
+      schedule_human: "Her pazartesi 07:00 (TR)"
+      cron_utc: "0 4 * * 1"
+    agents: [security]
+    tools: []
+    outputs: ["reports/security/YYYY-Www.md (PR ile önerilir)"]
+
+  - id: weekly-seo
+    name: "Haftalık SEO fırsat taraması"
+    enabled: false
+    phase: 5
+    runtime: cloud
+    runtime_reason: "Herkese açık site sayfaları okunabilir; Search Console bağlı değil."
+    trigger:
+      type: cron
+      schedule_human: "Her salı 07:00 (TR)"
+      cron_utc: "0 4 * * 2"
+    agents: [seo-specialist, growth-lead]
+    tools: []
+    outputs: ["marketing/seo/YYYY-Www-firsatlar.md"]
+
+  - id: weekly-content-plan
+    name: "Haftalık blog içerik planı"
+    enabled: false
+    phase: 5
+    runtime: cloud
+    runtime_reason: "Depodaki içerik dosyaları üzerinde çalışır."
+    trigger:
+      type: cron
+      schedule_human: "Her çarşamba 07:00 (TR)"
+      cron_utc: "0 4 * * 3"
+    agents: [content-manager, seo-specialist]
+    tools: []
+    outputs: ["content/calendar/YYYY-Www.md"]
+    notes: "Mevcut blog otomasyonuyla mükerrer konu kontrolü zorunludur; yayın yapılmaz."
+
+  - id: weekly-ads-review
+    name: "Haftalık reklam stratejisi değerlendirmesi"
+    enabled: false
+    phase: 5
+    runtime: local
+    runtime_reason: "Reklam hesapları bağlı değil; veriler kullanıcı tarafından manuel sağlanır."
+    trigger:
+      type: manual
+      schedule_human: "Her perşembe, kullanıcı veri sağladığında"
+    agents: [ads-manager, growth-lead]
+    tools: []
+    outputs: ["marketing/ads/YYYY-Www-degerlendirme.md"]
+    notes: "Kampanya başlatma, değiştirme ve bütçe değişikliği yapılmaz; yalnızca öneri."
+
+  - id: weekly-company-report
+    name: "Haftalık şirket performans raporu"
+    enabled: false
+    phase: 5
+    runtime: cloud
+    runtime_reason: "Depodaki rapor dosyalarını derler."
+    trigger:
+      type: cron
+      schedule_human: "Her cuma 16:00 (TR)"
+      cron_utc: "0 13 * * 5"
+    agents: [ceo]
+    tools: []
+    outputs: ["reports/weekly/YYYY-Www-sirket.md"]

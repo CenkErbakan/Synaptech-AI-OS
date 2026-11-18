@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "archivedCount": 231,
+  "before": {
+    "total": 233,
+    "active": 233
+  },
+  "after": {
+    "total": 233,
+    "active": 2,
+    "archived": 231
+  },
+  "keep": [
+    {
+      "id": "462490ee-bbf4-4ec3-b2ac-59e8134966ce",
+      "title": "AI CEO Chat + Ekip İletişimi",
+      "status": "planned"
+    },
+    {
+      "id": "8ca354e8-f25b-432d-acc5-73105f3e5a89",
+      "title": "T-P4B-001 Pilot: greet(name) TypeScript yardımcısı",
+      "status": "in_review"
+    }
+  ],
+  "backupPath": "C:\\Users\\cenke\\Desktop\\Projeler\\Synaptech AI OS\\reports\\qa\\backups\\tp5e002-pre-archive-2026-11-18T00-44-47-471Z.json",
+  "approvedSha": "DBB7D4A543DFBAB3DCF565186326E454275C78648DD94B03F6254EEE31E6A3A5"
+}

@@ -1,0 +1,21 @@
+# Kontrol merkezi (API + dashboard + MSSQL). Ollama bu dosyada yok — Windows PC sidecar.
+# Üretime otomatik uygulanmaz. Owner onaylı deploy servisi kullanır.
+# Kullanım (yerel): docker compose -f docker-compose.yml -f docker-compose.control-plane.yml config
+#
+# VPS'te API/dashboard 7/24 ayakta kalır; PC kapalıyken LLM işleri deferred_llm_queue'da bekler.
+# Cloud/ücretli API fallback yoktur.
+
+name: synaptech-ai-os
+
+services:
+  api:
+    environment:
+      LOCAL_OPS_UNLIMITED_DAILY: "true"
+      GITHUB_WRITE_MODE: "off"
+      CLOUD_AGENT_LIVE_ENABLED: "false"
+      CURSOR_CLOUD_MODE: "mock"
+      CONTROLLED_AUTONOMY_MODE: "off"
+      SCHEDULER_AI_CEO_MODE: "off"
+      LOCAL_AGENT_EXECUTION_MODE: "off"
+      MODEL_PROVIDER: "mock"
+    restart: unless-stopped

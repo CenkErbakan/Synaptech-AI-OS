@@ -1,0 +1,2334 @@
+{
+  "approvedSha": "DBB7D4A543DFBAB3DCF565186326E454275C78648DD94B03F6254EEE31E6A3A5",
+  "createdAt": "2026-11-18T00:44:47.471Z",
+  "beforeTotal": 233,
+  "beforeActive": 233,
+  "keepBefore": [
+    {
+      "id": "462490ee-bbf4-4ec3-b2ac-59e8134966ce",
+      "title": "AI CEO Chat + Ekip İletişimi",
+      "status": "planned",
+      "archivedAt": null,
+      "updatedAt": "2026-11-17T23:30:46.491Z"
+    },
+    {
+      "id": "8ca354e8-f25b-432d-acc5-73105f3e5a89",
+      "title": "T-P4B-001 Pilot: greet(name) TypeScript yardımcısı",
+      "status": "in_review",
+      "archivedAt": null,
+      "updatedAt": "2026-11-17T23:17:59.065Z"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "1d3ddb7b-6abc-42fd-89b7-00affbb6baf2",
+      "title": "Developer uygulama: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "3c761dc6-74bf-4810-9816-171555ff2ad2",
+      "parentTaskId": "bf028e06-62ad-458f-a588-dfa5d5957603",
+      "updatedAt": "2026-11-18T00:20:14.265Z"
+    },
+    {
+      "id": "4f70087a-bcd7-4cf0-94bd-012f938f4227",
+      "title": "Developer uygulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e20c2378-56df-48eb-a4cf-f2f8b8310aaf",
+      "parentTaskId": "9a3c7b14-a767-4796-995a-8f477a239b4b",
+      "updatedAt": "2026-11-17T23:58:12.446Z"
+    },
+    {
+      "id": "0f78d2cd-7c52-4f81-8bae-020f6effb7a7",
+      "title": "CEO plan: SynapTech AI OS: operasyonel değerlendirme fırsatı",
+      "status": "planned",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "opportunity:9d1e7b14-ed97-4ff4-b2b4-467b9b7da395",
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:48:41.936Z"
+    },
+    {
+      "id": "68031d7d-1414-4aeb-bd25-024438af264c",
+      "title": "Tester doğrulama: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "fb7702ef-8885-4d39-ac8e-4f9648a223ed",
+      "parentTaskId": "f4b66154-a832-4fe6-9d8e-e98c03aa349e",
+      "updatedAt": "2026-11-18T00:28:13.470Z"
+    },
+    {
+      "id": "624a2e37-fb9f-4955-85a8-03d67d5e9f71",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T16:34:22.085Z"
+    },
+    {
+      "id": "7d0cac0a-6f84-4456-b10b-051dbcad41a7",
+      "title": "CTO inceleme: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "678ba5f2-34f4-4f98-8ac9-4a58724cc03d",
+      "parentTaskId": "e6030c32-8175-4983-b277-f9c4a567cae2",
+      "updatedAt": "2026-11-18T00:10:13.601Z"
+    },
+    {
+      "id": "4f4bc6df-044b-4738-96e2-06a5a415adb8",
+      "title": "CEO kapanış: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "3c761dc6-74bf-4810-9816-171555ff2ad2",
+      "parentTaskId": "bf028e06-62ad-458f-a588-dfa5d5957603",
+      "updatedAt": "2026-11-18T00:20:14.459Z"
+    },
+    {
+      "id": "0c1449cc-32dd-4e28-9842-06c7c3931b60",
+      "title": "CEO büyüme kapanışı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "2a16e422-7af2-4c33-a974-8c2e1febc8e5",
+      "parentTaskId": "e64c505c-48b4-4109-8f19-6d14390a251e",
+      "updatedAt": "2026-11-18T00:11:11.249Z"
+    },
+    {
+      "id": "b9292793-3618-4e98-9d30-0769c29218d8",
+      "title": "CEO planı: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "a4bff241-c74b-4f2f-822e-e8a641196061",
+      "parentTaskId": "bec763ce-7249-401a-9d73-cecba4c24734",
+      "updatedAt": "2026-11-18T00:20:13.272Z"
+    },
+    {
+      "id": "9066f449-a953-4ca8-87fc-07ca8cb08fde",
+      "title": "Growth Lead müşteri araştırması: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "2a16e422-7af2-4c33-a974-8c2e1febc8e5",
+      "parentTaskId": "e64c505c-48b4-4109-8f19-6d14390a251e",
+      "updatedAt": "2026-11-18T00:11:10.546Z"
+    },
+    {
+      "id": "5fc3b672-02ec-4b66-8615-0b3398f8b5c0",
+      "title": "Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "57f2e55f-8bc0-4729-b56f-5e92292be552",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:28:12.939Z"
+    },
+    {
+      "id": "d0085d2f-a1df-4efb-b198-0c04ba96f1e5",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:11:15.017Z"
+    },
+    {
+      "id": "cd8e6bdf-491c-4172-b7fd-0d29d6128aa4",
+      "title": "CTO inceleme: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "fb7702ef-8885-4d39-ac8e-4f9648a223ed",
+      "parentTaskId": "f4b66154-a832-4fe6-9d8e-e98c03aa349e",
+      "updatedAt": "2026-11-18T00:28:13.477Z"
+    },
+    {
+      "id": "b6f61275-478f-4e2e-9ee0-0dafc4addbfd",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:10:14.916Z"
+    },
+    {
+      "id": "3f00c36f-a92f-4511-b979-0fc021382592",
+      "title": "Tester doğrulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "57f2e55f-8bc0-4729-b56f-5e92292be552",
+      "parentTaskId": "5fc3b672-02ec-4b66-8615-0b3398f8b5c0",
+      "updatedAt": "2026-11-18T00:28:12.696Z"
+    },
+    {
+      "id": "dc5363d0-81f8-474b-94be-0fe34c900c0a",
+      "title": "Developer uygulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "7d73f6a8-2b03-4a9a-b2b8-95055d99426e",
+      "parentTaskId": "28050234-560c-4caa-b316-3f9914f9ba37",
+      "updatedAt": "2026-11-18T00:34:28.722Z"
+    },
+    {
+      "id": "bc7f8b32-7784-43e7-b202-0ffd560b83d7",
+      "title": "CTO teknik spesifikasyon: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "a4bff241-c74b-4f2f-822e-e8a641196061",
+      "parentTaskId": "bec763ce-7249-401a-9d73-cecba4c24734",
+      "updatedAt": "2026-11-18T00:20:13.407Z"
+    },
+    {
+      "id": "27d37dc5-9691-4b9e-b5c3-10192a5c44f0",
+      "title": "Faz4A mock pilot görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:28:41.327Z"
+    },
+    {
+      "id": "d74bf171-a0dd-436a-8a8f-1041dca9aedd",
+      "title": "Developer uygulama: Faz5B E2E koordinasyon zinciri",
+      "status": "backlog",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9ec8b3c3-3a25-4978-b563-844b035a7e10",
+      "parentTaskId": "ea968314-1ad9-49b1-ad97-4659932f1777",
+      "updatedAt": "2026-11-18T00:19:47.896Z"
+    },
+    {
+      "id": "4a6d4ba6-9716-4b88-8cda-119792378246",
+      "title": "CTO teknik spesifikasyon: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f17267d8-6eec-46d9-88c2-4d3151214854",
+      "parentTaskId": "4b848d81-2b59-45ca-9b29-b361e78d1d0e",
+      "updatedAt": "2026-11-18T00:10:49.962Z"
+    },
+    {
+      "id": "d0e7bf3a-185c-40a8-bfff-137f87520a1b",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:28:17.153Z"
+    },
+    {
+      "id": "1e2fb9ac-f45b-4634-bb0f-14e584f7c141",
+      "title": "CTO teknik spesifikasyon: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f6d83917-6fd1-47ad-9302-9db279ef610a",
+      "parentTaskId": "573fc2f2-cc3f-4cd6-94b3-59941beeaabb",
+      "updatedAt": "2026-11-18T00:11:13.393Z"
+    },
+    {
+      "id": "81a7c3a1-b087-4f7b-98d7-15bfb1b71286",
+      "title": "Alt görev: CEO orchestrator alt görev üretsin",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "opportunity:f3a4d318-ff52-4147-be91-5ac7ef801708",
+      "chainId": null,
+      "parentTaskId": "9936e046-82c8-4fed-8693-c5a2249e749e",
+      "updatedAt": "2026-11-17T23:49:19.335Z"
+    },
+    {
+      "id": "06658464-8c93-41b9-be0d-1661c8600e58",
+      "title": "Developer uygulama: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "55bc3683-dd31-40f7-8a01-fff5ff9f42c5",
+      "parentTaskId": "af66d777-1c86-425c-8854-5d6d9cfbbdee",
+      "updatedAt": "2026-11-17T23:58:13.264Z"
+    },
+    {
+      "id": "9c822cfa-827c-4baa-a15d-16a38c0236af",
+      "title": "CEO planı: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "7d73f6a8-2b03-4a9a-b2b8-95055d99426e",
+      "parentTaskId": "28050234-560c-4caa-b316-3f9914f9ba37",
+      "updatedAt": "2026-11-18T00:34:28.512Z"
+    },
+    {
+      "id": "0b3bf82f-857a-48b9-8eb3-1715ebd4b8c7",
+      "title": "CEO kapanış: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f6d83917-6fd1-47ad-9302-9db279ef610a",
+      "parentTaskId": "573fc2f2-cc3f-4cd6-94b3-59941beeaabb",
+      "updatedAt": "2026-11-18T00:11:13.646Z"
+    },
+    {
+      "id": "c09f93aa-8b54-4786-957d-17976b97f01d",
+      "title": "Developer uygulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e1250af5-eca8-4fe6-a0ed-7a8efd4b5cbf",
+      "parentTaskId": "ecd85c49-d357-45e5-af03-d0ad55a1f837",
+      "updatedAt": "2026-11-18T00:10:49.383Z"
+    },
+    {
+      "id": "977a7227-069a-4004-898b-193f84e206f4",
+      "title": "CTO inceleme: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9f6c5f49-c928-4207-a270-1806df1944b3",
+      "parentTaskId": "b172e270-0565-441a-8db0-ebc97f394f13",
+      "updatedAt": "2026-11-18T00:10:12.960Z"
+    },
+    {
+      "id": "05d260b0-638b-4984-925f-19a6ca8ab4ed",
+      "title": "CTO teknik spesifikasyon: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "55bc3683-dd31-40f7-8a01-fff5ff9f42c5",
+      "parentTaskId": "af66d777-1c86-425c-8854-5d6d9cfbbdee",
+      "updatedAt": "2026-11-17T23:58:13.169Z"
+    },
+    {
+      "id": "f07b1a66-ed22-426a-bbc3-1a237244fb06",
+      "title": "Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "fba3fb17-eae5-47f7-930b-21724362afbc",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:10:45.820Z"
+    },
+    {
+      "id": "6a34f170-2dd8-4449-9771-1b8bb7e96ffb",
+      "title": "CEO büyüme kapanışı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "d015e4eb-5979-4860-9635-4c63928a3cd2",
+      "parentTaskId": "d5dec00c-b32c-4843-949c-7a342e06ab35",
+      "updatedAt": "2026-11-18T00:28:10.939Z"
+    },
+    {
+      "id": "febc5943-8253-4df6-9499-1b9a9535ea23",
+      "title": "CTO inceleme: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "97d65422-28d4-4daa-b5b6-ff0d5b6e15ac",
+      "parentTaskId": "b5a38a06-28ab-4350-890f-dddc39cb8fd9",
+      "updatedAt": "2026-11-18T00:19:48.629Z"
+    },
+    {
+      "id": "076e5d46-f4fc-4201-8df9-1dd5df3e04aa",
+      "title": "CTO inceleme: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "57f2e55f-8bc0-4729-b56f-5e92292be552",
+      "parentTaskId": "5fc3b672-02ec-4b66-8615-0b3398f8b5c0",
+      "updatedAt": "2026-11-18T00:28:12.805Z"
+    },
+    {
+      "id": "68019541-3141-4841-9045-1f792002b85f",
+      "title": "Content taslak üretimi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "d015e4eb-5979-4860-9635-4c63928a3cd2",
+      "parentTaskId": "d5dec00c-b32c-4843-949c-7a342e06ab35",
+      "updatedAt": "2026-11-18T00:28:10.695Z"
+    },
+    {
+      "id": "39c1c836-319d-4170-b559-225ee79e972e",
+      "title": "Rework: Developer uygulama: Faz5B failback testi",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f6d83917-6fd1-47ad-9302-9db279ef610a",
+      "parentTaskId": "573fc2f2-cc3f-4cd6-94b3-59941beeaabb",
+      "updatedAt": "2026-11-18T00:11:13.577Z"
+    },
+    {
+      "id": "4ad7bb2a-181d-440e-8f24-2273c0adc502",
+      "title": "CEO büyüme kapanışı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "backlog",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "4f7fec71-e856-40ae-a404-a1041cd8109a",
+      "parentTaskId": "9d496af5-120b-46db-8a3e-c91656239fea",
+      "updatedAt": "2026-11-18T00:10:19.293Z"
+    },
+    {
+      "id": "d0618d44-97f2-4c69-b428-23c5647c9237",
+      "title": "CEO büyüme brifi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "4f7fec71-e856-40ae-a404-a1041cd8109a",
+      "parentTaskId": "9d496af5-120b-46db-8a3e-c91656239fea",
+      "updatedAt": "2026-11-18T00:10:19.443Z"
+    },
+    {
+      "id": "8bb100ae-4727-4735-934d-23e7089f54bd",
+      "title": "SEO teknik tarama: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "backlog",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "fba3fb17-eae5-47f7-930b-21724362afbc",
+      "parentTaskId": "f07b1a66-ed22-426a-bbc3-1a237244fb06",
+      "updatedAt": "2026-11-18T00:10:45.820Z"
+    },
+    {
+      "id": "f54807f6-63e8-4a63-80a3-271d4c0c1eb7",
+      "title": "CTO teknik spesifikasyon: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e1250af5-eca8-4fe6-a0ed-7a8efd4b5cbf",
+      "parentTaskId": "ecd85c49-d357-45e5-af03-d0ad55a1f837",
+      "updatedAt": "2026-11-18T00:10:49.279Z"
+    },
+    {
+      "id": "d024a748-8012-4ae1-809e-2813c2716bca",
+      "title": "CEO büyüme kapanışı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "123d35df-47eb-44cb-b046-21f1c18754ad",
+      "parentTaskId": "29fc5374-6657-46db-9895-f4cdb0f3ddfd",
+      "updatedAt": "2026-11-18T00:20:17.242Z"
+    },
+    {
+      "id": "de54c13b-1e10-4fc3-8e94-2a3b96cd7089",
+      "title": "Tester doğrulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "ff64be8d-ad8c-42b6-b942-8db66ebd3f9b",
+      "parentTaskId": "2ecf7e4c-ffa8-466d-9f1e-f2df69f18572",
+      "updatedAt": "2026-11-18T00:11:12.901Z"
+    },
+    {
+      "id": "95e99b11-0443-4eb9-a2d9-2ac94bf761e2",
+      "title": "Content taslak üretimi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "09dc78b2-d325-45e4-af6f-7807bb0bd776",
+      "parentTaskId": "d7eb88dd-3d98-4612-9879-8e0490c13b0e",
+      "updatedAt": "2026-11-18T00:34:24.876Z"
+    },
+    {
+      "id": "ce5c48a3-1e17-4fc5-bf0f-2ce3606a5cb9",
+      "title": "Growth Lead müşteri araştırması: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "7dc33f7a-470e-41fd-986a-5179d68cba7c",
+      "parentTaskId": "40f55b32-fd7e-42a2-a7c5-41638ddc7f8e",
+      "updatedAt": "2026-11-18T00:19:21.638Z"
+    },
+    {
+      "id": "202cd885-4fec-41b6-b689-2d74aa93bc91",
+      "title": "Tester doğrulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9f6c5f49-c928-4207-a270-1806df1944b3",
+      "parentTaskId": "b172e270-0565-441a-8db0-ebc97f394f13",
+      "updatedAt": "2026-11-18T00:10:12.856Z"
+    },
+    {
+      "id": "483f21e6-ba5c-4ce9-a4ed-2ea3ed811c52",
+      "title": "CEO planı: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e20c2378-56df-48eb-a4cf-f2f8b8310aaf",
+      "parentTaskId": "9a3c7b14-a767-4796-995a-8f477a239b4b",
+      "updatedAt": "2026-11-17T23:58:12.196Z"
+    },
+    {
+      "id": "06645935-2850-48d3-a169-2f8596d5c206",
+      "title": "CEO kapanış: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9f6c5f49-c928-4207-a270-1806df1944b3",
+      "parentTaskId": "b172e270-0565-441a-8db0-ebc97f394f13",
+      "updatedAt": "2026-11-18T00:10:13.062Z"
+    },
+    {
+      "id": "921afbb4-4490-4a59-b497-302962a36cdf",
+      "title": "CTO teknik spesifikasyon: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "fb7702ef-8885-4d39-ac8e-4f9648a223ed",
+      "parentTaskId": "f4b66154-a832-4fe6-9d8e-e98c03aa349e",
+      "updatedAt": "2026-11-18T00:28:13.208Z"
+    },
+    {
+      "id": "b3366636-2930-4469-84b9-330372a6cec5",
+      "title": "CEO büyüme brifi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "fba3fb17-eae5-47f7-930b-21724362afbc",
+      "parentTaskId": "f07b1a66-ed22-426a-bbc3-1a237244fb06",
+      "updatedAt": "2026-11-18T00:10:45.820Z"
+    },
+    {
+      "id": "b9e526a0-dc5a-412b-b5af-3590cfb1e93f",
+      "title": "Content taslak üretimi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "backlog",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "3d5637f0-5487-4a52-8c32-df94af2015e9",
+      "parentTaskId": "a283065a-ea02-4b4f-8bdf-4e379dfad0ea",
+      "updatedAt": "2026-11-18T00:10:15.803Z"
+    },
+    {
+      "id": "dc9700d0-a735-48a0-9708-3909595fcc24",
+      "title": "Content taslak üretimi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "7dc33f7a-470e-41fd-986a-5179d68cba7c",
+      "parentTaskId": "40f55b32-fd7e-42a2-a7c5-41638ddc7f8e",
+      "updatedAt": "2026-11-18T00:19:22.002Z"
+    },
+    {
+      "id": "be904151-0770-4d31-a4d1-39839278a643",
+      "title": "Growth Lead müşteri araştırması: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "123d35df-47eb-44cb-b046-21f1c18754ad",
+      "parentTaskId": "29fc5374-6657-46db-9895-f4cdb0f3ddfd",
+      "updatedAt": "2026-11-18T00:20:16.582Z"
+    },
+    {
+      "id": "ac850ac9-ab91-4e35-ad97-3a62b9a792a9",
+      "title": "Developer uygulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "57f2e55f-8bc0-4729-b56f-5e92292be552",
+      "parentTaskId": "5fc3b672-02ec-4b66-8615-0b3398f8b5c0",
+      "updatedAt": "2026-11-18T00:28:12.588Z"
+    },
+    {
+      "id": "30fb7ee1-1c57-405e-bc44-3da724846258",
+      "title": "SEO teknik tarama: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "d015e4eb-5979-4860-9635-4c63928a3cd2",
+      "parentTaskId": "d5dec00c-b32c-4843-949c-7a342e06ab35",
+      "updatedAt": "2026-11-18T00:28:10.563Z"
+    },
+    {
+      "id": "96fa2248-ac4f-4f01-84f3-3e20a0402911",
+      "title": "CEO planı: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "55bc3683-dd31-40f7-8a01-fff5ff9f42c5",
+      "parentTaskId": "af66d777-1c86-425c-8854-5d6d9cfbbdee",
+      "updatedAt": "2026-11-17T23:58:13.066Z"
+    },
+    {
+      "id": "85a6f3c3-e864-4446-859a-3f0bbd48fe9d",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:19:25.348Z"
+    },
+    {
+      "id": "d684a319-4aa1-4da9-a3cc-3f61088ac77d",
+      "title": "Ads öneri taslağı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "2a16e422-7af2-4c33-a974-8c2e1febc8e5",
+      "parentTaskId": "e64c505c-48b4-4109-8f19-6d14390a251e",
+      "updatedAt": "2026-11-18T00:11:11.110Z"
+    },
+    {
+      "id": "28050234-560c-4caa-b316-3f9914f9ba37",
+      "title": "Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "7d73f6a8-2b03-4a9a-b2b8-95055d99426e",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:34:29.048Z"
+    },
+    {
+      "id": "a6aff5ce-9a5b-4180-9979-400b57bef25d",
+      "title": "CTO teknik spesifikasyon: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "97d65422-28d4-4daa-b5b6-ff0d5b6e15ac",
+      "parentTaskId": "b5a38a06-28ab-4350-890f-dddc39cb8fd9",
+      "updatedAt": "2026-11-18T00:19:48.328Z"
+    },
+    {
+      "id": "40f55b32-fd7e-42a2-a7c5-41638ddc7f8e",
+      "title": "Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "7dc33f7a-470e-41fd-986a-5179d68cba7c",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:19:22.286Z"
+    },
+    {
+      "id": "3c53c0b1-ef6d-4252-8614-4334fdcb8a27",
+      "title": "CEO kapanış: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "fb7702ef-8885-4d39-ac8e-4f9648a223ed",
+      "parentTaskId": "f4b66154-a832-4fe6-9d8e-e98c03aa349e",
+      "updatedAt": "2026-11-18T00:28:13.477Z"
+    },
+    {
+      "id": "c28aa664-a69e-4d64-99fb-43d45715b7ee",
+      "title": "Dashboard E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T16:17:28.456Z"
+    },
+    {
+      "id": "a7b457bf-637b-454e-afbf-43ddf46c8fe3",
+      "title": "CTO teknik spesifikasyon: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9f6c5f49-c928-4207-a270-1806df1944b3",
+      "parentTaskId": "b172e270-0565-441a-8db0-ebc97f394f13",
+      "updatedAt": "2026-11-18T00:10:12.652Z"
+    },
+    {
+      "id": "70f01d5d-2b09-4fbd-beb6-43eb8bffe3ab",
+      "title": "CTO inceleme: Faz5B E2E koordinasyon zinciri",
+      "status": "backlog",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "b2b2622e-7ad3-4c37-a3c7-02f5537a155d",
+      "parentTaskId": "837f23be-0639-432c-878d-50ab04ec43d7",
+      "updatedAt": "2026-11-18T00:19:23.440Z"
+    },
+    {
+      "id": "7dd8e28f-2849-476a-9802-44c7f1a977d9",
+      "title": "CEO kapanış: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "57f2e55f-8bc0-4729-b56f-5e92292be552",
+      "parentTaskId": "5fc3b672-02ec-4b66-8615-0b3398f8b5c0",
+      "updatedAt": "2026-11-18T00:28:12.908Z"
+    },
+    {
+      "id": "86cdb837-1e69-46c0-8101-45177da17f0d",
+      "title": "Rework: Developer uygulama: Faz5B failback testi",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "63f933cd-2190-4def-8c47-84fab99681b3",
+      "parentTaskId": "7edb714e-cdc8-479d-b10a-ba211e3929b2",
+      "updatedAt": "2026-11-18T00:19:24.010Z"
+    },
+    {
+      "id": "c5b57ae0-cdde-46a2-902f-45d4ecef339e",
+      "title": "CEO kapanış: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e1250af5-eca8-4fe6-a0ed-7a8efd4b5cbf",
+      "parentTaskId": "ecd85c49-d357-45e5-af03-d0ad55a1f837",
+      "updatedAt": "2026-11-18T00:10:49.684Z"
+    },
+    {
+      "id": "ea968314-1ad9-49b1-ad97-4659932f1777",
+      "title": "Faz5B E2E koordinasyon zinciri",
+      "status": "in_progress",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9ec8b3c3-3a25-4978-b563-844b035a7e10",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:19:47.896Z"
+    },
+    {
+      "id": "3bab411b-a003-4481-88bd-494c68489b5a",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:48:40.897Z"
+    },
+    {
+      "id": "f328a57e-3a66-4fff-b1e4-49d6c2d7806c",
+      "title": "CEO büyüme kapanışı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "09dc78b2-d325-45e4-af6f-7807bb0bd776",
+      "parentTaskId": "d7eb88dd-3d98-4612-9879-8e0490c13b0e",
+      "updatedAt": "2026-11-18T00:34:25.123Z"
+    },
+    {
+      "id": "3d7ecd3f-2f03-42c6-8d6a-49dbc0d6d29a",
+      "title": "CEO planı: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "fb7702ef-8885-4d39-ac8e-4f9648a223ed",
+      "parentTaskId": "f4b66154-a832-4fe6-9d8e-e98c03aa349e",
+      "updatedAt": "2026-11-18T00:28:13.102Z"
+    },
+    {
+      "id": "af40072c-3e35-4beb-ade2-4a6048d268f5",
+      "title": "CEO planı: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e1250af5-eca8-4fe6-a0ed-7a8efd4b5cbf",
+      "parentTaskId": "ecd85c49-d357-45e5-af03-d0ad55a1f837",
+      "updatedAt": "2026-11-18T00:10:49.168Z"
+    },
+    {
+      "id": "94532ae1-20b0-4b92-a74d-4b47b2f8f9d2",
+      "title": "Ads öneri taslağı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "09dc78b2-d325-45e4-af6f-7807bb0bd776",
+      "parentTaskId": "d7eb88dd-3d98-4612-9879-8e0490c13b0e",
+      "updatedAt": "2026-11-18T00:34:25.001Z"
+    },
+    {
+      "id": "d391e120-c1e3-4c8e-9475-4be77233d788",
+      "title": "CEO planı: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "ff64be8d-ad8c-42b6-b942-8db66ebd3f9b",
+      "parentTaskId": "2ecf7e4c-ffa8-466d-9f1e-f2df69f18572",
+      "updatedAt": "2026-11-18T00:11:12.588Z"
+    },
+    {
+      "id": "b92accc1-7bf2-4280-8f76-4d84dae7efb9",
+      "title": "Tester doğrulama: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f6d83917-6fd1-47ad-9302-9db279ef610a",
+      "parentTaskId": "573fc2f2-cc3f-4cd6-94b3-59941beeaabb",
+      "updatedAt": "2026-11-18T00:11:13.639Z"
+    },
+    {
+      "id": "db46527b-3eaa-4e70-82d7-4de2ee778d57",
+      "title": "Tester doğrulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e1250af5-eca8-4fe6-a0ed-7a8efd4b5cbf",
+      "parentTaskId": "ecd85c49-d357-45e5-af03-d0ad55a1f837",
+      "updatedAt": "2026-11-18T00:10:49.493Z"
+    },
+    {
+      "id": "a283065a-ea02-4b4f-8bdf-4e379dfad0ea",
+      "title": "Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "3d5637f0-5487-4a52-8c32-df94af2015e9",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:10:15.803Z"
+    },
+    {
+      "id": "68cb06d5-4afa-4d2b-a272-4e61344e2811",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:58:10.036Z"
+    },
+    {
+      "id": "e331aae9-ce03-414f-96c5-4f286c81fd68",
+      "title": "Developer uygulama: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f17267d8-6eec-46d9-88c2-4d3151214854",
+      "parentTaskId": "4b848d81-2b59-45ca-9b29-b361e78d1d0e",
+      "updatedAt": "2026-11-18T00:10:50.060Z"
+    },
+    {
+      "id": "837f23be-0639-432c-878d-50ab04ec43d7",
+      "title": "Faz5B E2E koordinasyon zinciri",
+      "status": "in_progress",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "b2b2622e-7ad3-4c37-a3c7-02f5537a155d",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:19:23.440Z"
+    },
+    {
+      "id": "fab8f38d-ccef-483a-acf5-532ae6d918b8",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:50:06.032Z"
+    },
+    {
+      "id": "494961c8-1154-4920-becc-53f58402e168",
+      "title": "Tester doğrulama: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f17267d8-6eec-46d9-88c2-4d3151214854",
+      "parentTaskId": "4b848d81-2b59-45ca-9b29-b361e78d1d0e",
+      "updatedAt": "2026-11-18T00:10:50.209Z"
+    },
+    {
+      "id": "5d701b57-bc4e-477b-bf4d-550bc5a89336",
+      "title": "Rework: Developer uygulama: Faz5B failback testi",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "21687f79-dad2-496b-8fbe-dc6c7f1da0d5",
+      "parentTaskId": "30e1d6aa-cddd-4f1f-9e94-9c25f557bef9",
+      "updatedAt": "2026-11-18T00:34:29.472Z"
+    },
+    {
+      "id": "2377c21c-3375-48ed-be23-5592f4910a06",
+      "title": "CEO kapanış: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "a4bff241-c74b-4f2f-822e-e8a641196061",
+      "parentTaskId": "bec763ce-7249-401a-9d73-cecba4c24734",
+      "updatedAt": "2026-11-18T00:20:13.867Z"
+    },
+    {
+      "id": "4199584a-73a1-4447-9aeb-562f32e0aa2b",
+      "title": "Tester doğrulama: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "55bc3683-dd31-40f7-8a01-fff5ff9f42c5",
+      "parentTaskId": "af66d777-1c86-425c-8854-5d6d9cfbbdee",
+      "updatedAt": "2026-11-17T23:58:13.443Z"
+    },
+    {
+      "id": "2e4aba37-4ce4-4862-87c9-57b8b25b8cad",
+      "title": "Ads öneri taslağı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "d015e4eb-5979-4860-9635-4c63928a3cd2",
+      "parentTaskId": "d5dec00c-b32c-4843-949c-7a342e06ab35",
+      "updatedAt": "2026-11-18T00:28:10.818Z"
+    },
+    {
+      "id": "b9ae7abf-a7e5-4171-bc63-584ad7597a85",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T16:38:47.524Z"
+    },
+    {
+      "id": "573fc2f2-cc3f-4cd6-94b3-59941beeaabb",
+      "title": "Faz5B failback testi",
+      "status": "in_progress",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f6d83917-6fd1-47ad-9302-9db279ef610a",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:11:13.184Z"
+    },
+    {
+      "id": "75a7ce79-e211-4848-8927-5af3fbb403db",
+      "title": "Ads öneri taslağı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "backlog",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "3d5637f0-5487-4a52-8c32-df94af2015e9",
+      "parentTaskId": "a283065a-ea02-4b4f-8bdf-4e379dfad0ea",
+      "updatedAt": "2026-11-18T00:10:15.803Z"
+    },
+    {
+      "id": "db6d501e-cf7c-447c-8fb9-5beb21f3d23e",
+      "title": "SEO teknik tarama: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "09dc78b2-d325-45e4-af6f-7807bb0bd776",
+      "parentTaskId": "d7eb88dd-3d98-4612-9879-8e0490c13b0e",
+      "updatedAt": "2026-11-18T00:34:24.747Z"
+    },
+    {
+      "id": "4316034c-dffe-4a0c-92dd-5c3b65ec6bf2",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T16:16:33.223Z"
+    },
+    {
+      "id": "af66d777-1c86-425c-8854-5d6d9cfbbdee",
+      "title": "Faz5B failback testi",
+      "status": "in_progress",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "55bc3683-dd31-40f7-8a01-fff5ff9f42c5",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:58:12.920Z"
+    },
+    {
+      "id": "be384eaf-2e7f-4450-8a2f-60510db755de",
+      "title": "CEO plan: SynapTech: başarısız/stale run temizliği",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "opportunity:07a6ce71-55ef-475b-9828-c4953884486c",
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:48:42.126Z"
+    },
+    {
+      "id": "cc1e3910-957a-41c3-b603-608c90da70cc",
+      "title": "CTO inceleme: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "21687f79-dad2-496b-8fbe-dc6c7f1da0d5",
+      "parentTaskId": "30e1d6aa-cddd-4f1f-9e94-9c25f557bef9",
+      "updatedAt": "2026-11-18T00:34:29.540Z"
+    },
+    {
+      "id": "695b52eb-7bf8-4007-846a-614b1201a90e",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:11:14.882Z"
+    },
+    {
+      "id": "f2024c4f-e37b-4c4c-b46e-6239c88c5fe1",
+      "title": "Growth Lead müşteri araştırması: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "4f7fec71-e856-40ae-a404-a1041cd8109a",
+      "parentTaskId": "9d496af5-120b-46db-8a3e-c91656239fea",
+      "updatedAt": "2026-11-18T00:10:19.605Z"
+    },
+    {
+      "id": "445598cf-cfd9-41bf-ad74-6468cfcb47ec",
+      "title": "Growth Lead müşteri araştırması: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "3d5637f0-5487-4a52-8c32-df94af2015e9",
+      "parentTaskId": "a283065a-ea02-4b4f-8bdf-4e379dfad0ea",
+      "updatedAt": "2026-11-18T00:10:17.082Z"
+    },
+    {
+      "id": "3720d730-e121-468a-89bd-64be3fa2b26b",
+      "title": "CTO inceleme: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "ff64be8d-ad8c-42b6-b942-8db66ebd3f9b",
+      "parentTaskId": "2ecf7e4c-ffa8-466d-9f1e-f2df69f18572",
+      "updatedAt": "2026-11-18T00:11:13.003Z"
+    },
+    {
+      "id": "2d910f39-4f50-40f7-9043-64e8da01c614",
+      "title": "CEO planı: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f6d83917-6fd1-47ad-9302-9db279ef610a",
+      "parentTaskId": "573fc2f2-cc3f-4cd6-94b3-59941beeaabb",
+      "updatedAt": "2026-11-18T00:11:13.294Z"
+    },
+    {
+      "id": "3c396791-11e8-449e-85f5-66280462e630",
+      "title": "CEO plan: Subify: operasyonel değerlendirme fırsatı",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "opportunity:7b3ad91c-b12e-47de-a365-1bfe97b43fc1",
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:50:06.796Z"
+    },
+    {
+      "id": "1bc1a96a-7386-4569-a479-66a0c98932d9",
+      "title": "Developer uygulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "a4bff241-c74b-4f2f-822e-e8a641196061",
+      "parentTaskId": "bec763ce-7249-401a-9d73-cecba4c24734",
+      "updatedAt": "2026-11-18T00:20:13.528Z"
+    },
+    {
+      "id": "b9d72e6e-f021-4b97-8728-66d71ededbec",
+      "title": "CTO inceleme: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "63f933cd-2190-4def-8c47-84fab99681b3",
+      "parentTaskId": "7edb714e-cdc8-479d-b10a-ba211e3929b2",
+      "updatedAt": "2026-11-18T00:19:24.079Z"
+    },
+    {
+      "id": "863d78b7-91a9-4ffb-8790-69efd163aed2",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:34:30.757Z"
+    },
+    {
+      "id": "4cc4959d-0b2c-43b9-af6e-6a53edbb6c73",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:20:18.780Z"
+    },
+    {
+      "id": "e25b293f-68d2-4e70-8f2c-6aadb6ca4fa1",
+      "title": "Developer uygulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "ff64be8d-ad8c-42b6-b942-8db66ebd3f9b",
+      "parentTaskId": "2ecf7e4c-ffa8-466d-9f1e-f2df69f18572",
+      "updatedAt": "2026-11-18T00:11:12.803Z"
+    },
+    {
+      "id": "195ddbb3-4fa5-4fac-8282-6c3e2b62ab83",
+      "title": "Tester doğrulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "a4bff241-c74b-4f2f-822e-e8a641196061",
+      "parentTaskId": "bec763ce-7249-401a-9d73-cecba4c24734",
+      "updatedAt": "2026-11-18T00:20:13.634Z"
+    },
+    {
+      "id": "e64c505c-48b4-4109-8f19-6d14390a251e",
+      "title": "Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "2a16e422-7af2-4c33-a974-8c2e1febc8e5",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:11:11.286Z"
+    },
+    {
+      "id": "a8592014-fd56-485d-a6da-6d19395e6ce9",
+      "title": "Rework: Developer uygulama: Faz5B failback testi",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "678ba5f2-34f4-4f98-8ac9-4a58724cc03d",
+      "parentTaskId": "e6030c32-8175-4983-b277-f9c4a567cae2",
+      "updatedAt": "2026-11-18T00:10:13.531Z"
+    },
+    {
+      "id": "bd7ce1b5-1b57-4404-b8b2-6e02dfbf6700",
+      "title": "Growth Lead müşteri araştırması: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "09dc78b2-d325-45e4-af6f-7807bb0bd776",
+      "parentTaskId": "d7eb88dd-3d98-4612-9879-8e0490c13b0e",
+      "updatedAt": "2026-11-18T00:34:24.484Z"
+    },
+    {
+      "id": "be5f9fe6-7094-4bc8-95d3-6e65b65f37e5",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:34:26.471Z"
+    },
+    {
+      "id": "47976165-f465-4d72-a207-6fcf0a05e021",
+      "title": "CTO teknik spesifikasyon: Faz5B E2E koordinasyon zinciri",
+      "status": "backlog",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9ec8b3c3-3a25-4978-b563-844b035a7e10",
+      "parentTaskId": "ea968314-1ad9-49b1-ad97-4659932f1777",
+      "updatedAt": "2026-11-18T00:19:47.896Z"
+    },
+    {
+      "id": "3a85b142-1783-4c9b-b1f6-7268f27b37d2",
+      "title": "CTO teknik spesifikasyon: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "57f2e55f-8bc0-4729-b56f-5e92292be552",
+      "parentTaskId": "5fc3b672-02ec-4b66-8615-0b3398f8b5c0",
+      "updatedAt": "2026-11-18T00:28:12.481Z"
+    },
+    {
+      "id": "87e0f2c6-691d-4090-931a-733aa15497a7",
+      "title": "CEO büyüme kapanışı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "backlog",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "fba3fb17-eae5-47f7-930b-21724362afbc",
+      "parentTaskId": "f07b1a66-ed22-426a-bbc3-1a237244fb06",
+      "updatedAt": "2026-11-18T00:10:45.820Z"
+    },
+    {
+      "id": "be121cfd-9c07-4dac-aeb2-77336e4b60f4",
+      "title": "Alt görev: Tester regresyon ve reconciliation doğrulasın",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "opportunity:07a6ce71-55ef-475b-9828-c4953884486c",
+      "chainId": null,
+      "parentTaskId": "be384eaf-2e7f-4450-8a2f-60510db755de",
+      "updatedAt": "2026-11-17T23:48:42.126Z"
+    },
+    {
+      "id": "b15f3bcb-0d31-4f09-97cc-7907f7293308",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:28:17.122Z"
+    },
+    {
+      "id": "d5dec00c-b32c-4843-949c-7a342e06ab35",
+      "title": "Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "d015e4eb-5979-4860-9635-4c63928a3cd2",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:28:10.970Z"
+    },
+    {
+      "id": "de42060e-d5e0-481d-a394-7c6713baf777",
+      "title": "CEO büyüme brifi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "7dc33f7a-470e-41fd-986a-5179d68cba7c",
+      "parentTaskId": "40f55b32-fd7e-42a2-a7c5-41638ddc7f8e",
+      "updatedAt": "2026-11-18T00:19:21.496Z"
+    },
+    {
+      "id": "d2d94a95-b4cf-4079-9d16-80b96aa24f09",
+      "title": "CEO planı: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "97d65422-28d4-4daa-b5b6-ff0d5b6e15ac",
+      "parentTaskId": "b5a38a06-28ab-4350-890f-dddc39cb8fd9",
+      "updatedAt": "2026-11-18T00:19:48.212Z"
+    },
+    {
+      "id": "e5c8bc78-84e7-44c6-9ba4-8157d88f0905",
+      "title": "CEO planı: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "21687f79-dad2-496b-8fbe-dc6c7f1da0d5",
+      "parentTaskId": "30e1d6aa-cddd-4f1f-9e94-9c25f557bef9",
+      "updatedAt": "2026-11-18T00:34:29.203Z"
+    },
+    {
+      "id": "8910ed20-39f9-42de-915a-8243b89c0b01",
+      "title": "CTO teknik spesifikasyon: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e20c2378-56df-48eb-a4cf-f2f8b8310aaf",
+      "parentTaskId": "9a3c7b14-a767-4796-995a-8f477a239b4b",
+      "updatedAt": "2026-11-17T23:58:12.325Z"
+    },
+    {
+      "id": "cc3d70c7-0e40-4064-9457-826f8fa5ae84",
+      "title": "Content taslak üretimi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "failed",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "4f7fec71-e856-40ae-a404-a1041cd8109a",
+      "parentTaskId": "9d496af5-120b-46db-8a3e-c91656239fea",
+      "updatedAt": "2026-11-18T00:10:20.043Z"
+    },
+    {
+      "id": "70d9cb2e-64f4-4c20-83b4-829cbf17a1f2",
+      "title": "Tester doğrulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "7d73f6a8-2b03-4a9a-b2b8-95055d99426e",
+      "parentTaskId": "28050234-560c-4caa-b316-3f9914f9ba37",
+      "updatedAt": "2026-11-18T00:34:28.826Z"
+    },
+    {
+      "id": "19b17e0e-dec9-4033-9ebd-83555845711b",
+      "title": "Ads öneri taslağı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "7dc33f7a-470e-41fd-986a-5179d68cba7c",
+      "parentTaskId": "40f55b32-fd7e-42a2-a7c5-41638ddc7f8e",
+      "updatedAt": "2026-11-18T00:19:22.120Z"
+    },
+    {
+      "id": "c3b50e88-6501-4780-a98e-84649e2e62d0",
+      "title": "CEO planı: Faz5B E2E koordinasyon zinciri",
+      "status": "planned",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9ec8b3c3-3a25-4978-b563-844b035a7e10",
+      "parentTaskId": "ea968314-1ad9-49b1-ad97-4659932f1777",
+      "updatedAt": "2026-11-18T00:19:47.896Z"
+    },
+    {
+      "id": "14b9dc47-516a-4b57-9d01-86cb3a4b62f7",
+      "title": "CEO planı: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f17267d8-6eec-46d9-88c2-4d3151214854",
+      "parentTaskId": "4b848d81-2b59-45ca-9b29-b361e78d1d0e",
+      "updatedAt": "2026-11-18T00:10:49.870Z"
+    },
+    {
+      "id": "01830076-3a1e-47a2-9bf0-878244240c2f",
+      "title": "CEO kapanış: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "ff64be8d-ad8c-42b6-b942-8db66ebd3f9b",
+      "parentTaskId": "2ecf7e4c-ffa8-466d-9f1e-f2df69f18572",
+      "updatedAt": "2026-11-18T00:11:13.108Z"
+    },
+    {
+      "id": "7f2a8a90-83a5-41e1-bc1c-882366ea9348",
+      "title": "CEO kapanış: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e20c2378-56df-48eb-a4cf-f2f8b8310aaf",
+      "parentTaskId": "9a3c7b14-a767-4796-995a-8f477a239b4b",
+      "updatedAt": "2026-11-17T23:58:12.818Z"
+    },
+    {
+      "id": "43c4a7e3-0def-4410-814b-89dcc513ea8c",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:48:40.790Z"
+    },
+    {
+      "id": "44cf46a8-8d26-4747-8f94-8a22adbaa24a",
+      "title": "CTO inceleme: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e20c2378-56df-48eb-a4cf-f2f8b8310aaf",
+      "parentTaskId": "9a3c7b14-a767-4796-995a-8f477a239b4b",
+      "updatedAt": "2026-11-17T23:58:12.699Z"
+    },
+    {
+      "id": "1ed37647-e907-41b9-8d62-8aaf40205eaa",
+      "title": "CEO büyüme kapanışı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "7dc33f7a-470e-41fd-986a-5179d68cba7c",
+      "parentTaskId": "40f55b32-fd7e-42a2-a7c5-41638ddc7f8e",
+      "updatedAt": "2026-11-18T00:19:22.258Z"
+    },
+    {
+      "id": "2d4c0caa-3df9-4667-8c31-8ae75d8da073",
+      "title": "SEO teknik tarama: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "3d5637f0-5487-4a52-8c32-df94af2015e9",
+      "parentTaskId": "a283065a-ea02-4b4f-8bdf-4e379dfad0ea",
+      "updatedAt": "2026-11-18T00:10:17.122Z"
+    },
+    {
+      "id": "560e23aa-7ed7-4fbf-9aee-8b146b995f91",
+      "title": "CTO inceleme: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f6d83917-6fd1-47ad-9302-9db279ef610a",
+      "parentTaskId": "573fc2f2-cc3f-4cd6-94b3-59941beeaabb",
+      "updatedAt": "2026-11-18T00:11:13.646Z"
+    },
+    {
+      "id": "d7eb88dd-3d98-4612-9879-8e0490c13b0e",
+      "title": "Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "09dc78b2-d325-45e4-af6f-7807bb0bd776",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:34:25.155Z"
+    },
+    {
+      "id": "6fc8340c-7e01-494f-838c-8e43c2b62b79",
+      "title": "CEO kapanış: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "678ba5f2-34f4-4f98-8ac9-4a58724cc03d",
+      "parentTaskId": "e6030c32-8175-4983-b277-f9c4a567cae2",
+      "updatedAt": "2026-11-18T00:10:13.601Z"
+    },
+    {
+      "id": "9a3c7b14-a767-4796-995a-8f477a239b4b",
+      "title": "Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e20c2378-56df-48eb-a4cf-f2f8b8310aaf",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:58:12.856Z"
+    },
+    {
+      "id": "1ee39ecb-3605-4463-a288-900483f4e35d",
+      "title": "SEO teknik tarama: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "123d35df-47eb-44cb-b046-21f1c18754ad",
+      "parentTaskId": "29fc5374-6657-46db-9895-f4cdb0f3ddfd",
+      "updatedAt": "2026-11-18T00:20:16.857Z"
+    },
+    {
+      "id": "b4721c4e-9a84-42a5-96dd-90ff97908a7c",
+      "title": "Rework: Developer uygulama: Faz5B failback testi",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f17267d8-6eec-46d9-88c2-4d3151214854",
+      "parentTaskId": "4b848d81-2b59-45ca-9b29-b361e78d1d0e",
+      "updatedAt": "2026-11-18T00:10:50.148Z"
+    },
+    {
+      "id": "d767eaf8-06eb-447a-a746-91497f33e1e7",
+      "title": "CTO inceleme: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e1250af5-eca8-4fe6-a0ed-7a8efd4b5cbf",
+      "parentTaskId": "ecd85c49-d357-45e5-af03-d0ad55a1f837",
+      "updatedAt": "2026-11-18T00:10:49.587Z"
+    },
+    {
+      "id": "fb6b0873-1169-4414-afe1-9463c6ca8204",
+      "title": "Ads öneri taslağı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "123d35df-47eb-44cb-b046-21f1c18754ad",
+      "parentTaskId": "29fc5374-6657-46db-9895-f4cdb0f3ddfd",
+      "updatedAt": "2026-11-18T00:20:17.097Z"
+    },
+    {
+      "id": "4dfedd27-40b4-4c6d-bab1-9485ce73a72b",
+      "title": "CTO inceleme: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "3c761dc6-74bf-4810-9816-171555ff2ad2",
+      "parentTaskId": "bf028e06-62ad-458f-a588-dfa5d5957603",
+      "updatedAt": "2026-11-18T00:20:14.459Z"
+    },
+    {
+      "id": "5e4ae514-5b8a-41cd-a9ae-95d44531fdb4",
+      "title": "CTO inceleme: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "55bc3683-dd31-40f7-8a01-fff5ff9f42c5",
+      "parentTaskId": "af66d777-1c86-425c-8854-5d6d9cfbbdee",
+      "updatedAt": "2026-11-17T23:58:13.455Z"
+    },
+    {
+      "id": "5ecceaf1-ac0c-4003-97f8-95fa90ab8d64",
+      "title": "Tester doğrulama: Faz5B E2E koordinasyon zinciri",
+      "status": "backlog",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9ec8b3c3-3a25-4978-b563-844b035a7e10",
+      "parentTaskId": "ea968314-1ad9-49b1-ad97-4659932f1777",
+      "updatedAt": "2026-11-18T00:19:47.896Z"
+    },
+    {
+      "id": "1fe1c176-84f6-4969-b368-96726c353def",
+      "title": "Developer uygulama: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "63f933cd-2190-4def-8c47-84fab99681b3",
+      "parentTaskId": "7edb714e-cdc8-479d-b10a-ba211e3929b2",
+      "updatedAt": "2026-11-18T00:19:23.916Z"
+    },
+    {
+      "id": "87679a34-2b88-4bce-bb64-976a622a78d5",
+      "title": "Developer uygulama: Faz5B E2E koordinasyon zinciri",
+      "status": "backlog",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "b2b2622e-7ad3-4c37-a3c7-02f5537a155d",
+      "parentTaskId": "837f23be-0639-432c-878d-50ab04ec43d7",
+      "updatedAt": "2026-11-18T00:19:23.440Z"
+    },
+    {
+      "id": "93447745-e15d-4dba-b785-9881cdfd676b",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:10:47.191Z"
+    },
+    {
+      "id": "5837224a-734d-4336-a6dc-9b500bbb78c7",
+      "title": "CTO teknik spesifikasyon: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "7d73f6a8-2b03-4a9a-b2b8-95055d99426e",
+      "parentTaskId": "28050234-560c-4caa-b316-3f9914f9ba37",
+      "updatedAt": "2026-11-18T00:34:28.616Z"
+    },
+    {
+      "id": "30e1d6aa-cddd-4f1f-9e94-9c25f557bef9",
+      "title": "Faz5B failback testi",
+      "status": "in_progress",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "21687f79-dad2-496b-8fbe-dc6c7f1da0d5",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:34:29.094Z"
+    },
+    {
+      "id": "22a77586-9f92-4780-878f-9f2ad3188121",
+      "title": "Tester doğrulama: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "63f933cd-2190-4def-8c47-84fab99681b3",
+      "parentTaskId": "7edb714e-cdc8-479d-b10a-ba211e3929b2",
+      "updatedAt": "2026-11-18T00:19:24.072Z"
+    },
+    {
+      "id": "7e68507b-e1b7-48f9-a959-9febd1420192",
+      "title": "Alt görev: CEO orchestrator alt görev üretsin",
+      "status": "planned",
+      "projectId": "aca75b83-48a5-43bb-ae50-81ab42a75ac6",
+      "origin": "opportunity:0d736a48-df83-4601-9c61-5b1a1384566c",
+      "chainId": null,
+      "parentTaskId": "1f725888-40db-46ec-9505-a0b2f6b320fa",
+      "updatedAt": "2026-11-17T23:50:42.009Z"
+    },
+    {
+      "id": "1f725888-40db-46ec-9505-a0b2f6b320fa",
+      "title": "CEO plan: Marivo: operasyonel değerlendirme fırsatı",
+      "status": "planned",
+      "projectId": "aca75b83-48a5-43bb-ae50-81ab42a75ac6",
+      "origin": "opportunity:0d736a48-df83-4601-9c61-5b1a1384566c",
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:50:41.943Z"
+    },
+    {
+      "id": "509abf84-6863-45db-af27-a57eeb45ca9b",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:58:10.001Z"
+    },
+    {
+      "id": "307b9f45-1a7d-4a22-8f37-a5cf4ea8175b",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T16:16:52.625Z"
+    },
+    {
+      "id": "e4ed3363-2baa-4736-af44-a92efe80cd28",
+      "title": "CEO büyüme brifi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "3d5637f0-5487-4a52-8c32-df94af2015e9",
+      "parentTaskId": "a283065a-ea02-4b4f-8bdf-4e379dfad0ea",
+      "updatedAt": "2026-11-18T00:10:15.978Z"
+    },
+    {
+      "id": "293dbc2b-676d-403d-a628-aa3f12973461",
+      "title": "CEO kapanış: Faz5B E2E koordinasyon zinciri",
+      "status": "backlog",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9ec8b3c3-3a25-4978-b563-844b035a7e10",
+      "parentTaskId": "ea968314-1ad9-49b1-ad97-4659932f1777",
+      "updatedAt": "2026-11-18T00:19:47.896Z"
+    },
+    {
+      "id": "6ae46709-52e2-4f97-98a8-ab1075672d93",
+      "title": "Rework: Developer uygulama: Faz5B failback testi",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "fb7702ef-8885-4d39-ac8e-4f9648a223ed",
+      "parentTaskId": "f4b66154-a832-4fe6-9d8e-e98c03aa349e",
+      "updatedAt": "2026-11-18T00:28:13.403Z"
+    },
+    {
+      "id": "a0952a8e-6b7e-4851-9732-ac2933cf039d",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:28:40.911Z"
+    },
+    {
+      "id": "b01c296f-638c-46f5-be55-adf29ac45886",
+      "title": "Tester doğrulama: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "97d65422-28d4-4daa-b5b6-ff0d5b6e15ac",
+      "parentTaskId": "b5a38a06-28ab-4350-890f-dddc39cb8fd9",
+      "updatedAt": "2026-11-18T00:19:48.621Z"
+    },
+    {
+      "id": "b66fd771-23d4-43c4-a765-ae8cc75830ba",
+      "title": "Growth Lead müşteri araştırması: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "backlog",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "fba3fb17-eae5-47f7-930b-21724362afbc",
+      "parentTaskId": "f07b1a66-ed22-426a-bbc3-1a237244fb06",
+      "updatedAt": "2026-11-18T00:10:45.820Z"
+    },
+    {
+      "id": "bd6735be-0a52-4743-a0c1-b0ce36665395",
+      "title": "Rework: Developer uygulama: Faz5B failback testi",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "55bc3683-dd31-40f7-8a01-fff5ff9f42c5",
+      "parentTaskId": "af66d777-1c86-425c-8854-5d6d9cfbbdee",
+      "updatedAt": "2026-11-17T23:58:13.359Z"
+    },
+    {
+      "id": "146dc7a9-847f-4a41-84dc-b151f56bb045",
+      "title": "CEO kapanış: Faz5B E2E koordinasyon zinciri",
+      "status": "backlog",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "b2b2622e-7ad3-4c37-a3c7-02f5537a155d",
+      "parentTaskId": "837f23be-0639-432c-878d-50ab04ec43d7",
+      "updatedAt": "2026-11-18T00:19:23.440Z"
+    },
+    {
+      "id": "530def03-742b-4b8d-85f8-b217d4673f4c",
+      "title": "Growth Lead müşteri araştırması: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "d015e4eb-5979-4860-9635-4c63928a3cd2",
+      "parentTaskId": "d5dec00c-b32c-4843-949c-7a342e06ab35",
+      "updatedAt": "2026-11-18T00:28:10.289Z"
+    },
+    {
+      "id": "4b848d81-2b59-45ca-9b29-b361e78d1d0e",
+      "title": "Faz5B failback testi",
+      "status": "in_progress",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f17267d8-6eec-46d9-88c2-4d3151214854",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:10:49.759Z"
+    },
+    {
+      "id": "1d4bfcca-2f6e-4732-804f-b48fed07e045",
+      "title": "CEO planı: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "57f2e55f-8bc0-4729-b56f-5e92292be552",
+      "parentTaskId": "5fc3b672-02ec-4b66-8615-0b3398f8b5c0",
+      "updatedAt": "2026-11-18T00:28:12.361Z"
+    },
+    {
+      "id": "67402364-7c25-4dbd-b3a4-b54399b96a41",
+      "title": "CEO kapanış: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "21687f79-dad2-496b-8fbe-dc6c7f1da0d5",
+      "parentTaskId": "30e1d6aa-cddd-4f1f-9e94-9c25f557bef9",
+      "updatedAt": "2026-11-18T00:34:29.540Z"
+    },
+    {
+      "id": "91090a45-626b-401f-86e5-b6473d3f2528",
+      "title": "CEO kapanış: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "55bc3683-dd31-40f7-8a01-fff5ff9f42c5",
+      "parentTaskId": "af66d777-1c86-425c-8854-5d6d9cfbbdee",
+      "updatedAt": "2026-11-17T23:58:13.455Z"
+    },
+    {
+      "id": "7edb714e-cdc8-479d-b10a-ba211e3929b2",
+      "title": "Faz5B failback testi",
+      "status": "in_progress",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "63f933cd-2190-4def-8c47-84fab99681b3",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:19:23.584Z"
+    },
+    {
+      "id": "e536456c-a81d-4041-8af7-bae11cf6290a",
+      "title": "CEO büyüme brifi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "d015e4eb-5979-4860-9635-4c63928a3cd2",
+      "parentTaskId": "d5dec00c-b32c-4843-949c-7a342e06ab35",
+      "updatedAt": "2026-11-18T00:28:10.078Z"
+    },
+    {
+      "id": "fed7116d-e069-440f-8dbc-bbbed2f7d413",
+      "title": "CTO teknik spesifikasyon: Faz5B E2E koordinasyon zinciri",
+      "status": "backlog",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "b2b2622e-7ad3-4c37-a3c7-02f5537a155d",
+      "parentTaskId": "837f23be-0639-432c-878d-50ab04ec43d7",
+      "updatedAt": "2026-11-18T00:19:23.440Z"
+    },
+    {
+      "id": "00eb451d-2462-4926-b94d-bc172ef29581",
+      "title": "Developer uygulama: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "21687f79-dad2-496b-8fbe-dc6c7f1da0d5",
+      "parentTaskId": "30e1d6aa-cddd-4f1f-9e94-9c25f557bef9",
+      "updatedAt": "2026-11-18T00:34:29.382Z"
+    },
+    {
+      "id": "351bddc0-d0f9-4ef6-b080-bcd3f36d660a",
+      "title": "Developer uygulama: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "fb7702ef-8885-4d39-ac8e-4f9648a223ed",
+      "parentTaskId": "f4b66154-a832-4fe6-9d8e-e98c03aa349e",
+      "updatedAt": "2026-11-18T00:28:13.307Z"
+    },
+    {
+      "id": "5d94f525-e625-49ef-b3d8-bec7d544f3c5",
+      "title": "CEO planı: Faz5B E2E koordinasyon zinciri",
+      "status": "planned",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "b2b2622e-7ad3-4c37-a3c7-02f5537a155d",
+      "parentTaskId": "837f23be-0639-432c-878d-50ab04ec43d7",
+      "updatedAt": "2026-11-18T00:19:23.440Z"
+    },
+    {
+      "id": "bbd71c39-456c-4ddd-a173-bed035cb39f4",
+      "title": "CEO büyüme kapanışı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "backlog",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "3d5637f0-5487-4a52-8c32-df94af2015e9",
+      "parentTaskId": "a283065a-ea02-4b4f-8bdf-4e379dfad0ea",
+      "updatedAt": "2026-11-18T00:10:15.803Z"
+    },
+    {
+      "id": "b4087c90-7f08-4618-a241-bf1bb079f214",
+      "title": "Content taslak üretimi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "backlog",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "fba3fb17-eae5-47f7-930b-21724362afbc",
+      "parentTaskId": "f07b1a66-ed22-426a-bbc3-1a237244fb06",
+      "updatedAt": "2026-11-18T00:10:45.820Z"
+    },
+    {
+      "id": "3a419ee0-f9a4-4d7c-839e-bf9c7b70b266",
+      "title": "CEO büyüme brifi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "09dc78b2-d325-45e4-af6f-7807bb0bd776",
+      "parentTaskId": "d7eb88dd-3d98-4612-9879-8e0490c13b0e",
+      "updatedAt": "2026-11-18T00:34:24.334Z"
+    },
+    {
+      "id": "edda3826-1ce4-4043-a65c-c243413703f2",
+      "title": "CTO teknik spesifikasyon: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "21687f79-dad2-496b-8fbe-dc6c7f1da0d5",
+      "parentTaskId": "30e1d6aa-cddd-4f1f-9e94-9c25f557bef9",
+      "updatedAt": "2026-11-18T00:34:29.294Z"
+    },
+    {
+      "id": "97a637a8-ffdf-4581-bb75-c337167880c6",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:29:05.957Z"
+    },
+    {
+      "id": "9b3fe55e-1473-4e86-aa89-c3e9955d8494",
+      "title": "Developer uygulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9f6c5f49-c928-4207-a270-1806df1944b3",
+      "parentTaskId": "b172e270-0565-441a-8db0-ebc97f394f13",
+      "updatedAt": "2026-11-18T00:10:12.756Z"
+    },
+    {
+      "id": "9936e046-82c8-4fed-8693-c5a2249e749e",
+      "title": "CEO plan: SynapTech: operasyonel değerlendirme fırsatı",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "opportunity:f3a4d318-ff52-4147-be91-5ac7ef801708",
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:49:19.335Z"
+    },
+    {
+      "id": "eeb34922-b950-4a68-99e7-c652d0f836b4",
+      "title": "Tester doğrulama: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "678ba5f2-34f4-4f98-8ac9-4a58724cc03d",
+      "parentTaskId": "e6030c32-8175-4983-b277-f9c4a567cae2",
+      "updatedAt": "2026-11-18T00:10:13.593Z"
+    },
+    {
+      "id": "09867a88-2817-4fa8-b071-c7fe0e94e4fb",
+      "title": "CTO teknik spesifikasyon: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "ff64be8d-ad8c-42b6-b942-8db66ebd3f9b",
+      "parentTaskId": "2ecf7e4c-ffa8-466d-9f1e-f2df69f18572",
+      "updatedAt": "2026-11-18T00:11:12.702Z"
+    },
+    {
+      "id": "9d496af5-120b-46db-8a3e-c91656239fea",
+      "title": "Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "4f7fec71-e856-40ae-a404-a1041cd8109a",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:10:19.293Z"
+    },
+    {
+      "id": "95219ffc-ab03-4566-a19a-c9ca593f2575",
+      "title": "Content taslak üretimi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "123d35df-47eb-44cb-b046-21f1c18754ad",
+      "parentTaskId": "29fc5374-6657-46db-9895-f4cdb0f3ddfd",
+      "updatedAt": "2026-11-18T00:20:16.972Z"
+    },
+    {
+      "id": "9052ba36-a21e-46fc-b1ad-cd1e9f0b706e",
+      "title": "Tester doğrulama: Faz5B E2E koordinasyon zinciri",
+      "status": "backlog",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "b2b2622e-7ad3-4c37-a3c7-02f5537a155d",
+      "parentTaskId": "837f23be-0639-432c-878d-50ab04ec43d7",
+      "updatedAt": "2026-11-18T00:19:23.440Z"
+    },
+    {
+      "id": "77f6d929-b3f9-43b2-bf28-cdb31d3ffd08",
+      "title": "CEO büyüme brifi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "2a16e422-7af2-4c33-a974-8c2e1febc8e5",
+      "parentTaskId": "e64c505c-48b4-4109-8f19-6d14390a251e",
+      "updatedAt": "2026-11-18T00:11:10.402Z"
+    },
+    {
+      "id": "7013891d-12fd-4635-adf9-cec049f1c0dc",
+      "title": "Alt görev: CEO orchestrator alt görev üretsin",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "opportunity:7b3ad91c-b12e-47de-a365-1bfe97b43fc1",
+      "chainId": null,
+      "parentTaskId": "3c396791-11e8-449e-85f5-66280462e630",
+      "updatedAt": "2026-11-17T23:50:06.860Z"
+    },
+    {
+      "id": "bec763ce-7249-401a-9d73-cecba4c24734",
+      "title": "Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "a4bff241-c74b-4f2f-822e-e8a641196061",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:20:13.899Z"
+    },
+    {
+      "id": "cfa3514d-921b-4383-bd74-cf1eb94c966d",
+      "title": "CTO inceleme: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "a4bff241-c74b-4f2f-822e-e8a641196061",
+      "parentTaskId": "bec763ce-7249-401a-9d73-cecba4c24734",
+      "updatedAt": "2026-11-18T00:20:13.754Z"
+    },
+    {
+      "id": "ecd85c49-d357-45e5-af03-d0ad55a1f837",
+      "title": "Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e1250af5-eca8-4fe6-a0ed-7a8efd4b5cbf",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:10:49.712Z"
+    },
+    {
+      "id": "d7090e4e-fa33-4ed6-a155-d1a975fc5a8a",
+      "title": "CTO inceleme: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f17267d8-6eec-46d9-88c2-4d3151214854",
+      "parentTaskId": "4b848d81-2b59-45ca-9b29-b361e78d1d0e",
+      "updatedAt": "2026-11-18T00:10:50.217Z"
+    },
+    {
+      "id": "322ddfbf-45a5-412f-ad4f-d1f8dae78e72",
+      "title": "Ads öneri taslağı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "backlog",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "fba3fb17-eae5-47f7-930b-21724362afbc",
+      "parentTaskId": "f07b1a66-ed22-426a-bbc3-1a237244fb06",
+      "updatedAt": "2026-11-18T00:10:45.820Z"
+    },
+    {
+      "id": "afbec766-ae65-434c-acde-d22ce0a0fbc6",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T16:38:46.969Z"
+    },
+    {
+      "id": "f5fb5159-3cbd-48ba-82a3-d2c8cc929572",
+      "title": "Rework: Developer uygulama: Faz5B failback testi",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "97d65422-28d4-4daa-b5b6-ff0d5b6e15ac",
+      "parentTaskId": "b5a38a06-28ab-4350-890f-dddc39cb8fd9",
+      "updatedAt": "2026-11-18T00:19:48.541Z"
+    },
+    {
+      "id": "6a0e2932-735e-4119-9d8b-d33c72b35f12",
+      "title": "CEO planı: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9f6c5f49-c928-4207-a270-1806df1944b3",
+      "parentTaskId": "b172e270-0565-441a-8db0-ebc97f394f13",
+      "updatedAt": "2026-11-18T00:10:12.527Z"
+    },
+    {
+      "id": "cefe0de6-bf20-4703-98eb-d622dd83c76c",
+      "title": "SEO teknik tarama: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "2a16e422-7af2-4c33-a974-8c2e1febc8e5",
+      "parentTaskId": "e64c505c-48b4-4109-8f19-6d14390a251e",
+      "updatedAt": "2026-11-18T00:11:10.812Z"
+    },
+    {
+      "id": "922dcc5f-1723-430e-a3ff-d6930274f0e9",
+      "title": "CEO büyüme brifi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "123d35df-47eb-44cb-b046-21f1c18754ad",
+      "parentTaskId": "29fc5374-6657-46db-9895-f4cdb0f3ddfd",
+      "updatedAt": "2026-11-18T00:20:16.405Z"
+    },
+    {
+      "id": "ac257956-4dc0-40a9-bb23-d82715dd94a0",
+      "title": "CTO teknik spesifikasyon: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "678ba5f2-34f4-4f98-8ac9-4a58724cc03d",
+      "parentTaskId": "e6030c32-8175-4983-b277-f9c4a567cae2",
+      "updatedAt": "2026-11-18T00:10:13.343Z"
+    },
+    {
+      "id": "22778c99-15cc-4ac1-be6c-da01a9bdd2a5",
+      "title": "CEO planı: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "3c761dc6-74bf-4810-9816-171555ff2ad2",
+      "parentTaskId": "bf028e06-62ad-458f-a588-dfa5d5957603",
+      "updatedAt": "2026-11-18T00:20:14.057Z"
+    },
+    {
+      "id": "9e91086e-dcd6-4298-8c55-da55246c02f4",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:28:17.180Z"
+    },
+    {
+      "id": "c3067198-b054-4655-9db6-dae7c5b20fef",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:34:30.731Z"
+    },
+    {
+      "id": "2fc185c1-8624-4938-af6f-daebc83c2fc9",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:28:14.759Z"
+    },
+    {
+      "id": "aa2171c9-22ad-49ea-856a-dc0fb36a291d",
+      "title": "CEO planı: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "63f933cd-2190-4def-8c47-84fab99681b3",
+      "parentTaskId": "7edb714e-cdc8-479d-b10a-ba211e3929b2",
+      "updatedAt": "2026-11-18T00:19:23.713Z"
+    },
+    {
+      "id": "e52bca15-5f5a-4384-a83a-dd01c7742103",
+      "title": "CTO inceleme: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "7d73f6a8-2b03-4a9a-b2b8-95055d99426e",
+      "parentTaskId": "28050234-560c-4caa-b316-3f9914f9ba37",
+      "updatedAt": "2026-11-18T00:34:28.924Z"
+    },
+    {
+      "id": "b5a38a06-28ab-4350-890f-dddc39cb8fd9",
+      "title": "Faz5B failback testi",
+      "status": "in_progress",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "97d65422-28d4-4daa-b5b6-ff0d5b6e15ac",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:19:48.076Z"
+    },
+    {
+      "id": "3d8214f4-9716-4e44-8e7e-de29e83b99a2",
+      "title": "Ads öneri taslağı: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "backlog",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "4f7fec71-e856-40ae-a404-a1041cd8109a",
+      "parentTaskId": "9d496af5-120b-46db-8a3e-c91656239fea",
+      "updatedAt": "2026-11-18T00:10:19.293Z"
+    },
+    {
+      "id": "c32c0a4a-4936-4b98-a186-de54c9d65e8d",
+      "title": "SEO teknik tarama: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "7dc33f7a-470e-41fd-986a-5179d68cba7c",
+      "parentTaskId": "40f55b32-fd7e-42a2-a7c5-41638ddc7f8e",
+      "updatedAt": "2026-11-18T00:19:21.884Z"
+    },
+    {
+      "id": "bf028e06-62ad-458f-a588-dfa5d5957603",
+      "title": "Faz5B failback testi",
+      "status": "in_progress",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "3c761dc6-74bf-4810-9816-171555ff2ad2",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:20:13.946Z"
+    },
+    {
+      "id": "a36fcd02-7555-430c-94e6-dfdc264417fa",
+      "title": "Developer uygulama: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "97d65422-28d4-4daa-b5b6-ff0d5b6e15ac",
+      "parentTaskId": "b5a38a06-28ab-4350-890f-dddc39cb8fd9",
+      "updatedAt": "2026-11-18T00:19:48.437Z"
+    },
+    {
+      "id": "639ef7f9-40c3-48ff-968f-e022f8efb90d",
+      "title": "Tester doğrulama: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "e20c2378-56df-48eb-a4cf-f2f8b8310aaf",
+      "parentTaskId": "9a3c7b14-a767-4796-995a-8f477a239b4b",
+      "updatedAt": "2026-11-17T23:58:12.577Z"
+    },
+    {
+      "id": "f162032e-8ab6-4639-97b6-e0530ba88947",
+      "title": "Rework: Developer uygulama: Faz5B failback testi",
+      "status": "planned",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "3c761dc6-74bf-4810-9816-171555ff2ad2",
+      "parentTaskId": "bf028e06-62ad-458f-a588-dfa5d5957603",
+      "updatedAt": "2026-11-18T00:20:14.371Z"
+    },
+    {
+      "id": "62e416d3-c8ab-424d-a0e7-e0a5b64a3920",
+      "title": "Content taslak üretimi: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "2a16e422-7af2-4c33-a974-8c2e1febc8e5",
+      "parentTaskId": "e64c505c-48b4-4109-8f19-6d14390a251e",
+      "updatedAt": "2026-11-18T00:11:10.936Z"
+    },
+    {
+      "id": "87ac5d6b-0ff1-4202-950c-e294f89b7e90",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:34:30.788Z"
+    },
+    {
+      "id": "5f7310ea-8c78-4470-a5cc-e2d40b48ba0e",
+      "title": "Tester doğrulama: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "21687f79-dad2-496b-8fbe-dc6c7f1da0d5",
+      "parentTaskId": "30e1d6aa-cddd-4f1f-9e94-9c25f557bef9",
+      "updatedAt": "2026-11-18T00:34:29.532Z"
+    },
+    {
+      "id": "f7af7ae1-ba5e-4b83-9608-e3b1f61b218a",
+      "title": "Faz4A mock pilot görevi",
+      "status": "in_progress",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:34:30.702Z"
+    },
+    {
+      "id": "5f684d25-d1ac-463d-9a2a-e776eb85617c",
+      "title": "Developer uygulama: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f6d83917-6fd1-47ad-9302-9db279ef610a",
+      "parentTaskId": "573fc2f2-cc3f-4cd6-94b3-59941beeaabb",
+      "updatedAt": "2026-11-18T00:11:13.484Z"
+    },
+    {
+      "id": "38cb44d4-c8b1-42c6-a0d7-e97f98037e03",
+      "title": "Developer uygulama: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "678ba5f2-34f4-4f98-8ac9-4a58724cc03d",
+      "parentTaskId": "e6030c32-8175-4983-b277-f9c4a567cae2",
+      "updatedAt": "2026-11-18T00:10:13.437Z"
+    },
+    {
+      "id": "f4b66154-a832-4fe6-9d8e-e98c03aa349e",
+      "title": "Faz5B failback testi",
+      "status": "in_progress",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "fb7702ef-8885-4d39-ac8e-4f9648a223ed",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:28:12.986Z"
+    },
+    {
+      "id": "a03b4d4f-0604-4e7e-9576-e9e32c7bd836",
+      "title": "Tester doğrulama: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "3c761dc6-74bf-4810-9816-171555ff2ad2",
+      "parentTaskId": "bf028e06-62ad-458f-a588-dfa5d5957603",
+      "updatedAt": "2026-11-18T00:20:14.450Z"
+    },
+    {
+      "id": "173e1eb2-557b-4996-8989-ea9a97484c91",
+      "title": "CEO kapanış: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "97d65422-28d4-4daa-b5b6-ff0d5b6e15ac",
+      "parentTaskId": "b5a38a06-28ab-4350-890f-dddc39cb8fd9",
+      "updatedAt": "2026-11-18T00:19:48.629Z"
+    },
+    {
+      "id": "b172e270-0565-441a-8db0-ebc97f394f13",
+      "title": "Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9f6c5f49-c928-4207-a270-1806df1944b3",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:10:13.092Z"
+    },
+    {
+      "id": "e8da4763-d93b-46a6-8ce2-ecb6cb5b57c5",
+      "title": "CEO planı: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "678ba5f2-34f4-4f98-8ac9-4a58724cc03d",
+      "parentTaskId": "e6030c32-8175-4983-b277-f9c4a567cae2",
+      "updatedAt": "2026-11-18T00:10:13.251Z"
+    },
+    {
+      "id": "cf9f1d6b-9aaa-47d4-9093-eda6c31acb3f",
+      "title": "CEO kapanış: Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "7d73f6a8-2b03-4a9a-b2b8-95055d99426e",
+      "parentTaskId": "28050234-560c-4caa-b316-3f9914f9ba37",
+      "updatedAt": "2026-11-18T00:34:29.019Z"
+    },
+    {
+      "id": "f0847910-82f5-4456-8e38-ee869e558cf5",
+      "title": "SEO teknik tarama: Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "4f7fec71-e856-40ae-a404-a1041cd8109a",
+      "parentTaskId": "9d496af5-120b-46db-8a3e-c91656239fea",
+      "updatedAt": "2026-11-18T00:10:19.886Z"
+    },
+    {
+      "id": "a0f1c676-2148-415d-8997-eeb49963ca22",
+      "title": "CTO teknik spesifikasyon: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "63f933cd-2190-4def-8c47-84fab99681b3",
+      "parentTaskId": "7edb714e-cdc8-479d-b10a-ba211e3929b2",
+      "updatedAt": "2026-11-18T00:19:23.819Z"
+    },
+    {
+      "id": "598d2698-a61f-4317-9cef-f1523836b1f8",
+      "title": "CEO kapanış: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "f17267d8-6eec-46d9-88c2-4d3151214854",
+      "parentTaskId": "4b848d81-2b59-45ca-9b29-b361e78d1d0e",
+      "updatedAt": "2026-11-18T00:10:50.217Z"
+    },
+    {
+      "id": "2ecf7e4c-ffa8-466d-9f1e-f2df69f18572",
+      "title": "Faz5B E2E koordinasyon zinciri",
+      "status": "done",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "ff64be8d-ad8c-42b6-b942-8db66ebd3f9b",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:11:13.139Z"
+    },
+    {
+      "id": "29fc5374-6657-46db-9895-f4cdb0f3ddfd",
+      "title": "Faz 5C büyüme döngüsü: lead + SEO + içerik + ads öneri",
+      "status": "done",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": "growth:faz5c",
+      "chainId": "123d35df-47eb-44cb-b046-21f1c18754ad",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:20:17.279Z"
+    },
+    {
+      "id": "5310d5b7-4f65-47e3-a7a5-f6238415b961",
+      "title": "Alt görev: CEO orchestrator alt görev üretsin",
+      "status": "planned",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "opportunity:9d1e7b14-ed97-4ff4-b2b4-467b9b7da395",
+      "chainId": null,
+      "parentTaskId": "0f78d2cd-7c52-4f81-8bae-020f6effb7a7",
+      "updatedAt": "2026-11-17T23:48:42.025Z"
+    },
+    {
+      "id": "2102e400-430a-49a3-8edb-f8e750eba92e",
+      "title": "CTO teknik spesifikasyon: Faz5B failback testi",
+      "status": "done",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "3c761dc6-74bf-4810-9816-171555ff2ad2",
+      "parentTaskId": "bf028e06-62ad-458f-a588-dfa5d5957603",
+      "updatedAt": "2026-11-18T00:20:14.159Z"
+    },
+    {
+      "id": "e6030c32-8175-4983-b277-f9c4a567cae2",
+      "title": "Faz5B failback testi",
+      "status": "in_progress",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "678ba5f2-34f4-4f98-8ac9-4a58724cc03d",
+      "parentTaskId": null,
+      "updatedAt": "2026-11-18T00:10:13.143Z"
+    },
+    {
+      "id": "98d38e29-a335-453d-b3c4-fb98130238e8",
+      "title": "Faz3 E2E CEO görevi",
+      "status": "planned",
+      "projectId": "f671c86b-c45d-4ac7-9bcd-afeee4cde41d",
+      "origin": null,
+      "chainId": null,
+      "parentTaskId": null,
+      "updatedAt": "2026-11-17T23:58:09.873Z"
+    },
+    {
+      "id": "faeddcd8-a951-49d7-9bed-fbf6d18fdc0b",
+      "title": "CTO inceleme: Faz5B E2E koordinasyon zinciri",
+      "status": "backlog",
+      "projectId": "809a65d5-1691-4ead-b73c-74c6d73ca263",
+      "origin": "coordination",
+      "chainId": "9ec8b3c3-3a25-4978-b563-844b035a7e10",
+      "parentTaskId": "ea968314-1ad9-49b1-ad97-4659932f1777",
+      "updatedAt": "2026-11-18T00:19:47.896Z"
+    },
+    {
+      "id": "87989084-8c3d-4892-8245-ff585d01b410",
+      "title": "CEO kapanış: Faz5B failback testi",
+      "status": "backlog",
+      "projectId": "13d44132-a1fa-4317-99af-57de08385791",
+      "origin": "coordination",
+      "chainId": "63f933cd-2190-4def-8c47-84fab99681b3",
+      "parentTaskId": "7edb714e-cdc8-479d-b10a-ba211e3929b2",
+      "updatedAt": "2026-11-18T00:19:24.079Z"
+    }
+  ]
+}

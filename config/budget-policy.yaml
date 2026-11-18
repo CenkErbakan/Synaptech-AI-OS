@@ -1,0 +1,74 @@
+# SynapTech AI OS — Bütçe ve kullanım politikası
+#
+# Bu dosya korumalı yoldadır; ajanlar değiştiremez (.cursor/hooks/guard.mjs).
+# Makinenin uyguladığı sınırlar .cursor/hooks/policy.json içindeki değerlerle
+# aynı olmalıdır. Tutarlılık `pnpm test` içindeki politika testleriyle denetlenir.
+
+version: 1
+updated_at: "2026-11-17"
+
+plan:
+  provider: cursor
+  name: "Cursor Pro (legacy)"
+  # Plan bilgisi kullanıcı beyanıdır. Bireysel hesapta hesap düzeyinde kullanım
+  # API'si yoktur (Admin/Analytics API yalnızca Enterprise ekiplerde).
+  declared_by: user
+  usage_pools:
+    - id: cursor_models
+      label: "Cursor Models (Grok 4.7/4.6/4.5, Composer 2.5)"
+    - id: other_models
+      label: "Other Models (üçüncü taraf modeller, API liste fiyatıyla)"
+  # Kullanıcı beyanı. Doğrulama yalnızca cursor.com/dashboard/spending üzerinden yapılabilir.
+  on_demand_usage: disabled
+  verification_url: "https://cursor.com/dashboard/spending"
+
+budget:
+  extra_ai_api_usd_per_month: 0
+  allow_new_paid_services: false
+  paid_services: []
+
+concurrency:
+  max_concurrent_subagents: 2
+  subagent_slot_ttl_minutes: 30
+  max_subagent_launches_per_conversation: 12
+
+models:
+  routine_default: "composer-2.5[fast=false]"
+  judgement_default: inherit
+  denied_subagent_model_patterns:
+    - fable
+    - fast
+  per_agent:
+    ceo: "composer-2.5[fast=false]"
+    cto: inherit
+    developer: inherit
+    tester: "composer-2.5[fast=false]"
+    security: inherit
+    growth-lead: "composer-2.5[fast=false]"
+    seo-specialist: "composer-2.5[fast=false]"
+    content-manager: "composer-2.5[fast=false]"
+    ads-manager: "composer-2.5[fast=false]"
+  notes:
+    - "inherit: alt ajan, ana sohbette seçili modeli kullanır."
+    - "Legacy istek tabanlı planda Max Mode kapalıysa alt ajanlar model alanına bakılmaksızın Composer ile çalışır."
+    - "Adı verilen üçüncü taraf modeller Other Models havuzundan düşer."
+
+cloud:
+  cloud_agents_enabled: false
+  automations_enabled: false
+  cost_gate:
+    status: not_started
+    steps:
+      - "Kullanıcı On-Demand'in kapalı olduğunu ve ilk kullanımda sorulan harcama limiti ekranını kontrol eder. Bulut ajanını açmak On-Demand gerektiriyorsa işlem durdurulur."
+      - "Kullanıcı onayıyla test deposunda composer-2.5 standart modelle tek pilot çalıştırma yapılır ve tüketim ölçülür."
+      - "Ölçüme göre sıklık önerilir; her otomasyon için ayrıca onay alınır."
+  # Pilot ölçümünden sonra kullanıcı doldurur. Tahmin yazılmaz.
+  measured_usage_per_run: null
+
+tasks:
+  max_retries: 2
+  default_timeout_minutes: 60
+
+alerts:
+  manual_pool_usage_warning_percent: 70
+  manual_pool_usage_critical_percent: 90

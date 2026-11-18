@@ -1,0 +1,529 @@
+// SynapTech AI OS — Prisma 7.10.1 + SQL Server 2022
+// SQL Server native enum desteklemez → String alanlar.
+// Prisma 8 kullanılmaz.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+}
+
+model User {
+  id          String      @id @default(uuid()) @db.UniqueIdentifier
+  email       String      @unique @db.NVarChar(320)
+  displayName String      @db.NVarChar(200)
+  role        String      @db.NVarChar(40)
+  createdAt   DateTime    @default(now()) @db.DateTime2
+  updatedAt   DateTime    @updatedAt @db.DateTime2
+  approvals   Approval[]  @relation("ApprovalDecider")
+  auditLogs   AuditLog[]
+}
+
+model Agent {
+  id           String           @id @db.NVarChar(64)
+  name         String           @db.NVarChar(120)
+  role         String           @db.NVarChar(120)
+  department   String           @db.NVarChar(80)
+  enabled      Boolean          @default(true)
+  readonlyRole Boolean          @default(false)
+  createdAt    DateTime         @default(now()) @db.DateTime2
+  updatedAt    DateTime         @updatedAt @db.DateTime2
+  tasks        Task[]
+  assignments  TaskAssignment[]
+  runs         AgentRun[]
+}
+
+model Project {
+  id                 String     @id @default(uuid()) @db.UniqueIdentifier
+  slug               String     @unique @db.NVarChar(64)
+  name               String     @db.NVarChar(160)
+  description        String?    @db.NVarChar(Max)
+  status             String     @default("active") @db.NVarChar(40)
+  /// İsteğe bağlı GitHub repo eşlemesi (Cloud create için yeterli değil).
+  githubRepoUrl      String?    @db.NVarChar(500)
+  /// true olsa bile CLOUD_AGENT_ALLOWED_REPOS + Owner onayı gerekir; varsayılan false.
+  cloudAgentEnabled  Boolean    @default(false)
+  createdAt          DateTime   @default(now()) @db.DateTime2
+  updatedAt          DateTime   @updatedAt @db.DateTime2
+  tasks              Task[]
+  approvals          Approval[]
+}
+
+model Task {
+  id             String           @id @default(uuid()) @db.UniqueIdentifier
+  source         String           @default("real") @db.NVarChar(16)
+  title          String           @db.NVarChar(140)
+  description    String           @db.NVarChar(Max)
+  projectId      String           @db.UniqueIdentifier
+  assigneeId     String           @db.NVarChar(64)
+  priority       String           @default("medium") @db.NVarChar(16)
+  status         String           @default("backlog") @db.NVarChar(32)
+  paused         Boolean          @default(false)
+  attempts       Int              @default(0)
+  timeoutMinutes Int              @default(60)
+  dueAt          DateTime?        @db.DateTime2
+  startedAt      DateTime?        @db.DateTime2
+  finishedAt     DateTime?        @db.DateTime2
+  dispatchState  String           @default("not_applicable") @db.NVarChar(40)
+  idempotencyKey String?          @unique @db.NVarChar(128)
+  approvalId     String?          @db.UniqueIdentifier
+  model          String?          @db.NVarChar(120)
+  gitBranch      String?          @db.NVarChar(200)
+  gitPrUrl       String?          @db.NVarChar(500)
+  /// Faz 5A: üst görev (CEO planı)
+  parentTaskId   String?          @db.UniqueIdentifier
+  /// AUTO | POLICY-AUTO | OWNER-APPROVAL | none
+  executionPolicy String?         @db.NVarChar(32)
+  /// opportunity:<id> | goal:<id> | owner | system
+  origin         String?          @db.NVarChar(120)
+  /// Faz 5B: yazılım teslim zinciri kimliği
+  chainId        String?          @db.UniqueIdentifier
+  /// ceo_plan | cto_spec | develop | test | cto_review | ceo_close
+  chainStep      String?          @db.NVarChar(32)
+  chainOrder     Int?
+  /// Bağımlı olduğu görev (tamamlanmadan başlamaz)
+  dependsOnTaskId String?         @db.UniqueIdentifier
+  /// waiting_dependency | ready | running | completed | failed | rework
+  workflowPhase  String?          @db.NVarChar(32)
+  acceptanceCriteria String?      @db.NVarChar(Max)
+  executionResult    String?      @db.NVarChar(Max)
+  /// deterministic | real_ai_pending
+  executionKind  String?          @db.NVarChar(32)
+  blockedReason  String?          @db.NVarChar(500)
+  /// Güvenli arşiv — silme yok; Kanban varsayılanında gizlenir
+  archivedAt     DateTime?        @db.DateTime2
+  archivedReason String?          @db.NVarChar(500)
+  createdAt      DateTime         @default(now()) @db.DateTime2
+  updatedAt      DateTime         @updatedAt @db.DateTime2
+  project        Project          @relation(fields: [projectId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  assignee       Agent            @relation(fields: [assigneeId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  parent         Task?            @relation("TaskHierarchy", fields: [parentTaskId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  children       Task[]           @relation("TaskHierarchy")
+  dependsOn      Task?            @relation("TaskDepends", fields: [dependsOnTaskId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  dependents     Task[]           @relation("TaskDepends")
+  events         TaskEvent[]
+  assignments    TaskAssignment[]
+  runs           AgentRun[]
+  messages       AgentMessage[]
+
+  @@index([status, updatedAt])
+  @@index([assigneeId, status])
+  @@index([projectId])
+  @@index([parentTaskId])
+  @@index([chainId, chainOrder])
+  @@index([dependsOnTaskId])
+  @@index([workflowPhase, status])
+  @@index([archivedAt])
+}
+
+model TaskEvent {
+  id         String    @id @default(uuid()) @db.UniqueIdentifier
+  taskId     String    @db.UniqueIdentifier
+  at         DateTime  @default(now()) @db.DateTime2
+  actorKind  String    @db.NVarChar(16)
+  actorAgent String?   @db.NVarChar(64)
+  type       String    @db.NVarChar(40)
+  message    String    @db.NVarChar(1000)
+  fromStatus String?   @db.NVarChar(32)
+  toStatus   String?   @db.NVarChar(32)
+  task       Task      @relation(fields: [taskId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+
+  @@index([taskId, at])
+}
+
+model TaskAssignment {
+  id         String   @id @default(uuid()) @db.UniqueIdentifier
+  taskId     String   @db.UniqueIdentifier
+  agentId    String   @db.NVarChar(64)
+  assignedAt DateTime @default(now()) @db.DateTime2
+  note       String?  @db.NVarChar(500)
+  task       Task     @relation(fields: [taskId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+  agent      Agent    @relation(fields: [agentId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+  @@index([agentId, assignedAt])
+}
+
+model Approval {
+  id             String          @id @default(uuid()) @db.UniqueIdentifier
+  source         String          @default("real") @db.NVarChar(16)
+  type           String          @db.NVarChar(64)
+  requestedBy    String          @db.NVarChar(64)
+  projectId      String          @db.UniqueIdentifier
+  taskId         String?         @db.UniqueIdentifier
+  title          String          @db.NVarChar(200)
+  description    String          @db.NVarChar(Max)
+  changeSummary  String          @db.NVarChar(Max)
+  risk           String          @db.NVarChar(16)
+  subjectKind    String          @db.NVarChar(40)
+  subjectRef     String          @db.NVarChar(500)
+  subjectVersion String          @db.NVarChar(200)
+  currentVersion String          @db.NVarChar(200)
+  status         String          @default("pending") @db.NVarChar(32)
+  decidedById    String?         @db.UniqueIdentifier
+  decidedAt      DateTime?       @db.DateTime2
+  decisionNote   String?         @db.NVarChar(1000)
+  boundVersion   String?         @db.NVarChar(200)
+  expiresAt      DateTime?       @db.DateTime2
+  createdAt      DateTime        @default(now()) @db.DateTime2
+  updatedAt      DateTime        @updatedAt @db.DateTime2
+  project        Project         @relation(fields: [projectId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  decidedBy      User?           @relation("ApprovalDecider", fields: [decidedById], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  events         ApprovalEvent[]
+
+  @@index([status, createdAt])
+  @@index([projectId])
+}
+
+model ApprovalEvent {
+  id         String   @id @default(uuid()) @db.UniqueIdentifier
+  approvalId String   @db.UniqueIdentifier
+  at         DateTime @default(now()) @db.DateTime2
+  actorKind  String   @db.NVarChar(16)
+  type       String   @db.NVarChar(40)
+  message    String   @db.NVarChar(1000)
+  approval   Approval @relation(fields: [approvalId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+
+  @@index([approvalId, at])
+}
+
+model AgentRun {
+  id               String    @id @default(uuid()) @db.UniqueIdentifier
+  taskId           String    @db.UniqueIdentifier
+  agentId          String    @db.NVarChar(64)
+  status           String    @default("awaiting_integration") @db.NVarChar(40)
+  externalId       String?   @db.NVarChar(200)
+  message          String?   @db.NVarChar(1000)
+  startedAt        DateTime? @db.DateTime2
+  finishedAt       DateTime? @db.DateTime2
+  createdAt        DateTime  @default(now()) @db.DateTime2
+  updatedAt        DateTime  @updatedAt @db.DateTime2
+  /// Cursor Cloud agent id (bc-...)
+  cursorAgentId    String?   @db.NVarChar(120)
+  /// Cursor Cloud run id (run-...)
+  cursorRunId      String?   @db.NVarChar(120)
+  githubRepository String?   @db.NVarChar(500)
+  branch           String?   @db.NVarChar(200)
+  model            String?   @db.NVarChar(120)
+  /// CREATING | RUNNING | ... resmi Cursor run status
+  cursorStatus     String?   @db.NVarChar(64)
+  errorMessage     String?   @db.NVarChar(1000)
+  resultSummary    String?   @db.NVarChar(Max)
+  prUrl            String?   @db.NVarChar(500)
+  agentUrl         String?   @db.NVarChar(500)
+  /// mock | live
+  executionMode    String?   @db.NVarChar(16)
+  approvalId       String?   @db.UniqueIdentifier
+  idempotencyKey   String?   @unique @db.NVarChar(128)
+  inputTokens      Int?
+  outputTokens     Int?
+  totalTokens      Int?
+  cancelVerified   Boolean   @default(false)
+  /// ok | stale_mock | unknown | needs_owner | archived
+  reconcileState   String?   @db.NVarChar(32)
+  staleAt          DateTime? @db.DateTime2
+  lastReconciledAt DateTime? @db.DateTime2
+  task             Task      @relation(fields: [taskId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+  agent            Agent     @relation(fields: [agentId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+  @@index([taskId])
+  @@index([agentId, createdAt])
+  @@index([cursorAgentId])
+  @@index([cursorRunId])
+  @@index([status, createdAt])
+  @@index([executionMode, cursorStatus])
+  @@index([reconcileState])
+}
+
+/// Şirket hedefi — KPI veri yoksa currentValue null kalır (uydurma yok).
+model CompanyGoal {
+  id               String    @id @default(uuid()) @db.UniqueIdentifier
+  goalKey          String    @unique @db.NVarChar(64)
+  projectSlug      String    @db.NVarChar(64)
+  title            String    @db.NVarChar(200)
+  description      String    @db.NVarChar(Max)
+  priority         String    @default("medium") @db.NVarChar(16)
+  kpiLabel         String    @db.NVarChar(120)
+  targetValue      String?   @db.NVarChar(120)
+  currentValue     String?   @db.NVarChar(120)
+  dataSource       String    @db.NVarChar(200)
+  department       String    @db.NVarChar(80)
+  status           String    @default("active") @db.NVarChar(40)
+  lastEvaluatedAt  DateTime? @db.DateTime2
+  nextEvaluateAt   DateTime? @db.DateTime2
+  createdAt        DateTime  @default(now()) @db.DateTime2
+  updatedAt        DateTime  @updatedAt @db.DateTime2
+
+  @@index([projectSlug, status])
+  @@index([nextEvaluateAt])
+}
+
+model Opportunity {
+  id                 String    @id @default(uuid()) @db.UniqueIdentifier
+  title              String    @db.NVarChar(200)
+  description        String    @db.NVarChar(Max)
+  projectSlug        String    @db.NVarChar(64)
+  sourceKind         String    @db.NVarChar(64)
+  evidenceRef        String?   @db.NVarChar(500)
+  commercialValue    String    @db.NVarChar(40)
+  confidence         String    @db.NVarChar(40)
+  estimatedEffort    String    @db.NVarChar(40)
+  estimatedAiCost    String    @db.NVarChar(40)
+  securityRisk       String    @db.NVarChar(16)
+  suggestedAgentId   String    @db.NVarChar(64)
+  suggestedNextStep  String    @db.NVarChar(500)
+  status             String    @default("open") @db.NVarChar(40)
+  verified           Boolean   @default(false)
+  dedupeHash         String    @unique @db.NVarChar(64)
+  createdAt          DateTime  @default(now()) @db.DateTime2
+  updatedAt          DateTime  @updatedAt @db.DateTime2
+
+  @@index([projectSlug, status])
+  @@index([createdAt])
+}
+
+/// Owner ön-yetkisi: AUTO | POLICY-AUTO | OWNER-APPROVAL
+model AutonomyPolicy {
+  id              String    @id @default(uuid()) @db.UniqueIdentifier
+  policyKey       String    @unique @db.NVarChar(80)
+  actionType      String    @db.NVarChar(80)
+  projectSlug     String?   @db.NVarChar(64)
+  repositoryUrl   String?   @db.NVarChar(500)
+  authority       String    @db.NVarChar(32)
+  maxRisk         String    @db.NVarChar(16)
+  maxUsageTokens  Int?
+  expiresAt       DateTime? @db.DateTime2
+  enabled         Boolean   @default(true)
+  createdAt       DateTime  @default(now()) @db.DateTime2
+  updatedAt       DateTime  @updatedAt @db.DateTime2
+
+  @@index([authority, enabled])
+}
+
+model ScheduledJob {
+  id             String            @id @default(uuid()) @db.UniqueIdentifier
+  jobKey         String            @unique @db.NVarChar(80)
+  title          String            @db.NVarChar(200)
+  cronExpr       String            @db.NVarChar(80)
+  timezone       String            @default("Europe/Istanbul") @db.NVarChar(64)
+  enabled        Boolean           @default(true)
+  handler        String            @db.NVarChar(80)
+  timeoutSec     Int               @default(120)
+  maxRetries     Int               @default(1)
+  lastStartedAt  DateTime?         @db.DateTime2
+  lastFinishedAt DateTime?         @db.DateTime2
+  lastStatus     String?           @db.NVarChar(40)
+  createdAt      DateTime          @default(now()) @db.DateTime2
+  updatedAt      DateTime          @updatedAt @db.DateTime2
+  runs           ScheduledJobRun[]
+}
+
+model ScheduledJobRun {
+  id             String       @id @default(uuid()) @db.UniqueIdentifier
+  jobId          String       @db.UniqueIdentifier
+  idempotencyKey String       @unique @db.NVarChar(128)
+  status         String       @db.NVarChar(40)
+  startedAt      DateTime     @default(now()) @db.DateTime2
+  finishedAt     DateTime?    @db.DateTime2
+  message        String?      @db.NVarChar(1000)
+  resultJson     String?      @db.NVarChar(Max)
+  job            ScheduledJob @relation(fields: [jobId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+
+  @@index([jobId, startedAt])
+}
+
+model AgentMessage {
+  id           String   @id @default(uuid()) @db.UniqueIdentifier
+  fromAgentId  String   @db.NVarChar(64)
+  toAgentId    String   @db.NVarChar(64)
+  taskId       String?  @db.UniqueIdentifier
+  parentTaskId String?  @db.UniqueIdentifier
+  chainId      String?  @db.UniqueIdentifier
+  kind         String   @db.NVarChar(40)
+  summary      String   @db.NVarChar(1000)
+  evidenceRef  String?  @db.NVarChar(500)
+  /// Yapılandırılmış sonuç / hata (JSON string)
+  payloadJson  String?  @db.NVarChar(Max)
+  createdAt    DateTime @default(now()) @db.DateTime2
+  task         Task?    @relation(fields: [taskId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+  @@index([createdAt])
+  @@index([taskId])
+  @@index([chainId, createdAt])
+  @@index([fromAgentId, toAgentId])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.UniqueIdentifier
+  at         DateTime @default(now()) @db.DateTime2
+  category   String   @db.NVarChar(64)
+  action     String   @db.NVarChar(120)
+  actorKind  String   @db.NVarChar(16)
+  actorAgent String?  @db.NVarChar(64)
+  userId     String?  @db.UniqueIdentifier
+  targetType String?  @db.NVarChar(64)
+  targetId   String?  @db.NVarChar(200)
+  summary    String   @db.NVarChar(1000)
+  metadata   String?  @db.NVarChar(Max)
+  user       User?    @relation(fields: [userId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+  @@index([at])
+  @@index([category, at])
+}
+
+model SystemSetting {
+  key       String   @id @db.NVarChar(120)
+  value     String   @db.NVarChar(Max)
+  updatedAt DateTime @updatedAt @db.DateTime2
+  updatedBy String?  @db.NVarChar(120)
+}
+
+model IntegrationConnection {
+  id        String   @id @default(uuid()) @db.UniqueIdentifier
+  provider  String   @unique @db.NVarChar(64)
+  status    String   @db.NVarChar(40)
+  detail    String?  @db.NVarChar(500)
+  updatedAt DateTime @updatedAt @db.DateTime2
+  createdAt DateTime @default(now()) @db.DateTime2
+}
+
+/// Faz 5C — CRM lead (kişisel veri minimal; kaynak zorunlu doğrulama)
+model Lead {
+  id              String    @id @default(uuid()) @db.UniqueIdentifier
+  companyName     String    @db.NVarChar(200)
+  websiteUrl      String?   @db.NVarChar(500)
+  segment         String    @db.NVarChar(120)
+  needSignal      String    @db.NVarChar(500)
+  sourceUrl       String?   @db.NVarChar(500)
+  sourceKind      String    @db.NVarChar(64)
+  confidenceScore Int       @default(0)
+  verified        Boolean   @default(false)
+  verifiedAt      DateTime? @db.DateTime2
+  status          String    @default("new") @db.NVarChar(40)
+  dedupeHash      String    @unique @db.NVarChar(64)
+  notes           String?   @db.NVarChar(1000)
+  projectSlug     String    @default("synaptech") @db.NVarChar(64)
+  createdAt       DateTime  @default(now()) @db.DateTime2
+  updatedAt       DateTime  @updatedAt @db.DateTime2
+
+  @@index([status, createdAt])
+  @@index([segment])
+  @@index([verified, confidenceScore])
+}
+
+model SeoFinding {
+  id            String   @id @default(uuid()) @db.UniqueIdentifier
+  projectSlug   String   @db.NVarChar(64)
+  pageUrl       String   @db.NVarChar(500)
+  category      String   @db.NVarChar(64)
+  /// measured | recommendation
+  findingKind   String   @db.NVarChar(32)
+  title         String   @db.NVarChar(200)
+  detail        String   @db.NVarChar(Max)
+  evidenceRef   String?  @db.NVarChar(500)
+  httpStatus    Int?
+  severity      String   @default("info") @db.NVarChar(16)
+  status        String   @default("open") @db.NVarChar(40)
+  dedupeHash    String   @unique @db.NVarChar(64)
+  scanRunId     String?  @db.UniqueIdentifier
+  createdAt     DateTime @default(now()) @db.DateTime2
+  updatedAt     DateTime @updatedAt @db.DateTime2
+
+  @@index([projectSlug, status])
+  @@index([findingKind, category])
+  @@index([createdAt])
+}
+
+model ContentDraftRecord {
+  id              String   @id @default(uuid()) @db.UniqueIdentifier
+  projectSlug     String   @db.NVarChar(64)
+  locale          String   @db.NVarChar(8)
+  title           String   @db.NVarChar(200)
+  slug            String   @db.NVarChar(200)
+  metaDescription String   @db.NVarChar(200)
+  outlineJson     String?  @db.NVarChar(Max)
+  bodyTemplate    String?  @db.NVarChar(Max)
+  sourcesJson     String?  @db.NVarChar(Max)
+  seoFindingId    String?  @db.UniqueIdentifier
+  /// draft | blocked_duplicate | awaiting_llm
+  status          String   @default("draft") @db.NVarChar(40)
+  seoReview       String   @default("pending") @db.NVarChar(40)
+  publishApproval String   @default("pending") @db.NVarChar(40)
+  /// template | llm_article — template tamamlanmış AI makalesi değildir
+  contentKind     String   @default("template") @db.NVarChar(32)
+  qualityNotes    String?  @db.NVarChar(1000)
+  dedupeHash      String   @unique @db.NVarChar(64)
+  createdAt       DateTime @default(now()) @db.DateTime2
+  updatedAt       DateTime @updatedAt @db.DateTime2
+
+  @@index([projectSlug, locale, status])
+  @@index([slug])
+  @@unique([projectSlug, locale, slug])
+}
+
+model AdProposal {
+  id              String   @id @default(uuid()) @db.UniqueIdentifier
+  projectSlug     String   @db.NVarChar(64)
+  platform        String   @db.NVarChar(40)
+  campaignName    String   @db.NVarChar(200)
+  objective       String   @db.NVarChar(120)
+  audienceSummary String   @db.NVarChar(500)
+  headline        String   @db.NVarChar(200)
+  primaryText     String   @db.NVarChar(1000)
+  /// Öneri bütçesi — gerçek harcama/yayın değil
+  suggestedDailyBudgetTry Decimal? @db.Decimal(12, 2)
+  status          String   @default("draft_proposal") @db.NVarChar(40)
+  liveLaunch      Boolean  @default(false)
+  notes           String?  @db.NVarChar(1000)
+  dedupeHash      String   @unique @db.NVarChar(64)
+  createdAt       DateTime @default(now()) @db.DateTime2
+  updatedAt       DateTime @updatedAt @db.DateTime2
+
+  @@index([projectSlug, status])
+  @@index([platform])
+}
+
+model GrowthScanRun {
+  id            String    @id @default(uuid()) @db.UniqueIdentifier
+  kind          String    @db.NVarChar(40)
+  status        String    @db.NVarChar(40)
+  startedAt     DateTime  @default(now()) @db.DateTime2
+  finishedAt    DateTime? @db.DateTime2
+  summary       String?   @db.NVarChar(1000)
+  evidenceJson  String?   @db.NVarChar(Max)
+  errorMessage  String?   @db.NVarChar(1000)
+  chainId       String?   @db.UniqueIdentifier
+  createdAt     DateTime  @default(now()) @db.DateTime2
+
+  @@index([kind, startedAt])
+  @@index([status])
+}
+
+/// Faz 5D — dağıtık kilit / lease (MSSQL)
+model WorkerLease {
+  lockKey     String   @id @db.NVarChar(120)
+  holderId    String   @db.NVarChar(120)
+  acquiredAt  DateTime @default(now()) @db.DateTime2
+  expiresAt   DateTime @db.DateTime2
+  heartbeatAt DateTime @default(now()) @db.DateTime2
+  metaJson    String?  @db.NVarChar(Max)
+
+  @@index([expiresAt])
+  @@index([holderId])
+}
+
+/// Faz 5D — worker yaşam döngüsü kaydı
+model WorkerInstance {
+  id            String    @id @db.NVarChar(120)
+  role          String    @db.NVarChar(40)
+  hostname      String?   @db.NVarChar(200)
+  startedAt     DateTime  @default(now()) @db.DateTime2
+  lastSeenAt    DateTime  @default(now()) @db.DateTime2
+  status        String    @default("starting") @db.NVarChar(40)
+  stopReason    String?   @db.NVarChar(500)
+  metaJson      String?   @db.NVarChar(Max)
+
+  @@index([status, lastSeenAt])
+  @@index([role])
+}

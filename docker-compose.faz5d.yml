@@ -1,0 +1,158 @@
+# Faz 5D — İZOLE staging/local 7/24 altyapı iskeleti
+# Production VPS, NPM, mevcut docker-compose.yml (14333/3101) dokunulmaz.
+# Portlar: MSSQL 14334, API 3111, Worker 3112 (yalnızca 127.0.0.1)
+
+name: synaptech-ai-os-faz5d
+
+services:
+  mssql-faz5d:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: synaptech-ai-os-faz5d-mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}"
+      MSSQL_PID: "Developer"
+    ports:
+      - "127.0.0.1:14334:1433"
+    volumes:
+      - synaptech_ai_os_faz5d_mssql_data:/var/opt/mssql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q \"SELECT 1\" || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - faz5d_net
+
+  api-faz5d:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: synaptech-ai-os-faz5d-api
+    depends_on:
+      mssql-faz5d:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "3111"
+      EMBED_SCHEDULER: "0"
+      DATABASE_URL: "sqlserver://mssql-faz5d:1433;database=SynaptechAiOsFaz5d;user=sa;password=${MSSQL_SA_PASSWORD};encrypt=true;trustServerCertificate=true"
+      SYNAPTECH_OWNER_TOKEN: "${SYNAPTECH_OWNER_TOKEN}"
+      SYNAPTECH_SYSTEM_TOKEN: "${SYNAPTECH_SYSTEM_TOKEN}"
+      SYNAPTECH_REPO_ROOT: /app
+      KILL_SWITCH_FILE: /app/config/kill-switch.json
+      CLOUD_AGENT_LIVE_ENABLED: "false"
+      CURSOR_CLOUD_MODE: "mock"
+      WORKER_ID: "faz5d-api"
+    ports:
+      - "127.0.0.1:3111:3111"
+    volumes:
+      - ./config:/app/config:ro
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:3111/api/system/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    networks:
+      - faz5d_net
+
+  worker-faz5d:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: synaptech-ai-os-faz5d-worker
+    command: ["pnpm", "worker"]
+    depends_on:
+      mssql-faz5d:
+        condition: service_healthy
+      api-faz5d:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "3112"
+      WORKER_HEALTH_PORT: "3112"
+      WORKER_MODE: "1"
+      WORKER_ID: "faz5d-worker-1"
+      SCHEDULER_INTERVAL_MS: "60000"
+      DATABASE_URL: "sqlserver://mssql-faz5d:1433;database=SynaptechAiOsFaz5d;user=sa;password=${MSSQL_SA_PASSWORD};encrypt=true;trustServerCertificate=true"
+      SYNAPTECH_OWNER_TOKEN: "${SYNAPTECH_OWNER_TOKEN}"
+      SYNAPTECH_SYSTEM_TOKEN: "${SYNAPTECH_SYSTEM_TOKEN}"
+      SYNAPTECH_REPO_ROOT: /app
+      KILL_SWITCH_FILE: /app/config/kill-switch.json
+      CLOUD_AGENT_LIVE_ENABLED: "false"
+      CURSOR_CLOUD_MODE: "mock"
+    ports:
+      - "127.0.0.1:3112:3112"
+    volumes:
+      - ./config:/app/config:ro
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:3112/api/system/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    networks:
+      - faz5d_net
+
+  # İkinci worker — lease sayesinde aynı tick'i çift çalıştırmaz (acceptance)
+  worker-faz5d-b:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: synaptech-ai-os-faz5d-worker-b
+    command: ["pnpm", "worker"]
+    profiles:
+      - dual-worker
+    depends_on:
+      mssql-faz5d:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "3113"
+      WORKER_HEALTH_PORT: "3113"
+      WORKER_MODE: "1"
+      WORKER_ID: "faz5d-worker-2"
+      SCHEDULER_INTERVAL_MS: "60000"
+      DATABASE_URL: "sqlserver://mssql-faz5d:1433;database=SynaptechAiOsFaz5d;user=sa;password=${MSSQL_SA_PASSWORD};encrypt=true;trustServerCertificate=true"
+      SYNAPTECH_OWNER_TOKEN: "${SYNAPTECH_OWNER_TOKEN}"
+      SYNAPTECH_SYSTEM_TOKEN: "${SYNAPTECH_SYSTEM_TOKEN}"
+      SYNAPTECH_REPO_ROOT: /app
+      KILL_SWITCH_FILE: /app/config/kill-switch.json
+      CLOUD_AGENT_LIVE_ENABLED: "false"
+      CURSOR_CLOUD_MODE: "mock"
+    ports:
+      - "127.0.0.1:3113:3113"
+    volumes:
+      - ./config:/app/config:ro
+    restart: unless-stopped
+    networks:
+      - faz5d_net
+
+volumes:
+  synaptech_ai_os_faz5d_mssql_data:
+    name: synaptech_ai_os_faz5d_mssql_data
+
+networks:
+  faz5d_net:
+    name: synaptech_ai_os_faz5d_net
+    driver: bridge

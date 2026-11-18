@@ -1,0 +1,61 @@
+# SynapTech AI OS — Proje kaydı
+#
+# Hedefler ve riskler kullanıcı tarafından doldurulacaktır; sistem bunları uydurmaz.
+# Bu projelerin mevcut kaynak kodlarına Faz 1-2'de müdahale edilmez.
+# GitHub bağlantıları Faz 4'te kullanıcı tarafından yapılandırılır. Korumalı yoldadır.
+
+version: 1
+
+projects:
+  - slug: synaptech
+    name: "SynapTech"
+    description: null
+    status: active
+    goals: []
+    risks: []
+    responsible_agents: [ceo, cto, growth-lead]
+    github:
+      repo: null
+      status: not_connected
+      planned_permissions:
+        - "contents: read"
+        - "pull_requests: write (yalnızca agent/* branch'leri)"
+        - "checks: read"
+    source_code_policy: "Mevcut kaynak koduna Faz 1-2'de müdahale edilmez."
+    existing_blog_automation:
+      # Kullanıcı, SynapTech'in çalışan bir blog otomasyonu olduğunu belirtti.
+      exists: true
+      details: null
+      rule: "Yeni sistem mevcut yayın düzenini değiştirmez ve mükerrer içerik üretmez."
+
+  - slug: subify
+    name: "Subify"
+    description: null
+    status: active
+    goals: []
+    risks: []
+    responsible_agents: [ceo, cto, growth-lead]
+    github:
+      repo: null
+      status: not_connected
+      planned_permissions:
+        - "contents: read"
+        - "pull_requests: write (yalnızca agent/* branch'leri)"
+        - "checks: read"
+    source_code_policy: "Mevcut kaynak koduna Faz 1-2'de müdahale edilmez."
+
+  - slug: marivo
+    name: "Marivo"
+    description: null
+    status: active
+    goals: []
+    risks: []
+    responsible_agents: [ceo, cto, growth-lead]
+    github:
+      repo: null
+      status: not_connected
+      planned_permissions:
+        - "contents: read"
+        - "pull_requests: write (yalnızca agent/* branch'leri)"
+        - "checks: read"
+    source_code_policy: "Mevcut kaynak koduna Faz 1-2'de müdahale edilmez."

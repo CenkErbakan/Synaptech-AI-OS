@@ -1,0 +1,102 @@
+{
+  "utcDay": "2026-11-18T00:00:00.000Z",
+  "counts": {
+    "allCeoAudits": 13,
+    "realCeoAudits": 2,
+    "realAgentAudits": 7,
+    "totalRows": 35
+  },
+  "budgetIfModesLocal": {
+    "ceoLocal": {
+      "ok": false,
+      "used": 1,
+      "max": 1,
+      "reason": "daily_llm_cap_reached"
+    },
+    "agentLocal": {
+      "ok": false,
+      "used": 9,
+      "max": 4,
+      "reason": "daily_agent_llm_cap_reached"
+    }
+  },
+  "headroomForOneCycle": {
+    "ceoOk": false,
+    "agentsOk": false,
+    "note": "Limitler değiştirilmedi; sıfırlama yok."
+  },
+  "recentReal": [
+    {
+      "action": "ai.scheduler_ceo_cycle",
+      "at": "2026-11-18T01:18:47.273Z",
+      "actorAgent": "ceo",
+      "realAiExecution": true,
+      "mode": "local",
+      "summary": "Zamanlanmış yerel AI CEO planı doğrulandı ve görevler yazıldı."
+    },
+    {
+      "action": "ai.local_ceo_pilot",
+      "at": "2026-11-18T01:01:23.679Z",
+      "actorAgent": null,
+      "realAiExecution": true,
+      "mode": null,
+      "summary": "Yerel AI CEO pilot kaydı — model=qwen2.5:14b, realAi=true"
+    },
+    {
+      "action": "ai.local_agent_execution",
+      "at": "2026-11-18T02:56:21.386Z",
+      "actorAgent": "tester",
+      "realAiExecution": true,
+      "mode": "local",
+      "summary": "Yerel LLM ajan çıktısı: tester → done"
+    },
+    {
+      "action": "ai.local_agent_execution",
+      "at": "2026-11-18T02:56:12.684Z",
+      "actorAgent": "developer",
+      "realAiExecution": true,
+      "mode": "local",
+      "summary": "Yerel LLM ajan çıktısı: developer → done"
+    },
+    {
+      "action": "ai.local_agent_execution",
+      "at": "2026-11-18T02:55:45.926Z",
+      "actorAgent": "tester",
+      "realAiExecution": true,
+      "mode": "local",
+      "summary": "Yerel LLM ajan çıktısı: tester → planned"
+    },
+    {
+      "action": "ai.local_agent_execution",
+      "at": "2026-11-18T02:55:39.226Z",
+      "actorAgent": "developer",
+      "realAiExecution": true,
+      "mode": "local",
+      "summary": "Yerel LLM ajan çıktısı: developer → planned"
+    },
+    {
+      "action": "ai.local_agent_execution",
+      "at": "2026-11-18T01:57:25.991Z",
+      "actorAgent": "cto",
+      "realAiExecution": true,
+      "mode": "local",
+      "summary": "Yerel LLM ajan çıktısı: cto → done"
+    },
+    {
+      "action": "ai.local_agent_execution",
+      "at": "2026-11-18T01:36:54.513Z",
+      "actorAgent": "cto",
+      "realAiExecution": true,
+      "mode": "local",
+      "summary": "Yerel LLM ajan çıktısı: cto → planned"
+    },
+    {
+      "action": "ai.local_agent_execution",
+      "at": "2026-11-18T01:36:47.534Z",
+      "actorAgent": "developer",
+      "realAiExecution": true,
+      "mode": "local",
+      "summary": "Yerel LLM ajan çıktısı: developer → planned"
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "taskId": "T-P5E-007-preflight",
+  "at": "2026-11-18T11:52:04.437Z",
+  "envSnapshot": {
+    "SCHEDULER_AI_CEO_MODE": "off",
+    "LOCAL_AGENT_EXECUTION_MODE": "off",
+    "CONTROLLED_AUTONOMY_MODE": "off",
+    "AGENT_REPO_TOOLS_MODE": "off",
+    "AGENT_SANDBOX_MODE": "off",
+    "MODEL_PROVIDER": "local",
+    "LOCAL_LLM_MODEL": "qwen2.5:14b",
+    "LOCAL_LLM_BASE_URL": "http://127.0.0.1:11434",
+    "CLOUD_AGENT_LIVE_ENABLED": false,
+    "CURSOR_CLOUD_MODE": "mock",
+    "CLOUD_ON_DEMAND_VERIFIED": false,
+    "SCHEDULER_AI_CEO_MAX_PER_DAY": 1,
+    "LOCAL_AGENT_EXECUTION_MAX_PER_DAY": 4,
+    "LOCAL_AGENT_PER_AGENT_MAX_PER_DAY": 6,
+    "LOCAL_AGENT_TICK_MAX": 2
+  },
+  "kill": {
+    "enabled": false,
+    "reason": "faz5e-sched-ai-unkill",
+    "changedBy": "Owner",
+    "changedAt": "2026-11-18T03:09:51.913Z",
+    "source": "database"
+  },
+  "ollama": {
+    "ok": true,
+    "models": [
+      "qwen2.5:14b"
+    ],
+    "message": "qwen2.5:14b mevcut"
+  },
+  "docker": {
+    "ok": true,
+    "message": "engine 29.8.0"
+  },
+  "ceoBudget": {
+    "ok": false,
+    "used": 12,
+    "max": 1,
+    "reason": "daily_llm_cap_reached"
+  },
+  "agentBudgetLocalView": {
+    "ok": false,
+    "used": 9,
+    "max": 4,
+    "reason": "daily_agent_llm_cap_reached"
+  },
+  "realToday": 9,
+  "ceoToday": 12,
+  "ceoHeadroom": -11,
+  "agentHeadroom": -5,
+  "needed": {
+    "ceo": 1,
+    "agents": 2
+  },
+  "perAgent": {
+    "cto": {
+      "ok": false,
+      "used": 10,
+      "max": 6,
+      "reason": "per_agent_daily_cap:cto"
+    },
+    "developer": {
+      "ok": false,
+      "used": 10,
+      "max": 6,
+      "reason": "per_agent_daily_cap:developer"
+    },
+    "tester": {
+      "ok": true,
+      "used": 2,
+      "max": 6
+    },
+    "security": {
+      "ok": true,
+      "used": 0,
+      "max": 6
+    },
+    "growth-lead": {
+      "ok": true,
+      "used": 0,
+      "max": 6
+    },
+    "seo-specialist": {
+      "ok": true,
+      "used": 0,
+      "max": 6
+    },
+    "content-manager": {
+      "ok": true,
+      "used": 0,
+      "max": 6
+    },
+    "ads-manager": {
+      "ok": true,
+      "used": 0,
+      "max": 6
+    }
+  },
+  "jobs": [
+    {
+      "jobKey": "daily-ceo-review",
+      "enabled": true,
+      "lastStatus": "succeeded",
+      "lastFinishedAt": "2026-11-18T11:51:48.733Z"
+    },
+    {
+      "jobKey": "growth-cycle",
+      "enabled": true,
+      "lastStatus": "succeeded",
+      "lastFinishedAt": "2026-11-18T11:45:47.820Z"
+    },
+    {
+      "jobKey": "run-reconciliation",
+      "enabled": true,
+      "lastStatus": "succeeded",
+      "lastFinishedAt": "2026-11-18T11:51:48.649Z"
+    }
+  ],
+  "bindings": [
+    {
+      "projectSlug": "synaptech",
+      "verified": false,
+      "source": "proposed_unverified"
+    },
+    {
+      "projectSlug": "subify",
+      "verified": true,
+      "source": "mssql"
+    },
+    {
+      "projectSlug": "marivo",
+      "verified": false,
+      "source": "proposed_unverified"
+    },
+    {
+      "projectSlug": "synaptech-ai-os",
+      "verified": false,
+      "source": "proposed_unverified"
+    }
+  ],
+  "schedulerRuntime": {
+    "timerActive": false,
+    "ticking": false,
+    "lastTickAt": null,
+    "lastTickSummary": null,
+    "workerId": "worker-Cenk-28836-b97b4332",
+    "leaseKey": "scheduler:tick"
+  },
+  "gates": {
+    "killOff": true,
+    "cloudLiveOff": true,
+    "onDemandNotRequired": true,
+    "ollamaOk": true,
+    "dockerOk": true,
+    "quotaOk": false,
+    "continuousAutomationAlwaysFalse": true,
+    "noteContinuous": "CONTROLLED_AUTONOMY_MODE=local ajan pass açar ama continuousAutomation alanı her zaman false kalır; süresiz otomasyon değildir."
+  },
+  "liveAllowed": false
+}

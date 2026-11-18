@@ -1,0 +1,10 @@
+﻿# Agent file tools must not read secrets. Hooks write audit/state via Node fs,
+# not agent file tools — .synaptech is intentionally not ignored here.
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env*.example
+**/*.pem
+**/*.key
+**/secrets/**
+**/credentials.json

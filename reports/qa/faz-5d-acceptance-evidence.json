@@ -1,0 +1,43 @@
+{
+  "phase": "5D",
+  "title": "7/24 Autonomous Infrastructure (izole)",
+  "completedAt": "2026-11-18T00:20:00Z",
+  "productionTouch": false,
+  "ssh": false,
+  "cloudAgent": false,
+  "paidAi": false,
+  "ports": {
+    "dev_mssql": 14333,
+    "dev_api": 3101,
+    "faz5d_mssql": 14334,
+    "faz5d_api": 3111,
+    "faz5d_worker": 3112,
+    "faz5d_worker_b": 3113
+  },
+  "migration": "20261118050000_faz5d_worker_lease",
+  "tables": ["WorkerLease", "WorkerInstance"],
+  "tests": {
+    "command": "pnpm --filter @synaptech/api test",
+    "result": "8 files / 48 tests passed",
+    "faz5d": [
+      "lease second holder rejected",
+      "expired lease recoverable",
+      "kill switch blocks scheduler tick",
+      "scheduler API cloudLive=false",
+      "ScheduledJob durable upsert"
+    ],
+    "regression": "5A/5B/5C suites included in same run"
+  },
+  "apis": [
+    "GET /api/system/health",
+    "GET /api/system/scheduler",
+    "GET /api/system/workers",
+    "PATCH /api/system/kill-switch"
+  ],
+  "composeFile": "docker-compose.faz5d.yml",
+  "docs": [
+    "docs/ops/faz5d-infrastructure.md",
+    "docs/ops/faz5d-db-runbook.md",
+    "docs/ops/faz5d-security.md"
+  ]
+}

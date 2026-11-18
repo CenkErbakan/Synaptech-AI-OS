@@ -1,0 +1,122 @@
+# SynapTech AI OS — Ajan kaydı (Dashboard görüntü bilgileri)
+#
+# Ajanın model ve readonly bilgisi burada TUTULMAZ; Dashboard bunları doğrudan
+# .cursor/agents/<id>.md frontmatter'ından okur. Bu dosya yalnızca görünen ad,
+# departman ve sorumluluk özetini içerir. Korumalı yoldadır.
+
+version: 1
+
+departments:
+  - id: yonetim
+    name: "Yönetim"
+  - id: yazilim
+    name: "Yazılım"
+  - id: buyume
+    name: "Büyüme"
+
+agents:
+  - id: ceo
+    name: "AI CEO"
+    department: yonetim
+    summary: "Şirket hedeflerini takip eder, ekipleri koordine eder, görev önerir ve raporlar."
+    responsibilities:
+      - "Şirket hedeflerini takip etmek"
+      - "Yazılım ve büyüme ekiplerini koordine etmek"
+      - "Görev oluşturmak, önceliklendirmek ve uygun ajana devretmek"
+      - "Günlük operasyon ve haftalık stratejik rapor taslağı hazırlamak"
+      - "Tekrarlanan hataları ve geliştirme fırsatlarını tespit etmek"
+    enabled: true
+
+  - id: cto
+    name: "AI CTO"
+    department: yazilim
+    summary: "Yazılım mimarisini değerlendirir, teknik görevleri planlar ve kod incelemesi yapar."
+    responsibilities:
+      - "Yazılım mimarisini değerlendirmek"
+      - "Teknik görevleri planlamak"
+      - "Kod incelemesi yapmak"
+      - "Teknoloji seçimlerini değerlendirmek"
+      - "Yazılım kalitesini denetlemek"
+    enabled: true
+
+  - id: developer
+    name: "AI Developer"
+    department: yazilim
+    summary: "Frontend ve backend kodu geliştirir; yalnızca agent/* branch'lerinde çalışır."
+    responsibilities:
+      - "Frontend ve backend kodu geliştirmek"
+      - "Hataları düzeltmek ve refactoring yapmak"
+      - "Ayrı Git branch'lerinde çalışmak"
+      - "Pull request metni hazırlamak"
+    enabled: true
+
+  - id: tester
+    name: "AI Tester"
+    department: yazilim
+    summary: "Birim ve entegrasyon testleri yazar, çalıştırır ve hata raporlar."
+    responsibilities:
+      - "Birim ve entegrasyon testleri hazırlamak"
+      - "Testleri yalıtılmış ortamda çalıştırmak"
+      - "Hata ve regresyon raporları oluşturmak"
+      - "Kabul kriterlerini doğrulamak"
+    enabled: true
+
+  - id: security
+    name: "AI Security"
+    department: yazilim
+    summary: "Bağımlılık ve kod güvenliğini inceler, gizli bilgi sızıntılarını denetler."
+    responsibilities:
+      - "Bağımlılıkları ve kod güvenliğini incelemek"
+      - "Olası güvenlik açıklarını raporlamak"
+      - "Gizli bilgi sızıntılarını kontrol etmek"
+      - "Riskli kod değişikliklerini değerlendirmek"
+      - "Güvenlik iyileştirmeleri önermek"
+    enabled: true
+
+  - id: growth-lead
+    name: "AI Growth Lead"
+    department: buyume
+    summary: "Dijital büyüme stratejisini oluşturur; SEO, içerik ve reklam işlerini koordine eder."
+    responsibilities:
+      - "Dijital büyüme stratejisi oluşturmak"
+      - "SEO, blog ve reklam faaliyetlerini koordine etmek"
+      - "Rakip analizleri hazırlamak"
+      - "Pazarlama performansını değerlendirmek (yalnızca gerçek veriyle)"
+      - "Yeni büyüme fırsatlarını tespit etmek"
+    enabled: true
+
+  - id: seo-specialist
+    name: "AI SEO Specialist"
+    department: buyume
+    summary: "Anahtar kelime araştırması ve teknik SEO denetimi yapar, iyileştirme görevi önerir."
+    responsibilities:
+      - "Anahtar kelime araştırması yapmak"
+      - "Teknik SEO denetimleri gerçekleştirmek"
+      - "Sitemap ve robots.txt dosyalarını değerlendirmek"
+      - "Meta etiketlerini ve sayfa yapılarını incelemek"
+      - "Organik trafik fırsatlarını belirlemek ve SEO görevleri önermek"
+    enabled: true
+
+  - id: content-manager
+    name: "AI Content Manager"
+    department: buyume
+    summary: "Türkçe ve İngilizce blog taslakları ile içerik takvimi hazırlar; yayın yapmaz."
+    responsibilities:
+      - "Türkçe ve İngilizce blog taslakları hazırlamak"
+      - "SEO uyumlu başlık ve açıklamalar üretmek"
+      - "İçerik takvimi hazırlamak"
+      - "Mevcut içeriklerde güncelleme fırsatı bulmak"
+      - "İçerikleri SEO ajanına kontrol ettirip yayın öncesinde kullanıcı onayına sunmak"
+    enabled: true
+
+  - id: ads-manager
+    name: "AI Ads Manager"
+    department: buyume
+    summary: "Google Ads ve Meta Ads için strateji ve taslak hazırlar; yayın ve bütçe değişikliği yapmaz."
+    responsibilities:
+      - "Google Ads ve Meta Ads kampanyalarını analiz etmek (yalnızca sağlanan gerçek veriyle)"
+      - "Kampanya stratejileri ve reklam metinleri hazırlamak"
+      - "Hedef kitle önerileri oluşturmak"
+      - "Reklam performans raporları hazırlamak"
+      - "Bütçe optimizasyonu önerileri sunmak"
+    enabled: true

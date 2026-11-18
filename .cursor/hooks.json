@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": "node .cursor/hooks/guard.mjs preToolUse",
+        "timeout": 10,
+        "failClosed": true
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "node .cursor/hooks/guard.mjs beforeShellExecution",
+        "timeout": 10,
+        "failClosed": true
+      }
+    ],
+    "beforeMCPExecution": [
+      {
+        "command": "node .cursor/hooks/guard.mjs beforeMCPExecution",
+        "timeout": 10,
+        "failClosed": true
+      }
+    ],
+    "subagentStart": [
+      {
+        "command": "node .cursor/hooks/guard.mjs subagentStart",
+        "timeout": 10,
+        "failClosed": true
+      }
+    ],
+    "subagentStop": [
+      {
+        "command": "node .cursor/hooks/guard.mjs subagentStop",
+        "timeout": 10
+      }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": "node .cursor/hooks/guard.mjs beforeSubmitPrompt",
+        "timeout": 10
+      }
+    ],
+    "sessionStart": [
+      {
+        "command": "node .cursor/hooks/guard.mjs sessionStart",
+        "timeout": 10
+      }
+    ],
+    "stop": [
+      {
+        "command": "node .cursor/hooks/guard.mjs stop",
+        "timeout": 10
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": "node .cursor/hooks/guard.mjs afterShellExecution",
+        "timeout": 10
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "node .cursor/hooks/guard.mjs afterFileEdit",
+        "timeout": 10
+      }
+    ]
+  }
+}

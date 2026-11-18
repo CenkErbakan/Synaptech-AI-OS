@@ -1,0 +1,95 @@
+{
+  "httpStatus": 200,
+  "wallClockMs": 14210,
+  "result": {
+    "source": "api",
+    "pilotTag": "pilot:local-ai-ceo",
+    "realAiExecution": true,
+    "providerId": "local",
+    "modelId": "qwen2.5:14b",
+    "probeOk": true,
+    "probeMessage": "Yerel LLM hazır: qwen2.5:14b @ http://127.0.0.1:11434",
+    "durationMs": 8010,
+    "contentSha256": "602e839a47d9cf1978bd8822127c215fc6cedf4b8a877682565821ab417da606",
+    "jsonValid": true,
+    "groundingRatio": 1,
+    "plan": {
+      "summary": "Yerel AI CEO'su olarak, Marivo ürün geliştirme fırsatlarını, Subify kalite ve teknik borçlarını, AI OS güvenilir operasyonunu ve kurumsal site SEO görünürlüğünü hedeflerimiz olarak belirledim. Bu projeler, şirketin genel hedeflerini desteklerken, aynı zamanda maliyet ve riskleri de dikkate alır.",
+      "goalsAddressed": [
+        "marivo-growth",
+        "subify-quality",
+        "website-seo",
+        "os-reliability"
+      ],
+      "tasks": [
+        {
+          "title": "AI OS güvenilir operasyon pilotu",
+          "description": "AI OS'nin güvenilir operasyonunu artırmak için bir pilot projesi başlatma ve yürütme",
+          "projectSlug": "synaptech-ai-os",
+          "assigneeId": "ceo",
+          "priority": "high",
+          "acceptanceCriteria": "Pilot projesi başarıyla tamamlanmalı ve sonuçlar raporlaştırılmalıdır.",
+          "evidenceHint": "mssql:ScheduledJobRun"
+        },
+        {
+          "title": "Marivo ürün geliştirme fırsatları analizi",
+          "description": "Marivo ürünlerindeki fırsatları tanımlama ve değerlendirme",
+          "projectSlug": "marivo",
+          "assigneeId": "developer",
+          "priority": "medium",
+          "acceptanceCriteria": "Fırsatlar ve potansiyel müşteri analizi sonuçları sunulmalıdır.",
+          "evidenceHint": "mssql:Opportunity"
+        },
+        {
+          "title": "Subify kalite ve teknik borç değerlendirme",
+          "description": "Subify projelerindeki kalite ve teknik borç durumunu değerlendirme",
+          "projectSlug": "subify",
+          "assigneeId": "security",
+          "priority": "high",
+          "acceptanceCriteria": "Kalite ve teknik borç durumu ayrıntılı bir raporla sunulmalıdır.",
+          "evidenceHint": "mssql:Opportunity"
+        }
+      ],
+      "risks": [
+        "AI OS güvenilir operasyon pilotu sırasında beklenmeyen sorunlar.",
+        "Marivo ürün geliştirme fırsatlarının doğru analiz edilmesi.",
+        "Subify projelerindeki kalite ve teknik borçların belirlenmesinde zorluklar.",
+        "Maliyet kontrolünün sürdürülebilir hale getirilmesi."
+      ],
+      "requiresOwnerApproval": true,
+      "estimatedAiCost": "local_compute"
+    },
+    "evidence": [
+      {
+        "kind": "audit",
+        "ref": "local_llm:qwen2.5:14b"
+      },
+      {
+        "kind": "mssql",
+        "ref": "ceo_plan_context"
+      },
+      {
+        "kind": "artifact",
+        "ref": "durationMs:7985"
+      }
+    ],
+    "deterministicSummary": {
+      "channel": "deterministic",
+      "realAiExecution": false,
+      "projectCount": 4,
+      "goalCount": 4,
+      "openOpportunityCount": 0,
+      "openTaskCount": 8,
+      "note": "Bu blok LLM çıktısı değildir; MSSQL sayımlarıdır."
+    },
+    "chat": {
+      "realAiExecution": true,
+      "modelId": "qwen2.5:14b",
+      "reply": "1. **AI OS Güvenilir Operasyonun Doğrulanması**\n   - **Gerekçe:** \"AI OS güvenilir operasyon\" hedefi için bir hedef değeri belirlenmiş ve bu hedefin erişilmesi için verimli bir otonom döngü kurulumu ve testi zorunlu. Güvenilir bir AI OS, şirketin diğer projelerinde kullanılabilirlik ve verimliliği artıracaktır. Ayrıca, bu hedefin başarıyla erişilmesi, şirketin müşteri hizmetlerini desteklemek ve yeni müşterileri almak için gereken temel taşıdır.\n\n2. **Subify Kalite ve Teknik Borçun Eleştirel Değerlendirilmesi**\n   - **Gerekçe:** \"Subify kalite ve teknik borç\" hedefi, projenin daha iyi bir performans göstermesi ve uzun vadeli başarı için teknik borçtan kurtulma stratejilerinin geliştirilmesi gerektiğini gösteriyor. Bu değerlendirme, projenin kalitesini artırma ve potansiyel hataları önleme konusundaki bir yol göstericidir.\n\n3. **Marivo Ürün Geliştirme Fırsatlarının Değerlendirilmesi**\n   - **Gerekçe:** \"Marivo ürün geliştirme fırsatları\" hedefi, mevcut ürünlerin potansiyel iyileştirme fırsatlarını ve yeni ürün fikirlerini değerlendirmek için gereklidir. Bu değerlendirme, şirketin ürün portföyüne yeni ve yaratıcı değer eklemeyi sağlayabilir ve potansiyel rekabet avantajlarını artırmayı sağlar.\n\nBu görevler, şirketin ana hedeflerini doğrulayan ve projelerin genel başarılarını artıran kritik adımlar olarak kabul edilmelidir.",
+      "durationHint": "durationMs:6067"
+    },
+    "cloudLive": false,
+    "onDemand": false,
+    "markedScope": "test_pilot_only"
+  }
+}

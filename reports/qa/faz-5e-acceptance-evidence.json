@@ -1,0 +1,27 @@
+{
+  "phase": "5E",
+  "title": "Real AI Autonomy — feasibility + mock pipeline (not live complete)",
+  "faz5eCompleteClaim": false,
+  "realAiExecutionVerified": false,
+  "cloudAgentStarted": false,
+  "onDemandOpened": false,
+  "paidExternalApi": false,
+  "tests": {
+    "command": "pnpm --filter @synaptech/api test",
+    "result": "10 files / 55 tests passed"
+  },
+  "feasibility": {
+    "cursorCloudIsModelProvider": false,
+    "cursorCloudRole": "coding_agent_only",
+    "remainingUsageKnown": false,
+    "cloudAutoDispatchAllowed": false,
+    "localLlmOption": "ollama_compatible_optional"
+  },
+  "apis": [
+    "GET /api/ai/status",
+    "POST /api/ai/ceo/pipeline",
+    "GET /api/ai/growth-hooks"
+  ],
+  "report": "reports/qa/faz-5e-real-ai-autonomy-rapor.md",
+  "ownerApprovalForLive": "tasks/approvals/T-P5E-001-real-provider-pilot.md"
+}

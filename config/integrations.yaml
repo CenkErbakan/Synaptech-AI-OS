@@ -1,0 +1,116 @@
+# SynapTech AI OS — Entegrasyon kaydı
+#
+# Hiçbir harici hesap bağlı değildir. Bağlı olmayan kaynakların verisi gösterilmez.
+# "planned_access" ilk bağlantıda istenecek en dar yetkidir. Korumalı yoldadır.
+
+version: 1
+
+integrations:
+  - id: github
+    name: "GitHub"
+    category: kaynak-kontrol
+    status: not_connected
+    phase: 4
+    purpose: "Branch, pull request, check ve webhook olayları"
+    auth: "GitHub App (kullanıcı kurar; yalnızca test deposu ile başlanır)"
+    planned_access:
+      - "Contents: read/write (yalnızca agent/* branch'leri)"
+      - "Pull requests: write"
+      - "Checks: read"
+      - "Metadata: read"
+
+  - id: cursor-cloud-agents-api
+    name: "Cursor Cloud Agents API (v1)"
+    category: cursor
+    status: not_connected
+    phase: 4
+    purpose: "Ajan başlatma, SSE durum akışı, run iptali, ajan bazlı token kullanımı"
+    auth: "Kullanıcı API anahtarı (yalnızca API sunucusunda saklanır)"
+    notes:
+      - "v1'de webhook yok (v0 API'de var)."
+      - "İptal: POST /v1/agents/{id}/runs/{runId}/cancel (kalıcı)."
+      - "Kullanım plan havuzundan düşer; maliyet kapısı tamamlanmadan bağlanmaz."
+
+  - id: cursor-sdk
+    name: "Cursor SDK (@cursor/sdk)"
+    category: cursor
+    status: not_connected
+    phase: 4
+    purpose: "Yerel veya bulut ajanlarını programatik çalıştırma"
+    auth: "CURSOR_API_KEY (yalnızca API sunucusunda)"
+
+  - id: cursor-automations
+    name: "Cursor Automations"
+    category: cursor
+    status: not_configured
+    phase: 5
+    purpose: "Zamanlanmış veya olay tetikli bulut ajanları"
+    auth: "cursor.com/automations arayüzü (repo dosyasıyla tanımlanamaz)"
+    notes:
+      - "Kişisel hesapta otomasyon tanımlarını kapatan belgelenmiş bir API bulunamadı."
+
+  - id: cursor-usage
+    name: "Cursor hesap kullanımı"
+    category: cursor
+    status: unsupported
+    phase: null
+    purpose: "Havuz kullanım oranı ve harcama"
+    auth: "Admin API yalnızca Enterprise ekiplerde"
+    notes:
+      - "Bireysel legacy Pro hesabında programatik erişim yok; kullanım manuel girilir."
+
+  - id: google-search-console
+    name: "Google Search Console"
+    category: buyume
+    status: not_connected
+    phase: 5
+    purpose: "Arama performansı, dizin durumu, sitemap"
+    auth: "Google OAuth"
+    planned_access:
+      - "https://www.googleapis.com/auth/webmasters.readonly"
+
+  - id: google-analytics-4
+    name: "Google Analytics 4"
+    category: buyume
+    status: not_connected
+    phase: 5
+    purpose: "Organik trafik ve dönüşüm raporları"
+    auth: "Google OAuth"
+    planned_access:
+      - "https://www.googleapis.com/auth/analytics.readonly"
+
+  - id: google-ads
+    name: "Google Ads"
+    category: buyume
+    status: not_connected
+    phase: 5
+    purpose: "Kampanya performans raporları (salt okuma)"
+    auth: "Google OAuth + developer token"
+    planned_access:
+      - "Google Ads API'de salt okuma OAuth kapsamı yoktur (tek kapsam: adwords)."
+      - "Salt okuma, Google Ads hesabında 'Salt okunur' erişim düzeyine sahip ayrı bir kullanıcıyla sağlanmalıdır."
+
+  - id: meta-ads
+    name: "Meta Ads"
+    category: buyume
+    status: not_connected
+    phase: 5
+    purpose: "Kampanya performans raporları (salt okuma)"
+    auth: "Meta Marketing API"
+    planned_access:
+      - "ads_read (ads_management istenmez)"
+
+  - id: mssql
+    name: "MSSQL (Docker, izole)"
+    category: altyapi
+    status: not_installed
+    phase: 3
+    purpose: "Görev motoru, olay kaydı ve onay kayıtları"
+    auth: "Yerel konteyner; mevcut SQLEXPRESS örneği kullanılmaz"
+    versions:
+      prisma: "7.10.1"
+      prisma_client: "7.10.1"
+      prisma_adapter_mssql: "7.10.1"
+      sql_server_image: "mcr.microsoft.com/mssql/server:2022-latest"
+    notes:
+      - "Prisma 8 (npm latest etiketi, RC) SQL Server desteklemez; kullanılmaz."

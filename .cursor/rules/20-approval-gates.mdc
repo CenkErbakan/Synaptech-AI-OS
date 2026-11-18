@@ -1,0 +1,31 @@
+---
+description: Onay gerektiren işlemler, onay talebi biçimi ve sürüme bağlı onay
+alwaysApply: true
+---
+
+# Onay kapıları
+
+Aşağıdaki işlemleri hiçbir ajan doğrudan yapamaz. Gerektiğinde işi durdur ve onay talebi hazırla.
+
+- `protected_branch_merge`: korumalı branch merge
+- `production_deploy`: production deploy
+- `db_migration`: veritabanı migration
+- `blog_publish`: blog yayını
+- `ad_campaign_launch`: reklam kampanyası başlatma veya değiştirme
+- `ad_budget_change`: reklam bütçesi değişikliği
+- `customer_message`: müşteriye ileti ve harici iletişim
+
+Harcama gerektiren her işlem de onaya tabidir.
+
+## Onay talebi
+Dosya: `tasks/approvals/<görev-id>-<tür>.md` (şablon: `tasks/templates/approval-request.md`). Zorunlu alanlar:
+- tür, isteyen ajan, proje, görev kimliği
+- risk: Düşük | Orta | Yüksek | Kritik
+- açıklama ve değişiklik özeti
+- bağlı sürüm: commit SHA (`git rev-parse HEAD`) veya içerik SHA-256 (`Get-FileHash -Algorithm SHA256 <dosya>`)
+- geri alma planı
+
+## Kurallar
+- Onay yalnızca belirtilen sürüm için geçerlidir. İçerik veya commit değişirse yeni onay gerekir.
+- Onayı yalnızca kullanıcı verir. Ajanlar onay durumunu değiştiremez.
+- Onay verilse bile işlemi ajan yapmaz. Faz 3'te bunu güvenilir yürütücü servis yapacak; Faz 1-2'de yürütücü yoktur ve onaylanan işi kullanıcı manuel uygular.

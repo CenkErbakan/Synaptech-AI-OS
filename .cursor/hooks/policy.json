@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "phase": 2,
+  "killSwitchFile": "config/kill-switch.json",
+  "auditDir": ".synaptech/audit",
+  "stateDir": ".synaptech/state",
+  "subagents": {
+    "maxConcurrent": 2,
+    "slotTtlMinutes": 30,
+    "maxLaunchesPerConversation": 12,
+    "launchWindowHours": 24,
+    "deniedModelPatterns": ["fable", "fast"]
+  },
+  "protectedPaths": [
+    ".cursor/**",
+    "AGENTS.md",
+    "config/**",
+    "docs/security-policy.md",
+    ".synaptech/**",
+    ".github/workflows/**"
+  ],
+  "secretPaths": [
+    "**/.env",
+    "**/.env.*",
+    "**/*.pem",
+    "**/*.key",
+    "**/secrets/**",
+    "**/credentials.json"
+  ],
+  "secretPathExceptions": [
+    "**/.env.example",
+    "**/.env*.example"
+  ],
+  "mcp": {
+    "allowedServers": ["cursor-ide-browser"],
+    "localhostOnlyServers": ["cursor-ide-browser"]
+  },
+  "shell": {
+    "allowLocalhostNetwork": true,
+    "denyAllDatabaseCli": true,
+    "allowPushBranches": []
+  }
+}

@@ -1,0 +1,32 @@
+# Bağımlılıklar ve derleme çıktıları
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Gizli bilgiler: asla commit etmeyin
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+
+# SynapTech yerel denetim ve durum kayıtları (Cursor hook'ları yazar)
+.synaptech/
+
+# Ajan izole sandbox kopyaları (yerel)
+.sandbox/
+apps/api/.sandbox/
+
+# Günlükler ve işletim sistemi dosyaları
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db

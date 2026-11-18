@@ -1,0 +1,20 @@
+---
+description: Rapor ve görev belgelerinin adlandırma ve biçim kuralları
+globs: reports/**, tasks/**
+alwaysApply: false
+---
+
+# Rapor ve görev belgeleri
+
+- Dosya adları:
+  - `reports/daily/YYYY-MM-DD-<ajan>.md`
+  - `reports/weekly/YYYY-Www-<konu>.md`
+  - `reports/qa/YYYY-MM-DD-<görev-id>.md`
+  - `reports/security/YYYY-MM-DD.md`
+  - `tasks/T-XXXX-<kısa-ad>.md`
+  - `tasks/pr-drafts/<görev-id>.md`
+  - `tasks/approvals/<görev-id>-<tür>.md`
+- Şablonlar `reports/templates/` ve `tasks/templates/` altındadır. Frontmatter alanlarını silme; Dashboard bu alanları okur.
+- Her raporda "Veri kaynakları" bölümü bulunur: kaynak gerçek mi, manuel mi, bağlı değil mi.
+- Raporlar DEMO verisi içermez.
+- `tasks/` altındaki belgeler Faz 3'e kadar görev motoru kaydı değildir; Dashboard bunları "Gerçek · Dosya" olarak listeler.

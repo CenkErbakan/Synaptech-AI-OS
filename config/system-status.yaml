@@ -1,0 +1,26 @@
+# SynapTech AI OS — Sistem durumu beyanı
+#
+# Dashboard'daki faz durum şeridi bu dosyadan okunur. Korumalı yoldadır; ajanlar
+# değiştiremez. "autonomy" yalnızca Faz 3 ve Faz 4 kabul testleri (uçtan uca test
+# dahil) geçtikten sonra kullanıcı tarafından "enabled" yapılabilir.
+
+version: 1
+
+phase:
+  current: 4
+  total: 5
+  label: "Faz 4 MVP: gözlem + DEMO"
+
+autonomy: disabled
+
+integrations:
+  cursor: none
+  github: not_connected
+  task_engine: not_installed
+  database: not_installed
+
+acceptance:
+  phase3_passed: false
+  phase4_e2e_passed: false
+
+statement: "Sistem otonom değildir. Görev motoru (Faz 3) ile Cursor ve GitHub entegrasyonu (Faz 4) tamamlanmadı."

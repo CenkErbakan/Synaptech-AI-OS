@@ -1,0 +1,26 @@
+{
+  "name": "synaptech-ai-os",
+  "version": "0.3.0",
+  "private": true,
+  "description": "SynapTech AI OS — Faz 3 Control Layer (görev motoru + MSSQL). Sistem otonom değildir.",
+  "packageManager": "pnpm@11.13.0",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=11"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @synaptech/dashboard dev",
+    "dev:api": "pnpm --filter @synaptech/api dev",
+    "dev:stack": "pnpm --filter @synaptech/api dev",
+    "build": "pnpm --filter @synaptech/dashboard build",
+    "start": "pnpm --filter @synaptech/dashboard start",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test && pnpm test:guards",
+    "test:guards": "node --test \".cursor/hooks/tests/*.test.mjs\"",
+    "db:up": "docker compose up -d mssql",
+    "db:down": "docker compose stop mssql",
+    "db:setup": "pnpm --filter @synaptech/api db:setup",
+    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm build"
+  }
+}

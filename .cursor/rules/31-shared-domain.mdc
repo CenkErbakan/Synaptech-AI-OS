@@ -1,0 +1,15 @@
+---
+description: Ortak alan modeli (packages/shared) kuralları
+globs: packages/shared/**
+alwaysApply: false
+---
+
+# Ortak alan modeli
+
+- Fonksiyonlar saftır: dosya sistemi, ağ veya `Date.now()` çağrısı yok. Zaman `now` parametresiyle gelir.
+- Her kayıt tipinde zorunlu `source` alanı vardır; DEMO kayıtları `source: "demo"` taşır.
+- Görev durum değişiklikleri yalnızca `applyTaskAction` üzerinden yapılır. Yeni geçiş eklerken test yaz.
+- Onaylar sürüme bağlıdır (`subject.version`); bu bağı gevşetme.
+- Kill switch açıkken yeni görev, yeniden başlatma, devam ettirme ve onay reddedilir; durdurma ve iptal her zaman serbesttir.
+- Değişiklikten sonra `pnpm --filter @synaptech/shared test` çalıştır.
+- Faz 3'te API bu paketi aynen kullanacak; dashboard'a özgü kod ekleme.

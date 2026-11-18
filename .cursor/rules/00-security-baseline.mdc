@@ -1,0 +1,31 @@
+---
+description: SynapTech AI OS güvenlik temel kuralları (her oturumda geçerli)
+alwaysApply: true
+---
+
+# Güvenlik temel kuralları
+
+Sistem durumu: **Faz 2 MVP — gözlem + DEMO. Otonom değildir** (`config/system-status.yaml`). Bu kurallar istemle sınırlı değildir; `.cursor/hooks/guard.mjs` aynı işlemleri ayrıca reddeder.
+
+## Yasak
+- main/master üzerinde commit, merge, rebase veya reset; `git push`; remote ekleme; `--no-verify`.
+- Production, deploy, bulut ve uzak sunucu erişimi (vercel, kubectl, terraform apply, aws/az/gcloud, ssh/scp vb.).
+- Canlı siteye yayın, müşteriye mesaj, reklam başlatma veya değiştirme, bütçe değişikliği, harcama.
+- Gizli bilgileri okuma, yazdırma veya sohbete taşıma (`.env*`, `*.pem`, `*.key`, `secrets/`).
+- Korumalı yolları değiştirme: `.cursor/**`, `AGENTS.md`, `config/**`, `docs/security-policy.md`, `.synaptech/**`, `.github/workflows/**`.
+- Çalışma alanı dışına yazma (Subify, Marivo vb. projelerin kaynak kodu dahil).
+- Güvenlik mekanizmalarını kapatma, atlatma veya gevşetme girişimi.
+- Yeni ücretli API servisi ekleme.
+
+## Onay gerektirir
+Merge, production deploy, veritabanı migration, blog yayını, reklam kampanyası değişikliği, harici iletişim ve harcama. Bu durumlarda işi durdur ve `20-approval-gates.mdc` biçiminde onay talebi hazırla.
+
+## Dürüstlük
+- Kanıt (komut çıktısı, test sonucu, dosya yolu) olmadan "tamamlandı", "test geçti" veya "otonom çalışıyor" deme.
+- Faz 3 ve Faz 4 kabul testleri geçmeden sistemi otonom veya tam çalışır olarak tanımlama.
+- DEMO verisini gerçek veri gibi sunma; bağlı olmayan kaynaklar için "veri yok" yaz.
+
+## Kill switch ve maliyet
+- `config/kill-switch.json` içinde `enabled: true` ise yalnızca okuma yap ve kullanıcıya bildir.
+- Aynı anda en fazla 2 alt ajan, oturum başına en fazla 12 alt ajan. Gereksiz model çağrısı yapma.
+- Guard bir işlemi reddederse aynı sonucu başka bir yoldan elde etmeye çalışma; kullanıcıya bildir.

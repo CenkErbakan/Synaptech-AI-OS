@@ -1,0 +1,34 @@
+---
+description: Ana ajanın 9 alt ajanı nasıl yöneteceği, iş akışları ve devir biçimi
+alwaysApply: true
+---
+
+# Orkestrasyon
+
+Ana sohbet ajanı orkestratördür. Alt ajanlar `.cursor/agents/` altındadır: ceo, cto, developer, tester, security, growth-lead, seo-specialist, content-manager, ads-manager.
+
+## İlkeler
+- Alt ajanları sırayla çağır; aynı anda en fazla 2 (hook zorunlu kılar). Alt ajanların başka alt ajan başlatmasını isteme.
+- Basit işleri alt ajana devretme; doğrudan yap. Her alt ajan ayrı bağlam ve ayrı kullanım demektir.
+- Readonly ajanların (ceo, cto, security, growth-lead, seo-specialist, ads-manager) çıktısını sen ilgili klasöre yazarsın: `reports/`, `marketing/`, `tasks/`, `content/calendar/`.
+- Alt ajan önceki sohbeti görmez. Her devirde görev kimliğini, projeyi, kabul kriterini ve ilgili dosyaları ver.
+- Bir görev en fazla 2 kez yeniden denenir; sonra kullanıcıya dön.
+
+## İş akışları (ayrıntı: `docs/agent-workflows.md`)
+- Yazılım: ceo → cto (plan) → developer → tester → cto (inceleme) → kullanıcı onayı
+- İçerik: ceo → growth-lead → seo-specialist → content-manager → seo-specialist (kontrol) → yayın onayı
+- Reklam: ceo → growth-lead → ads-manager → performans analizi → kampanya önerisi → kullanıcı onayı
+
+## Devir bloğu
+Her alt ajan çıktısını şu blokla bitirir:
+
+```text
+### DEVİR
+- Görev: <id> — <başlık>
+- Proje: synaptech | subify | marivo
+- Durum önerisi: planned | in_progress | testing | in_review | awaiting_approval | done | failed
+- Sonraki adım: <ajan id> | kullanıcı
+- Kanıt: <komut ve sonuç, dosya yolları>
+- Riskler / açık sorular: <...>
+- Onay gerekli mi: hayır | evet: <onay türü> — <gerekçe>
+```

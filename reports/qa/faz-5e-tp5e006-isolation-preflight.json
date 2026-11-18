@@ -1,0 +1,105 @@
+{
+  "taskId": "T-P5E-006",
+  "at": "2026-11-18T02:17:22.959Z",
+  "shaCheck": {
+    "acceptance-verifier.ts": {
+      "actual": "7BC4B9919A9987BD672A7ABBFAF828F1CCCC896A122D91F16E81BFECB053A0EE",
+      "expected": "7BC4B9919A9987BD672A7ABBFAF828F1CCCC896A122D91F16E81BFECB053A0EE",
+      "match": true
+    },
+    "sandbox-patch.ts": {
+      "actual": "CEA5E340F63DE247F355B9CFDE78EE70CCC053B2ED9AAA7B7C413CD6B8EBC8E8",
+      "expected": "CEA5E340F63DE247F355B9CFDE78EE70CCC053B2ED9AAA7B7C413CD6B8EBC8E8",
+      "match": true
+    },
+    "sandbox-runner.ts": {
+      "actual": "9582CB07906B3781EBACB4191AA0EB2EA2DCA37F58B8603CD01FBEDCBD385EAD",
+      "expected": "9582CB07906B3781EBACB4191AA0EB2EA2DCA37F58B8603CD01FBEDCBD385EAD",
+      "match": true
+    },
+    "local-agent-execution.ts": {
+      "actual": "387E81DFB5D80213E254743AB2025F5C2DFFB1729A51D8BB5E18D767939FFB7E",
+      "expected": "387E81DFB5D80213E254743AB2025F5C2DFFB1729A51D8BB5E18D767939FFB7E",
+      "match": true
+    }
+  },
+  "killEnabled": false,
+  "env": {
+    "AGENT_REPO_TOOLS_MODE": "off",
+    "AGENT_SANDBOX_MODE": "off",
+    "LOCAL_AGENT_EXECUTION_MODE": "off",
+    "SCHEDULER_AI_CEO_MODE": "off",
+    "CLOUD_AGENT_LIVE_ENABLED": false,
+    "CURSOR_CLOUD_MODE": "mock",
+    "CLOUD_ON_DEMAND_VERIFIED": false,
+    "MODEL_PROVIDER": "local",
+    "LOCAL_LLM_MODEL": "qwen2.5:14b"
+  },
+  "ollamaOk": true,
+  "ollamaModels": [
+    "qwen2.5:14b"
+  ],
+  "ollamaError": null,
+  "pathIsolation": {
+    "sandboxRoot": "C:\\Users\\cenke\\AppData\\Local\\Temp\\synaptech-agent-ny07B2",
+    "underOsTmp": true,
+    "overlapsForbidden": [
+      {
+        "root": "C:\\Users\\cenke\\Desktop\\Projeler\\Synaptech AI OS",
+        "overlaps": false
+      },
+      {
+        "root": "C:\\Users\\cenke\\Desktop\\Projeler\\Subify",
+        "overlaps": false
+      },
+      {
+        "root": "C:\\Users\\cenke\\Desktop\\Projeler\\Marivo",
+        "overlaps": false
+      },
+      {
+        "root": "C:\\Users\\cenke\\Desktop\\Projeler\\SynapTech",
+        "overlaps": false
+      }
+    ]
+  },
+  "isolation": {
+    "fileSystem": {
+      "patchPathJail": true,
+      "secretsExcludedFromCopy": true,
+      "childProcessChrootOrContainer": false,
+      "childCanWriteOutsideSandbox": true,
+      "proven": false,
+      "note": "Patch jail var; spawn edilen süreç chroot/container değil — sandbox dışı yazabilir."
+    },
+    "process": {
+      "shellFalse": true,
+      "allowListOnly": true,
+      "timeoutKill": true,
+      "jobObjectOrContainer": false,
+      "proven": false,
+      "note": "Allow-list + timeout var; tam süreç izolasyonu (container/job) yok."
+    },
+    "network": {
+      "blocked": false,
+      "proven": false,
+      "note": "Child env'de proxy yok; ağ engeli uygulanmıyor. node/npm dışarı çıkabilir."
+    },
+    "scriptRisk": {
+      "packageJsonScriptsCanBeArbitrary": true,
+      "note": "npm_test/pnpm_test proje scripts üzerinden keyfi komut çalıştırabilir."
+    }
+  },
+  "allowlist": [
+    "pnpm_test",
+    "pnpm_typecheck",
+    "pnpm_lint",
+    "node_vitest_run_file",
+    "npm_test",
+    "node_test"
+  ],
+  "liveTestAllowed": false,
+  "blocks": [
+    "sandbox_isolation_unproven"
+  ],
+  "verdict": "BLOCKED"
+}

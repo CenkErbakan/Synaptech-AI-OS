@@ -1,0 +1,184 @@
+# SynapTech AI OS — Yetki ve otonomi matrisi (Balanced)
+#
+# "enforced_by" alanı, kuralın yalnızca istemle değil hangi gerçek mekanizmayla
+# uygulandığını belirtir. "Faz 3/4" ile işaretli mekanizmalar henüz kurulmadı.
+# Korumalı yoldadır; ajanlar değiştiremez.
+
+version: 1
+autonomy_level: balanced
+
+levels:
+  auto: "Otomatik yapılabilir"
+  approval: "Kullanıcı onayı gerekir"
+  forbidden: "Yasak"
+
+actions:
+  # --- Otomatik yapılabilir ---
+  - id: task.create
+    label: "Görev oluşturma"
+    level: auto
+    actors: [user, ceo, cto, growth-lead]
+    enforced_by:
+      - "Görev durum makinesi ve kill switch kontrolü (packages/shared)"
+  - id: code.review
+    label: "Kod inceleme"
+    level: auto
+    actors: [cto, security]
+    enforced_by:
+      - "readonly alt ajan (Cursor dosya düzenlemeyi engeller)"
+  - id: code.develop_feature_branch
+    label: "İzinli branch üzerinde kod geliştirme"
+    level: auto
+    actors: [developer]
+    enforced_by:
+      - "Guard: main/master üzerinde commit, merge, rebase ve reset reddi"
+      - "Guard: korumalı yollara ve çalışma alanı dışına yazma reddi"
+  - id: tests.run_isolated
+    label: "İzole ortamda test"
+    level: auto
+    actors: [tester, developer]
+    enforced_by:
+      - "Guard: deploy, bulut ve uzak erişim CLI'ları reddi"
+  - id: pr.prepare
+    label: "Pull request hazırlama (yerel taslak)"
+    level: auto
+    actors: [developer]
+    enforced_by:
+      - "Guard: git push ve gh pr create reddi (Faz 1-2)"
+  - id: report.create
+    label: "Rapor oluşturma"
+    level: auto
+    actors: [ceo, cto, tester, security, growth-lead, seo-specialist, content-manager, ads-manager]
+    enforced_by:
+      - "Kural: kanıtsız tamamlandı beyanı yasak (00-security-baseline.mdc)"
+  - id: seo.analyze
+    label: "SEO analizi"
+    level: auto
+    actors: [seo-specialist, growth-lead]
+    enforced_by:
+      - "readonly alt ajan"
+  - id: blog.draft
+    label: "Blog taslağı hazırlama"
+    level: auto
+    actors: [content-manager]
+    enforced_by:
+      - "Yayın entegrasyonu yok"
+  - id: ads.propose
+    label: "Reklam önerisi üretme"
+    level: auto
+    actors: [ads-manager, growth-lead]
+    enforced_by:
+      - "readonly alt ajan"
+      - "Reklam hesapları bağlı değil"
+
+  # --- Kullanıcı onayı gerekir (Onay Merkezi türleriyle eşleşir) ---
+  - id: git.merge_protected
+    label: "Korumalı branch merge"
+    level: approval
+    approval_type: protected_branch_merge
+    risk: high
+    executor: trusted-executor
+    enforced_by:
+      - "Guard: main/master üzerinde merge reddi"
+      - "Faz 4: GitHub branch protection"
+      - "Faz 3: işlemi yalnızca güvenilir yürütücü yapar"
+  - id: deploy.production
+    label: "Production deploy"
+    level: approval
+    approval_type: production_deploy
+    risk: critical
+    executor: trusted-executor
+    enforced_by:
+      - "Guard: deploy ve bulut CLI reddi"
+      - "Production kimlik bilgisi yok"
+  - id: db.migration
+    label: "Veritabanı migration"
+    level: approval
+    approval_type: db_migration
+    risk: high
+    executor: trusted-executor
+    enforced_by:
+      - "Guard: veritabanı CLI'ları ve migration deploy reddi (Faz 1-2)"
+  - id: blog.publish
+    label: "Blog yayını"
+    level: approval
+    approval_type: blog_publish
+    risk: medium
+    executor: trusted-executor
+    enforced_by:
+      - "Yayın entegrasyonu yok"
+      - "Guard: izin listesi dışındaki MCP sunucularının reddi"
+  - id: ads.campaign_launch
+    label: "Reklam kampanyası başlatma veya değiştirme"
+    level: approval
+    approval_type: ad_campaign_launch
+    risk: high
+    executor: trusted-executor
+    enforced_by:
+      - "Reklam hesapları bağlı değil"
+      - "Ads Manager readonly"
+  - id: ads.budget_change
+    label: "Reklam bütçesi değiştirme"
+    level: approval
+    approval_type: ad_budget_change
+    risk: high
+    executor: trusted-executor
+    enforced_by:
+      - "Reklam hesapları bağlı değil"
+      - "Ads Manager readonly"
+  - id: external.customer_message
+    label: "Müşteriye ileti gönderme ve harici iletişim"
+    level: approval
+    approval_type: customer_message
+    risk: high
+    executor: trusted-executor
+    enforced_by:
+      - "Mesajlaşma entegrasyonu yok"
+      - "Guard: izin listesi dışındaki MCP sunucularının reddi"
+  - id: spend.money
+    label: "Harcama gerektiren işlemler"
+    level: approval
+    # Onay Merkezi'nde ilgili işlem türüyle (ör. reklam bütçesi) temsil edilir.
+    approval_type: null
+    risk: critical
+    executor: trusted-executor
+    enforced_by:
+      - "budget-policy.yaml: ek AI API bütçesi $0"
+      - "On-Demand kapalı (kullanıcı beyanı; yalnızca kullanıcı doğrulayabilir)"
+
+  # --- Yasak ---
+  - id: prod.data_delete
+    label: "Production verisi silme"
+    level: forbidden
+    enforced_by:
+      - "Guard: yıkıcı SQL ve veritabanı CLI'ları reddi"
+      - "Production erişimi yok"
+  - id: secrets.exfiltrate
+    label: "Gizli bilgi sızdırma"
+    level: forbidden
+    enforced_by:
+      - "Guard: gizli dosya okuma/yazma ve ortam değişkeni dökümü reddi"
+      - ".cursorignore"
+      - "Guard: istemde gizli anahtar kalıbı tespiti"
+  - id: policy.modify
+    label: "Yetki politikasını değiştirme"
+    level: forbidden
+    enforced_by:
+      - "Guard: korumalı yollara yazma reddi (.cursor/**, config/**, AGENTS.md, docs/security-policy.md)"
+  - id: server.unrestricted_access
+    label: "Sınırsız sunucu erişimi"
+    level: forbidden
+    enforced_by:
+      - "Guard: ssh/scp, uzak oturum, bulut CLI ve yetki yükseltme reddi"
+  - id: spend.without_approval
+    label: "Kullanıcı onayı olmadan mali harcama"
+    level: forbidden
+    enforced_by:
+      - "Ödeme ve reklam entegrasyonu yok"
+      - "On-Demand kapalı (kullanıcı beyanı)"
+  - id: security.disable
+    label: "Güvenlik mekanizmalarını kapatma"
+    level: forbidden
+    enforced_by:
+      - "Guard: hooks.json, policy.json ve kurallar korumalı yolda"
+      - "Guard: --no-verify ve core.hooksPath değişikliği reddi"

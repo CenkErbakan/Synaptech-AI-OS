@@ -1,0 +1,30 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Ortak bağımlılık sürümleri tek yerden yönetilir ("catalog:" referansı).
+# Faz 3'te Prisma buraya TAM sürümle eklenecek: prisma, @prisma/client ve
+# @prisma/adapter-mssql 7.10.1. Prisma 8 (latest etiketi, RC) SQL Server
+# desteklemediği için kullanılmaz.
+catalog:
+  typescript: ^5.9.3
+  vitest: ^5.1.0
+  zod: ^4.6.7
+  yaml: ^2.9.1
+  "@types/node": ^24.19.2
+  prisma: 7.10.1
+  "@prisma/client": 7.10.1
+  "@prisma/adapter-mssql": 7.10.1
+  fastify: ^5.6.2
+  dotenv: ^17.2.3
+
+# Bağımlılık kurulum betikleri varsayılan olarak çalıştırılmaz.
+allowBuilds:
+  "@prisma/engines": true
+  esbuild: true
+  prisma: true
+  sharp: false
+  unrs-resolver: false
+
+minimumReleaseAgeExclude:
+  - lucide-react@1.74.0

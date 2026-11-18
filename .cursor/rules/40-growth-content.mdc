@@ -1,0 +1,15 @@
+---
+description: İçerik, SEO ve reklam çalışma kuralları
+globs: content/**, marketing/**
+alwaysApply: false
+---
+
+# Büyüme içerik kuralları
+
+- Hiçbir içerik yayınlanmaz. Blog taslakları `status: draft`, `seo_review: pending`, `publish_approval: pending` ile başlar; yayın onayını yalnızca kullanıcı verir.
+- Mükerrerlik: SynapTech'in çalışan bir blog otomasyonu var. Konu seçmeden önce `content/published-index.md` dosyasını ve mevcut taslakları kontrol et. Liste yoksa bunu risk olarak yaz ve kullanıcıya sor. Mevcut yayın düzenini değiştirme.
+- Türkçe ve İngilizce sürümler ayrı dosyalardır: `content/blog/drafts/tr/`, `content/blog/drafts/en/`. Birebir çeviri yerine her dilin arama niyetine göre yaz.
+- Meta başlık en fazla 60, meta açıklama en fazla 155 karakterdir.
+- Arama hacmi, trafik, TBM ve dönüşüm gibi metrikleri uydurma. Kaynak yoksa "veri yok (GSC/GA4 bağlı değil)" yaz.
+- Reklam: yalnızca öneri ve taslak (`marketing/ads/`). Kampanya başlatma, değiştirme ve bütçe değişikliği onay talebidir.
+- Rakip analizinde yalnızca herkese açık bilgileri kullan ve kaynak bağlantısı ver.

@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "note": "Owner 2026-11-18: yerel salt-okunur bağ. GitHub push/yazma yok. Uzak clone yok.",
+  "discoveredAt": "2026-11-18T17:20:00.000Z",
+  "bindings": [
+    {
+      "projectSlug": "subify",
+      "githubRepoUrl": "https://github.com/CenkErbakan/Subify",
+      "localReadRoot": "C:\\Users\\cenke\\Desktop\\Projeler\\Subify",
+      "verified": true,
+      "verifiedBy": "owner_file",
+      "readOnly": true,
+      "writeAllowed": false,
+      "evidenceNotes": [
+        "Owner: yerel checkout remote origin eşleşmesi doğrulandı",
+        "read_only; push/PR yok"
+      ]
+    },
+    {
+      "projectSlug": "marivo",
+      "githubRepoUrl": "https://github.com/CenkErbakan/marivo",
+      "localReadRoot": "C:\\Users\\cenke\\Desktop\\Projeler\\Marivo",
+      "verified": true,
+      "verifiedBy": "owner_file",
+      "readOnly": true,
+      "writeAllowed": false,
+      "evidenceNotes": [
+        "Owner: yerel checkout remote origin eşleşmesi doğrulandı",
+        "read_only; push/PR yok"
+      ]
+    },
+    {
+      "projectSlug": "synaptech",
+      "githubRepoUrl": "https://github.com/CenkErbakan/SynapTech",
+      "localReadRoot": "C:\\Users\\cenke\\Desktop\\Projeler\\SynapTech",
+      "verified": true,
+      "verifiedBy": "owner_file",
+      "readOnly": true,
+      "writeAllowed": false,
+      "evidenceNotes": [
+        "Owner: yerel checkout remote origin eşleşmesi doğrulandı",
+        "read_only; push/PR yok"
+      ]
+    },
+    {
+      "projectSlug": "synaptech-ai-os",
+      "githubRepoUrl": null,
+      "localReadRoot": "C:\\Users\\cenke\\Desktop\\Projeler\\Synaptech AI OS",
+      "verified": true,
+      "verifiedBy": "owner_file",
+      "readOnly": true,
+      "writeAllowed": false,
+      "evidenceNotes": [
+        "Owner: bu çalışma alanı AI OS kaynak kökü; git remote yok",
+        "salt-okunur config/kod incelemesi; GitHub yazma yok"
+      ]
+    }
+  ]
+}

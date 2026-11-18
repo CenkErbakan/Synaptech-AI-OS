@@ -1,0 +1,41 @@
+{
+  "name": "@synaptech/api",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "description": "SynapTech AI OS Control Layer API — Fastify + Prisma 7.10.1 + MSSQL (Faz 4A Cursor Cloud adapter).",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node --import tsx src/index.ts",
+    "worker": "node --import tsx src/worker.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:seed": "tsx prisma/seed.ts",
+    "db:setup": "prisma migrate deploy && tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@fastify/rate-limit": "^10.3.0",
+    "@fastify/swagger": "^9.5.2",
+    "@fastify/swagger-ui": "^5.2.3",
+    "@prisma/adapter-mssql": "catalog:",
+    "@prisma/client": "catalog:",
+    "@synaptech/shared": "workspace:*",
+    "dotenv": "catalog:",
+    "fastify": "catalog:",
+    "mssql": "^12.2.0",
+    "yaml": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "prisma": "catalog:",
+    "tsx": "^4.20.6",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

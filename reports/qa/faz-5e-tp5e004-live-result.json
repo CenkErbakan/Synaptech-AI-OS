@@ -1,0 +1,81 @@
+{
+  "taskId": "T-P5E-004",
+  "httpStatus": 200,
+  "wallClockMs": 13676,
+  "result": {
+    "source": "api",
+    "continuousAutomation": false,
+    "mode": "local",
+    "processed": [
+      {
+        "taskId": "e07d1fd4-20f4-44e2-86cf-b75415c0f89d",
+        "assigneeId": "developer",
+        "channel": "local_llm",
+        "realAiExecution": true,
+        "status": "planned",
+        "acceptanceMet": false,
+        "codeChangeApplied": false,
+        "isDepartmentHandoff": false,
+        "modelId": "qwen2.5:14b",
+        "durationMs": 6466,
+        "messageId": "bba9bd8a-ca07-44be-a5a9-fb8cfe8604d6"
+      },
+      {
+        "taskId": "e8e0cfc6-e98b-4b70-966d-60b5c33398eb",
+        "assigneeId": "cto",
+        "channel": "local_llm",
+        "realAiExecution": true,
+        "status": "planned",
+        "acceptanceMet": false,
+        "codeChangeApplied": false,
+        "isDepartmentHandoff": false,
+        "modelId": "qwen2.5:14b",
+        "durationMs": 6855,
+        "messageId": "ae50844f-7f2d-4ec4-b0a9-cba55f5fe300"
+      }
+    ],
+    "cloudStarted": false
+  },
+  "tasks": [
+    {
+      "id": "e8e0cfc6-e98b-4b70-966d-60b5c33398eb",
+      "title": "Subify kalite ve teknik borç kontrolleri",
+      "assigneeId": "cto",
+      "status": "planned",
+      "model": "qwen2.5:14b",
+      "executionKind": "local_llm",
+      "blockedReason": "acceptance_not_met",
+      "projectSlug": "subify",
+      "executionResult": "{\"modelId\":\"qwen2.5:14b\",\"executedAt\":\"2026-11-18T01:36:54.481Z\",\"taskId\":\"e8e0cfc6-e98b-4b70-966d-60b5c33398eb\",\"agentId\":\"cto\",\"executionKind\":\"local_llm\",\"realAiExecution\":true,\"evidenceUsed\":[\"mssql:Task#count=140\"],\"acceptanceMet\":false,\"codeChangeApplied\":false,\"durationMs\":6855,\"work\":{\"summary\":\"Subify projelerinin kalite ve teknik borç durumunu kontrol etmek için mssql veritabanından elde edilen kanıt ve verilen parametreler doğrultusunda teknik analiz ve risk değerlendirmesi yapıldı.\",\"analysis\":\"MSSQL veritabanından elde edilen kanıtlara dayanılarak, Subify projelerinin mevcut durumu incelendi. Veritabanı kanıtı, 140 adet mevcut görevin varlığını doğruladı. Müşteri taleplerine ve teknik gereksinimlere dayalı olarak, projenin kalite kontrol ve teknik borç yönetimi açısından incelenmesi gerekmektedir.\",\"recommendations\":[\"Kalite kontrol sürecine dahil olacak yeni doğrulama adımları belirlenmelidir.\",\"Mevcut teknik borçları analiz etmek ve gerekli düzenlemeleri belirlemek için bir değerlendirme raporu oluşturulmalıdır.\",\"Projeye dahil olan görevlerin düzenli olarak takip edilmesi ve değerlendirilmesi önerilir.\"],\"acceptanceMet\":false,\"acceptanceNotes\":\"MSSQL veritabanından elde edilen kanıtlara dayanılarak, proje kalite kontrol ve teknik borç durumu değerlendirildi. Ancak, önerilen düzenlemelerin uygulanması ve değerlendirme raporunun hazırlanması gerekmektedir.\",\"codeChangeApplied\":false,\"evidenceUsed\":[\"mssql:Task#count=140\"],\"risks\":[\"Mevcut görevlerin kalite kontrol sürecine uygun olmadığı durumda potansiyel hatalar ve sorunlar ortaya çıkabilir.\",\"Teknik borçlarla ilgili sorunlar, projenin geliştirilmesinde gecikme ve maliyet artışı oluşturabilir.\"],\"requiresOwnerApproval\":true}}"
+    },
+    {
+      "id": "e07d1fd4-20f4-44e2-86cf-b75415c0f89d",
+      "title": "AI OS güvenilir operasyon testleri ve iyileştirmeler",
+      "assigneeId": "developer",
+      "status": "planned",
+      "model": "qwen2.5:14b",
+      "executionKind": "local_llm",
+      "blockedReason": "acceptance_not_met",
+      "projectSlug": "synaptech-ai-os",
+      "executionResult": "{\"modelId\":\"qwen2.5:14b\",\"executedAt\":\"2026-11-18T01:36:47.497Z\",\"taskId\":\"e07d1fd4-20f4-44e2-86cf-b75415c0f89d\",\"agentId\":\"developer\",\"executionKind\":\"local_llm\",\"realAiExecution\":true,\"evidenceUsed\":[\"mssql:ScheduledJobRun#count=55\"],\"acceptanceMet\":false,\"codeChangeApplied\":false,\"durationMs\":6466,\"work\":{\"summary\":\"AI OS'nin güvenilir operasyon testleri ve iyileştirmeleri uygulanması.\",\"analysis\":\"MSSQL veritabanında 'ScheduledJobRun' tablosundan elde edilen kanıt, sistemde planlanmış işlerin yürütülmesini ve verimliliğini göstermektedir. Bu veriler, sistemlerin düzenli olarak çalışıp çalışmadığını ve her işin beklenen sürede tamamlanıp tamamlanmadığını belirlemek için kullanılır. Bu analiz, sistemlerin güvenilir çalışmasını sağlamak ve iyileştirmeleri uygulamak için gereken adımları belirler.\",\"recommendations\":[\"Planlanmış işlerin düzenli testlerinin gerçekleştirilmesi.\",\"Yürütülen işlerin hata ayıklama ve verimlilik analizinin yapılması.\",\"Belirlenen iyileştirmelerin projeye entegre edilmesi.\",\"Güvenilir operasyon testlerinin sonuçlarının detaylı bir raporlaştırılması.\"],\"acceptanceMet\":false,\"acceptanceNotes\":\"Test raporu ve uygulanan iyileştirmelerin detayları, kabul kriterlerine uygun olarak sunulmalıdır.\",\"codeChangeApplied\":false,\"evidenceUsed\":[\"mssql:ScheduledJobRun#count=55\"],\"risks\":[\"Operasyon testlerinin düzgün bir şekilde planlanmaması ve yürütülmemesi, sistem hatasının belirlenmesini zorlaştırabilir.\",\"Iyileştirmelerin doğrudan uygulanması, sistemdeki mevcut işlerin üzerinde etkileşime girebilir.\",\"Test raporlarının detaylı analiz edilmemesi, sistem üzerinde düzeltmelerin gerçek bir etkiye sahip olabileceğini gösteremeyebilir.\"],\"requiresOwnerApproval\":true}}"
+    }
+  ],
+  "messages": [
+    {
+      "id": "bba9bd8a-ca07-44be-a5a9-fb8cfe8604d6",
+      "from": "developer",
+      "to": "ceo",
+      "kind": "result",
+      "summary": "Developer sonucu: AI OS'nin güvenilir operasyon testleri ve iyileştirmeleri uygulanması.",
+      "payloadJson": "{\"modelId\":\"qwen2.5:14b\",\"executedAt\":\"2026-11-18T01:36:47.497Z\",\"taskId\":\"e07d1fd4-20f4-44e2-86cf-b75415c0f89d\",\"agentId\":\"developer\",\"executionKind\":\"local_llm\",\"realAiExecution\":true,\"evidenceUsed\":[\"mssql:ScheduledJobRun#count=55\"],\"acceptanceMet\":false,\"codeChangeApplied\":false,\"durationMs\":6466,\"work\":{\"summary\":\"AI OS'nin güvenilir operasyon testleri ve iyileştirmeleri uygulanması.\",\"analysis\":\"MSSQL veritabanında 'ScheduledJobRun' tablosundan elde edilen kanıt, sistemde planlanmış işlerin yürütülmesini ve verimliliğini göstermektedir. Bu veriler, sistemlerin düzenli olarak çalışıp çalışmadığını ve her işin beklenen sürede tamamlanıp tamamlanmadığını belirlemek için kullanılır. Bu analiz, sistemlerin güvenilir çalışmasını sağlamak ve iyileştirmeleri uygulamak için gereken adımları belirler.\",\"recommendations\":[\"Planlanmış işlerin düzenli testlerinin gerçekleştirilmesi.\",\"Yürütülen işlerin hata ayıklama ve verimlilik analizinin yapılması.\",\"Belirlenen iyileştirmelerin projeye entegre edilmesi.\",\"Güvenilir operasyon testlerinin sonuçlarının detaylı bir raporlaştırılması.\"],\"acceptanceMet\":false,\"acceptanceNotes\":\"Test raporu ve uygulanan iyileştirmelerin detayları, kabul kriterlerine uygun olarak sunulmalıdır.\",\"codeChangeApplied\":false,\"evidenceUsed\":[\"mssql:ScheduledJobRun#count=55\"],\"risks\":[\"Operasyon testlerinin düzgün bir şekilde planlanmaması ve yürütülmemesi, sistem hatasının belirlenmesini zorlaştırabilir.\",\"Iyileştirmelerin doğrudan uygulanması, sistemdeki mevcut işlerin üzerinde etkileşime girebilir.\",\"Test raporlarının detaylı analiz edilmemesi, sistem üzerinde düzeltmelerin gerçek bir etkiye sahip olabileceğini gösteremeyebilir.\"],\"requiresOwnerApproval\":true},\"isDepartmentHandoff\":false,\"isSelfHandoff\":false}"
+    },
+    {
+      "id": "ae50844f-7f2d-4ec4-b0a9-cba55f5fe300",
+      "from": "cto",
+      "to": "ceo",
+      "kind": "result",
+      "summary": "CTO sonucu: Subify projelerinin kalite ve teknik borç durumunu kontrol etmek için mssql veritabanından elde edilen kanıt ve verilen parametreler doğrultusunda teknik analiz ve risk değerlendirmesi yapıldı.",
+      "payloadJson": "{\"modelId\":\"qwen2.5:14b\",\"executedAt\":\"2026-11-18T01:36:54.481Z\",\"taskId\":\"e8e0cfc6-e98b-4b70-966d-60b5c33398eb\",\"agentId\":\"cto\",\"executionKind\":\"local_llm\",\"realAiExecution\":true,\"evidenceUsed\":[\"mssql:Task#count=140\"],\"acceptanceMet\":false,\"codeChangeApplied\":false,\"durationMs\":6855,\"work\":{\"summary\":\"Subify projelerinin kalite ve teknik borç durumunu kontrol etmek için mssql veritabanından elde edilen kanıt ve verilen parametreler doğrultusunda teknik analiz ve risk değerlendirmesi yapıldı.\",\"analysis\":\"MSSQL veritabanından elde edilen kanıtlara dayanılarak, Subify projelerinin mevcut durumu incelendi. Veritabanı kanıtı, 140 adet mevcut görevin varlığını doğruladı. Müşteri taleplerine ve teknik gereksinimlere dayalı olarak, projenin kalite kontrol ve teknik borç yönetimi açısından incelenmesi gerekmektedir.\",\"recommendations\":[\"Kalite kontrol sürecine dahil olacak yeni doğrulama adımları belirlenmelidir.\",\"Mevcut teknik borçları analiz etmek ve gerekli düzenlemeleri belirlemek için bir değerlendirme raporu oluşturulmalıdır.\",\"Projeye dahil olan görevlerin düzenli olarak takip edilmesi ve değerlendirilmesi önerilir.\"],\"acceptanceMet\":false,\"acceptanceNotes\":\"MSSQL veritabanından elde edilen kanıtlara dayanılarak, proje kalite kontrol ve teknik borç durumu değerlendirildi. Ancak, önerilen düzenlemelerin uygulanması ve değerlendirme raporunun hazırlanması gerekmektedir.\",\"codeChangeApplied\":false,\"evidenceUsed\":[\"mssql:Task#count=140\"],\"risks\":[\"Mevcut görevlerin kalite kontrol sürecine uygun olmadığı durumda potansiyel hatalar ve sorunlar ortaya çıkabilir.\",\"Teknik borçlarla ilgili sorunlar, projenin geliştirilmesinde gecikme ve maliyet artışı oluşturabilir.\"],\"requiresOwnerApproval\":true},\"isDepartmentHandoff\":false,\"isSelfHandoff\":false}"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@synaptech/shared",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "SynapTech AI OS ortak alan modeli: tipler, şemalar, görev durum makinesi, onay ve veri kaynağı ayrımı.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./demo": "./src/demo/seed.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite": "^8.3.8",
+    "vitest": "catalog:",
+    "yaml": "catalog:"
+  }
+}

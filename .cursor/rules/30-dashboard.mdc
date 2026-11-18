@@ -1,0 +1,18 @@
+---
+description: Dashboard (Next.js 16) geliştirme kuralları ve gerçek/DEMO veri ayrımı
+globs: apps/dashboard/**
+alwaysApply: false
+---
+
+# Dashboard kuralları
+
+- Next.js 16.4 kullanılıyor; API'ler eğitim verinden farklı olabilir. Kod yazmadan önce `apps/dashboard/node_modules/next/dist/docs/` altındaki ilgili rehberi oku (bkz. `apps/dashboard/AGENTS.md`).
+- Cache Components açık: çalışma anında değişen dosyaları okuyan sunucu kodu `await connection()` çağırır ve `<Suspense>` veya `loading.tsx` altında kalır. GET route handler'lar da aynı kurala uyar.
+- Arayüz metinleri Türkçedir; tarihler `tr-TR` biçimindedir.
+- Veri ayrımı zorunludur:
+  - Gerçek mod yalnızca `src/server/` yükleyicilerinden ve `/api/system/snapshot` uç noktasından beslenir.
+  - DEMO mod yalnızca `src/lib/demo-store.ts` deposundan beslenir.
+  - İkisini aynı listede veya bileşende karıştırma; gerçek kayıt listelerinde `selectReal()` kullan.
+- Her veri bloğunda `SourceBadge` bulunur. Bağlı olmayan kaynak için uydurma metrik gösterme.
+- `src/server/` dosyaları `import "server-only"` içerir ve yalnızca okuma yapar; repo dosyalarına yazmaz.
+- UI bileşenleri `src/components/ui/` altındadır (shadcn/ui, Radix tabanı). Renkler `globals.css` token'larından gelir.
