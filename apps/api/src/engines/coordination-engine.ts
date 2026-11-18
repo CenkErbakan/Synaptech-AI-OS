@@ -433,9 +433,9 @@ export async function completeChainStep(input: {
     data: {
       workflowPhase: "completed",
       status: "done",
-      executionResult: input.result.slice(0, 8000),
+      executionResult: input.result.slice(0, 24_000),
       finishedAt: now,
-      dispatchState: "ready",
+      dispatchState: "not_applicable",
       blockedReason: null,
     },
   });

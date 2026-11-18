@@ -92,10 +92,27 @@ describe("Kontrollü otonomi — draft acceptance", () => {
       draftKind: "research_brief",
       risks: [],
     });
-    const v = verifyAcceptanceIndependently({
+    const vNoFetch = verifyAcceptanceIndependently({
       agentId: "growth-lead",
       work: ok,
       evidence: [],
+      toolsEnabled: false,
+    });
+    expect(vNoFetch.acceptanceMet).toBe(false);
+
+    const v = verifyAcceptanceIndependently({
+      agentId: "growth-lead",
+      work: ok,
+      evidence: [
+        {
+          kind: "public_fetch",
+          projectSlug: "synaptech",
+          path: "https://www.ebso.org.tr/",
+          summary: "kamu sayfa",
+          trusted: true,
+          at: new Date().toISOString(),
+        },
+      ],
       toolsEnabled: false,
     });
     expect(v.acceptanceMet).toBe(true);
@@ -105,7 +122,16 @@ describe("Kontrollü otonomi — draft acceptance", () => {
     const v2 = verifyAcceptanceIndependently({
       agentId: "growth-lead",
       work: bad,
-      evidence: [],
+      evidence: [
+        {
+          kind: "public_fetch",
+          projectSlug: "synaptech",
+          path: "https://www.ebso.org.tr/",
+          summary: "kamu sayfa",
+          trusted: true,
+          at: new Date().toISOString(),
+        },
+      ],
       toolsEnabled: false,
     });
     expect(v2.acceptanceMet).toBe(false);

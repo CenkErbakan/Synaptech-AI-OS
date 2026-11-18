@@ -86,6 +86,7 @@ export async function opsRoutes(app: FastifyInstance) {
       ceoMinIntervalMs: env.NODE_ENV === "test" ? 0 : env.LOCAL_OPS_CEO_MIN_INTERVAL_MS,
       onDemandVerified: env.CLOUD_ON_DEMAND_VERIFIED,
       cloudLiveEnabled: env.CLOUD_AGENT_LIVE_ENABLED,
+      envFileKeys: (await import("../../lib/env-file-keys.js")).diffEnvFileVsRuntime(),
     };
   });
 

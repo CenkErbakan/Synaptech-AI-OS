@@ -218,6 +218,15 @@ export function verifyAcceptanceIndependently(input: {
     } else if (input.agentId === "security" && !securityRepoOk) {
       reasons.push("security: repo_read + dosya yolu atfı yok — kaynaklı bulgu değil");
       acceptanceMet = false;
+    } else if (
+      input.agentId === "security" &&
+      DEFECT_CLAIM.test(blobOf(input.work)) &&
+      !LINE_OR_CONFIG_EVIDENCE.test(blobOf(input.work))
+    ) {
+      reasons.push(
+        "security: güvenlik açığı iddiası var ama satır/config kanıtı yok — yalnızca repo okumak yeterli değil",
+      );
+      acceptanceMet = false;
     } else if (input.agentId === "growth-lead" && !growthFetchOk) {
       reasons.push("growth-lead: dış public_fetch (kaynak URL) yok — lead kabul değil");
       acceptanceMet = false;

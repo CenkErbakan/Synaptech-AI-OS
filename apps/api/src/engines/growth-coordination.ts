@@ -383,7 +383,39 @@ export async function executeGrowthStep(taskId: string): Promise<{
   };
 }
 
-/** Scheduler: spam korumalı büyüme döngüsü. */
+async function recoverWaitingGrowthSteps(chainId: string): Promise<number> {
+  const prisma = getPrisma();
+  const waiting = await prisma.task.findMany({
+    where: {
+      chainId,
+      parentTaskId: { not: null },
+      workflowPhase: "waiting_dependency",
+      archivedAt: null,
+    },
+  });
+  let unlocked = 0;
+  for (const step of waiting) {
+    if (!step.dependsOnTaskId) continue;
+    const dep = await prisma.task.findUnique({
+      where: { id: step.dependsOnTaskId },
+      select: { workflowPhase: true, status: true },
+    });
+    if (dep?.workflowPhase !== "completed" && dep?.status !== "done") continue;
+    await prisma.task.update({
+      where: { id: step.id },
+      data: {
+        workflowPhase: "ready",
+        status: "planned",
+        dispatchState: "ready",
+        blockedReason: null,
+      },
+    });
+    unlocked += 1;
+  }
+  return unlocked;
+}
+
+/** Scheduler: mevcut growth zincirini ilerlet; sahte yeni zincir açmaz. */
 export async function runGrowthAutonomyCycle(): Promise<{
   skipped?: string;
   chainId?: string;
@@ -394,22 +426,7 @@ export async function runGrowthAutonomyCycle(): Promise<{
   if (kill.enabled) return { skipped: "kill_switch", realAiExecution: false };
 
   const prisma = getPrisma();
-  const dayStart = new Date();
-  dayStart.setUTCHours(0, 0, 0, 0);
-  const todayChains = await prisma.task.count({
-    where: {
-      origin: "growth:faz5c",
-      parentTaskId: null,
-      createdAt: { gte: dayStart },
-      archivedAt: null,
-    },
-  });
-  if (todayChains >= 3) {
-    return { skipped: "daily_growth_chain_cap", realAiExecution: false };
-  }
-
-  // Açık growth zinciri varsa yeni başlatma; mevcut ready adımı yürüt
-  const open = await prisma.task.findFirst({
+  const openParents = await prisma.task.findMany({
     where: {
       origin: "growth:faz5c",
       parentTaskId: null,
@@ -418,36 +435,63 @@ export async function runGrowthAutonomyCycle(): Promise<{
       archivedAt: null,
     },
     orderBy: { createdAt: "desc" },
+    take: 4,
   });
 
-  let chainId = open?.chainId ?? null;
-  if (!chainId) {
-    const started = await startGrowthDeliveryChain({
-      idempotencyKey: `growth-cycle:${dayStart.toISOString().slice(0, 10)}:${todayChains + 1}`,
-    });
-    chainId = started.chainId;
-  }
-
   const executedSteps: string[] = [];
-  // En fazla 2 adım / tick (spam ve maliyet kontrolü)
-  for (let i = 0; i < 2; i++) {
-    const ready = await prisma.task.findFirst({
-      where: {
-        chainId,
-        parentTaskId: { not: null },
-        workflowPhase: "ready",
-        chainStep: { in: [...GROWTH_STEPS] },
-        archivedAt: null,
-      },
-      orderBy: { chainOrder: "asc" },
-    });
-    if (!ready) break;
-    const res = await executeGrowthStep(ready.id);
-    executedSteps.push(`${ready.chainStep}:${res.ok ? "ok" : res.reason}`);
-    if (!res.ok) break;
+  let lastChain: string | undefined;
+
+  for (const parent of openParents) {
+    if (!parent.chainId) continue;
+    lastChain = parent.chainId;
+    await recoverWaitingGrowthSteps(parent.chainId);
+    for (let i = 0; i < 2; i++) {
+      const ready = await prisma.task.findFirst({
+        where: {
+          chainId: parent.chainId,
+          parentTaskId: { not: null },
+          workflowPhase: "ready",
+          status: { notIn: ["done", "failed"] },
+          chainStep: { in: [...GROWTH_STEPS] },
+          archivedAt: null,
+        },
+        orderBy: { chainOrder: "asc" },
+      });
+      if (!ready) break;
+      const res = await executeGrowthStep(ready.id);
+      executedSteps.push(`${ready.chainStep}:${res.ok ? "ok" : res.reason}`);
+      if (!res.ok) break;
+    }
   }
 
-  return { chainId, executedSteps, realAiExecution: false };
+  if (executedSteps.length > 0) {
+    return { chainId: lastChain, executedSteps, realAiExecution: false };
+  }
+
+  const ceoAssignedGrowth = await prisma.task.count({
+    where: {
+      archivedAt: null,
+      parentTaskId: { not: null },
+      assigneeId: { in: ["growth-lead", "seo-specialist", "content-manager", "ads-manager"] },
+      status: { in: ["planned", "in_progress"] },
+      dispatchState: "ready",
+    },
+  });
+  if (ceoAssignedGrowth > 0) {
+    return {
+      skipped: "ceo_growth_tasks_pending_agent_pass",
+      chainId: lastChain,
+      executedSteps: [],
+      realAiExecution: false,
+    };
+  }
+
+  return {
+    skipped: "no_ready_growth_step",
+    chainId: lastChain,
+    executedSteps: [],
+    realAiExecution: false,
+  };
 }
 
 /** Test yardımcısı: tüm growth adımlarını motorlarla yürüt. */

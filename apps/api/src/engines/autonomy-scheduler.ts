@@ -18,9 +18,10 @@ import type { TickTrigger } from "./automation-runtime.js";
 
 export const SCHEDULER_LEASE_KEY = "scheduler:tick";
 /** Yerel Qwen döngüsü 30s lease'ten uzun sürer; tick boyunca yenilenir. */
-const SCHEDULER_TICK_LEASE_MS = 5 * 60_000;
+const SCHEDULER_TICK_LEASE_MS = 8 * 60_000;
 
 let timer: NodeJS.Timeout | null = null;
+let heartbeatTimer: NodeJS.Timeout | null = null;
 let ticking = false;
 let lastTickAt: Date | null = null;
 let lastTickTrigger: TickTrigger = "none";
@@ -49,7 +50,7 @@ export async function ensureDefaultAutonomyJobs(): Promise<void> {
       title: "Günlük CEO değerlendirmesi (SCHEDULER_AI_CEO_MODE; varsayılan off=deterministik)",
       cronExpr: "*/2 * * * *",
       handler: "ceo_cycle",
-      timeoutSec: 180,
+      timeoutSec: 360,
     },
     {
       jobKey: "run-reconciliation",
@@ -88,7 +89,7 @@ export async function ensureDefaultAutonomyJobs(): Promise<void> {
         title: job.title,
         cronExpr: job.cronExpr,
         handler: job.handler,
-        enabled: true,
+        timeoutSec: job.timeoutSec,
         updatedAt: now,
       },
     });
@@ -345,20 +346,35 @@ export async function schedulerTick(
       try {
         const result = await executeHandler(job.handler);
         const finished = new Date();
+        const rec = result && typeof result === "object" ? (result as Record<string, unknown>) : {};
+        const skipHint =
+          typeof rec.skippedReason === "string"
+            ? rec.skippedReason
+            : typeof rec.skipped === "string"
+              ? rec.skipped
+              : null;
+        const realAi = rec.realAiExecution === true;
+        const idle = Boolean(skipHint);
+        const status = idle ? "skipped" : "succeeded";
+        const message = idle
+          ? `skipped:${skipHint}`
+          : realAi
+            ? "OK realAiExecution=true"
+            : "OK realAiExecution=false";
         await prisma.scheduledJobRun.update({
           where: { id: run.id },
           data: {
-            status: "succeeded",
+            status,
             finishedAt: finished,
-            message: "OK",
-            resultJson: JSON.stringify(result).slice(0, 8000),
+            message,
+            resultJson: JSON.stringify(result).slice(0, 24_000),
           },
         });
         await prisma.scheduledJob.update({
           where: { id: job.id },
-          data: { lastFinishedAt: finished, lastStatus: "succeeded", updatedAt: finished },
+          data: { lastFinishedAt: finished, lastStatus: status, updatedAt: finished },
         });
-        ran.push({ jobKey: job.jobKey, runId: run.id, status: "succeeded" });
+        ran.push({ jobKey: job.jobKey, runId: run.id, status });
       } catch (error) {
         const finished = new Date();
         const msg = error instanceof Error ? error.message : String(error);
@@ -373,6 +389,9 @@ export async function schedulerTick(
         ran.push({ jobKey: job.jobKey, runId: run.id, status: "failed" });
       }
     }
+
+    const { closeSettledCeoParents } = await import("./parent-task-lifecycle.js");
+    await closeSettledCeoParents().catch(() => 0);
 
     await writeAudit({
       category: "autonomy",
@@ -408,6 +427,10 @@ export function startAutonomyScheduler(intervalMs = 60_000): void {
   if (timer) return;
   void ensureDefaultAutonomyJobs().catch(() => undefined);
   void ensureDefaultGoalsAndPolicies().catch(() => undefined);
+  void heartbeatWorkerInstance().catch(() => undefined);
+  heartbeatTimer = setInterval(() => {
+    void heartbeatWorkerInstance().catch(() => undefined);
+  }, 20_000);
   timer = setInterval(() => {
     void schedulerTick(new Date(), { trigger: "timer" }).catch(() => undefined);
   }, intervalMs);
@@ -419,4 +442,6 @@ export function startAutonomyScheduler(intervalMs = 60_000): void {
 export function stopAutonomyScheduler(): void {
   if (timer) clearInterval(timer);
   timer = null;
+  if (heartbeatTimer) clearInterval(heartbeatTimer);
+  heartbeatTimer = null;
 }

@@ -7,9 +7,17 @@ import { getKillSwitch } from "../engines/kill-switch.js";
 import { killSwitchActive, integrationUnavailable } from "../lib/errors.js";
 import { getEnv } from "../lib/env.js";
 import { buildLocalCeoSafeContext } from "./local-ceo-context.js";
+import { clipIdempotencyKey } from "./ceo-plan-prompt.js";
+import {
+  evaluateCeoCircuit,
+  resetCeoProviderCircuit,
+  tripCeoProviderCircuit,
+  readCeoProviderCircuit,
+} from "./ceo-provider-circuit.js";
 import {
   acquireLocalLlmCallLease,
   assertSchedulerAiCeoDailyBudget,
+  LOCAL_LLM_LEASE_TTL_MS,
   releaseLocalLlmCallLease,
 } from "./llm-call-guard.js";
 import { buildQuotaAuditMeta } from "./llm-quota.js";
@@ -17,6 +25,7 @@ import { isRealAiCompletion } from "./model-provider.js";
 import { normalizeLocalCeoPlanJson } from "./providers/local-provider.js";
 import { getModelProvider, requireLocalModelProvider } from "./providers/registry.js";
 import { normalizeTitleKey, validateAndGroundPlanTasks } from "./plan-grounding.js";
+import { applyRoleGateToPlanTasks, pickDiversePersistable } from "./plan-role-gate.js";
 
 export const AI_CEO_SCHEDULER_ORIGIN_PREFIX = "scheduler-ai-ceo:";
 
@@ -77,6 +86,8 @@ async function findDuplicateOpenTask(_projectId: string, title: string) {
 export async function runScheduledAiCeoCycle(input?: {
   idempotencySuffix?: string;
   allowWhenModeOff?: boolean;
+  /** Owner kontrollü tek doğrulama — timer yolu kullanmaz. */
+  ignoreCircuit?: boolean;
 }): Promise<ScheduledAiCeoResult> {
   const env = getEnv();
   const mode = env.SCHEDULER_AI_CEO_MODE;
@@ -133,8 +144,32 @@ export async function runScheduledAiCeoCycle(input?: {
     throw integrationUnavailable("Scheduler AI CEO reddedildi: Cloud live açık olmamalı.");
   }
 
+  if (!input?.ignoreCircuit) {
+    const circuit = evaluateCeoCircuit(await readCeoProviderCircuit(), new Date());
+    if (circuit.skip) {
+      return {
+        mode,
+        planner: mode === "local" ? "local_llm" : "mock_llm",
+        realAiExecution: false,
+        skippedReason: circuit.reason,
+        parentTaskId: null,
+        childTaskIds: [],
+        messageIds: [],
+        plan: null,
+        modelId: null,
+        durationMs: null,
+        jsonValid: null,
+        grounding: null,
+        archiveCheck,
+        cloudStarted: false,
+      };
+    }
+  }
+
   const { evaluateScheduledCeoIdleSkip } = await import("../engines/local-ops-policy.js");
-  const idle = await evaluateScheduledCeoIdleSkip();
+  const idle = input?.idempotencySuffix
+    ? { skip: false as const }
+    : await evaluateScheduledCeoIdleSkip();
   if (idle.skip) {
     return {
       mode,
@@ -174,7 +209,7 @@ export async function runScheduledAiCeoCycle(input?: {
     };
   }
 
-  const lease = await acquireLocalLlmCallLease(180_000, "scheduler-ai-ceo");
+  const lease = await acquireLocalLlmCallLease(LOCAL_LLM_LEASE_TTL_MS, "scheduler-ai-ceo");
   if (!lease.acquired) {
     return {
       mode,
@@ -195,15 +230,15 @@ export async function runScheduledAiCeoCycle(input?: {
   }
 
   const prisma = getPrisma();
-  const dayKey = new Date().toISOString().slice(0, 10);
-  const suffix = input?.idempotencySuffix ?? dayKey;
+  const cycleId = input?.idempotencySuffix ?? randomUUID();
+  const suffix = cycleId;
   const { readOperationEpoch } = await import("../engines/operation-epoch.js");
   const epoch = await readOperationEpoch();
   const epochPart = epoch?.id ?? "noepoch";
-  const cycleOrigin = `${AI_CEO_SCHEDULER_ORIGIN_PREFIX}${epochPart}:${suffix}`;
+  const cycleOrigin = `${AI_CEO_SCHEDULER_ORIGIN_PREFIX}${epochPart}:cycle:${suffix}`;
 
   try {
-    // Aynı gün/idempotency için ikinci model çağrısını engelle
+    // Aynı cycleId ikinci kez LLM çağırmaz (test/manuel suffix). Timer yolu her seferinde yeni UUID.
     const existingParent = await prisma.task.findFirst({
       where: {
         origin: cycleOrigin,
@@ -290,44 +325,84 @@ export async function runScheduledAiCeoCycle(input?: {
     const context = await buildLocalCeoSafeContext();
     const started = Date.now();
     const quotaCallId = randomUUID();
-    const completion = await provider.generateCeoPlan({
-      goals: context.goals.map((g) => ({
-        goalKey: g.goalKey,
-        projectSlug: g.projectSlug,
-        title: g.title,
-        dataSource: g.dataSource,
-      })),
-      opportunities: context.opportunities
-        .filter((o) => o.status === "open")
-        .slice(0, 8)
-        .map((o) => ({
-          id: o.id,
-          title: o.title,
-          projectSlug: o.projectSlug,
-          evidenceRef: o.evidenceRef,
+    let completion;
+    try {
+      completion = await provider.generateCeoPlan({
+        goals: context.goals.map((g) => ({
+          goalKey: g.goalKey,
+          projectSlug: g.projectSlug,
+          title: g.title,
+          dataSource: g.dataSource,
         })),
-      openTaskCount: context.openTasks.length,
-      instruction: [
-        "Zamanlanmış AI CEO değerlendirmesi.",
-        `cycle=${suffix}`,
-        `recentAgentResults=${context.recentAgentResults.length}`,
-        context.recentAgentResults
-          .slice(0, 8)
-          .map((r) => `${r.from}->${r.to}:${r.summary}`)
-          .join(" | ")
-          .slice(0, 1200),
-        "Aynı veya başarısız görev başlıklarını tekrar üretme; ajan sonuçlarını önceliklendir.",
-        `mevcutEpochBasliklar=${context.epochChildTitles
-          .map((t) => `${t.projectSlug}:${t.assigneeId}:${t.status}:${t.title}`)
-          .join(" | ")
-          .slice(0, 1600)}`,
-        "Dört proje değerlendir: synaptech-ai-os, synaptech, subify, marivo. Hedef ve açık görevlere bak; tek projeye saplanma.",
-        "growth-lead yalnızca dış müşteri/lead/SEO; yazılım borcunu cto/security/developer'a ver.",
-        "security güvenlik/config; cto yapı/repo_read. En fazla 4 görev, mümkünse farklı proje.",
-        "Her görevde evidenceHint: mssql:CompanyGoal | mssql:Opportunity | mssql:Task | mssql:Project | goal:<key> veya gerçek UUID.",
-        "Onay/kill switch/Cloud/bütçe/git_push/müşteri ileti yok.",
-      ].join(" "),
-    });
+        opportunities: context.opportunities
+          .filter((o) => o.status === "open")
+          .slice(0, 6)
+          .map((o) => ({
+            id: o.id,
+            title: o.title,
+            projectSlug: o.projectSlug,
+            evidenceRef: o.evidenceRef,
+          })),
+        openTaskCount: context.openTasks.length,
+        instruction: [
+          `cycle=${suffix}`,
+          "Dört proje: synaptech-ai-os, synaptech, subify, marivo. Kanıtsız görev yok.",
+          `open=${context.openTasks.length}`,
+          context.recentAgentResults
+            .slice(0, 6)
+            .map((r) => `${r.from}:${r.summary}`)
+            .join("|")
+            .slice(0, 400),
+          `epoch=${context.epochChildTitles
+            .slice(0, 12)
+            .map((t) => `${t.projectSlug}:${t.assigneeId}:${t.status}:${t.title}`)
+            .join("|")
+            .slice(0, 480)}`,
+          "1-5 görev üret (8 zorunlu değil). Kısa acceptanceCriteria + evidenceHint.",
+        ].join(" "),
+      });
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      if (mode === "local") {
+        await tripCeoProviderCircuit(msg.slice(0, 240));
+      }
+      await writeAudit({
+        category: "autonomy",
+        action: "ai.scheduler_ceo_cycle",
+        actorKind: "system",
+        actorAgent: "ceo",
+        summary: "Scheduler AI CEO: sağlayıcı çağrısı başarısız (görev yazılmadı).",
+        metadata: buildQuotaAuditMeta({
+          quotaCallId,
+          quotaKind: "scheduler_ceo",
+          realAiExecution: false,
+          providerInvoked: !msg.startsWith("local_llm_unavailable"),
+          mode,
+          extra: {
+            jsonValid: false,
+            childCount: 0,
+            providerError: msg.slice(0, 200),
+            timeout: msg.includes("local_llm_timeout") || /aborted/i.test(msg),
+          },
+        }),
+      });
+      return {
+        mode,
+        planner: mode === "local" ? "local_llm" : "mock_llm",
+        realAiExecution: false,
+        skippedReason: msg.includes("local_llm_timeout") ? "local_llm_timeout" : `provider_error:${msg.slice(0, 80)}`,
+        parentTaskId: null,
+        childTaskIds: [],
+        messageIds: [],
+        plan: null,
+        modelId: null,
+        durationMs: Date.now() - started,
+        jsonValid: false,
+        grounding: null,
+        archiveCheck,
+        cloudStarted: false,
+      };
+    }
 
     let plan: CeoPlan;
     try {
@@ -374,8 +449,64 @@ export async function runScheduledAiCeoCycle(input?: {
       throw integrationUnavailable("local modda gerçek AI yanıtı yok; mock başarı sayılmadı.");
     }
 
+    const gated = applyRoleGateToPlanTasks(plan.tasks);
+    plan = { ...plan, tasks: gated.tasks };
     const grounding = await validateAndGroundPlanTasks(plan);
-    const persistable = [...grounding.accepted, ...grounding.unverified];
+    const remainingSlots = Math.max(
+      0,
+      env.LOCAL_OPS_OPEN_TASK_CAP - context.openTasks.filter((t) => t.assigneeId !== "ceo").length,
+    );
+    const persistableRaw = [...grounding.accepted, ...grounding.unverified];
+    const persistable =
+      remainingSlots <= 0 ? [] : pickDiversePersistable(persistableRaw, Math.min(8, remainingSlots));
+
+    if (persistable.length === 0) {
+      await writeAudit({
+        category: "autonomy",
+        action: "ai.scheduler_ceo_cycle",
+        actorKind: "system",
+        actorAgent: "ceo",
+        summary: "Scheduler AI CEO: uygulanabilir görev yazılmadı (kuyruk/grounding/çeşitlilik).",
+        metadata: buildQuotaAuditMeta({
+          quotaCallId,
+          quotaKind: "scheduler_ceo",
+          realAiExecution: realAi,
+          providerInvoked: true,
+          mode,
+          extra: {
+            jsonValid: true,
+            childCount: 0,
+            remainingSlots,
+            grounding: {
+              accepted: grounding.accepted.length,
+              unverified: grounding.unverified.length,
+              rejected: grounding.rejected.length,
+            },
+            roleGate: gated.redirects,
+          },
+        }),
+      });
+      return {
+        mode,
+        planner: mode === "local" ? "local_llm" : "mock_llm",
+        realAiExecution: realAi,
+        skippedReason: remainingSlots <= 0 ? "queue_cap_reached" : "empty_grounded_plan",
+        parentTaskId: null,
+        childTaskIds: [],
+        messageIds: [],
+        plan,
+        modelId: completion.modelId,
+        durationMs,
+        jsonValid: true,
+        grounding: {
+          accepted: grounding.accepted.length,
+          unverified: grounding.unverified.length,
+          rejected: grounding.rejected.length,
+        },
+        archiveCheck,
+        cloudStarted: false,
+      };
+    }
 
     const osProject =
       (await prisma.project.findUnique({ where: { slug: "synaptech-ai-os" } })) ??
@@ -401,6 +532,15 @@ export async function runScheduledAiCeoCycle(input?: {
           `archiveArchived=${archiveCheck.archivedCount}`,
           plan.summary,
           `risks=${plan.risks.join(" | ")}`,
+          `projectAllocation=${JSON.stringify(
+            persistable.reduce<Record<string, number>>((acc, item) => {
+              acc[item.task.projectSlug] = (acc[item.task.projectSlug] ?? 0) + 1;
+              return acc;
+            }, {}),
+          )}`,
+          gated.redirects.length
+            ? `roleGate=${JSON.stringify(gated.redirects).slice(0, 800)}`
+            : "roleGate=none",
         ].join("\n"),
         projectId: osProject.id,
         assigneeId: "ceo",
@@ -415,7 +555,7 @@ export async function runScheduledAiCeoCycle(input?: {
         model: completion.modelId,
         acceptanceCriteria:
           "Owner incelemesi; alt görevler otomatik tamamlanmış sayılmaz; Cloud başlatılmaz.",
-        idempotencyKey: `scheduler-ai-ceo-parent:${epochPart}:${suffix}`,
+        idempotencyKey: clipIdempotencyKey(`scheduler-ai-ceo-parent:${epochPart}:${suffix}`),
         blockedReason: null,
       },
     });
@@ -463,7 +603,9 @@ export async function runScheduledAiCeoCycle(input?: {
           model: completion.modelId,
           acceptanceCriteria: item.task.acceptanceCriteria,
           executionResult: JSON.stringify(validationPayload),
-          idempotencyKey: `scheduler-ai-ceo-child:${epochPart}:${suffix}:${normalizeTitleKey(item.task.title).slice(0, 60)}`,
+          idempotencyKey: clipIdempotencyKey(
+            `sce:${epochPart}:${suffix}:${normalizeTitleKey(item.task.title)}`,
+          ),
           blockedReason: item.verified ? null : "unverified_evidence",
         },
       });
@@ -490,13 +632,17 @@ export async function runScheduledAiCeoCycle(input?: {
       messageIds.push(msg.id);
     }
 
+    if (mode === "local") {
+      await resetCeoProviderCircuit();
+    }
+
     await writeAudit({
-      category: "autonomy",
-      action: "ai.scheduler_ceo_cycle",
-      actorKind: "system",
-      actorAgent: "ceo",
-      targetType: "task",
-      targetId: parentId,
+        category: "autonomy",
+        action: "ai.scheduler_ceo_cycle",
+        actorKind: "system",
+        actorAgent: "ceo",
+        targetType: "task",
+        targetId: parentId,
       summary: realAi
         ? "Zamanlanmış yerel AI CEO planı doğrulandı ve görevler yazıldı."
         : "Zamanlanmış mock AI CEO planı (gerçek AI değil) — görevler yazıldı.",
@@ -519,6 +665,9 @@ export async function runScheduledAiCeoCycle(input?: {
           childCount: childTaskIds.length,
           cloudStarted: false,
           requiresOwnerApproval: true,
+          inputTokens: completion.usage?.inputTokens ?? null,
+          outputTokens: completion.usage?.outputTokens ?? null,
+          evidenceRefs: (completion.evidence ?? []).map((e) => e.ref).slice(0, 16),
         },
       }),
     });

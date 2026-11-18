@@ -4,7 +4,7 @@ import { OWNER_GATED_ACTIONS } from "./autonomy-policy-gate.js";
 
 export type OwnerDecisionItem = {
   id: string;
-  kind: "approval_request" | "task_awaiting_approval";
+  kind: "approval_request" | "task_awaiting_approval" | "owner_notice";
   title: string;
   projectSlug: string | null;
   type: string;
@@ -23,13 +23,18 @@ export async function listOwnerDecisionQueue(): Promise<{
   const { epochCreatedAtFilter, readOperationEpoch } = await import("./operation-epoch.js");
   const epoch = await readOperationEpoch();
   const epochFilter = await epochCreatedAtFilter("current");
-  const [approvals, tasks] = await Promise.all([
+  const [approvals, tasks, notices] = await Promise.all([
     listApprovals(),
     prisma.task.findMany({
       where: { archivedAt: null, source: "real", status: "awaiting_approval", ...epochFilter },
       include: { project: { select: { slug: true } } },
       orderBy: { updatedAt: "desc" },
       take: 100,
+    }),
+    prisma.agentMessage.findMany({
+      where: { kind: "owner_notice", toAgentId: "owner", ...(epoch ? { createdAt: { gte: new Date(epoch.startedAt) } } : {}) },
+      orderBy: { createdAt: "desc" },
+      take: 30,
     }),
   ]);
 
@@ -59,6 +64,18 @@ export async function listOwnerDecisionQueue(): Promise<{
       type: t.blockedReason ?? "awaiting_approval",
       createdAt: t.createdAt.toISOString(),
       hrefHint: "/gorevler",
+    });
+  }
+
+  for (const n of notices) {
+    items.push({
+      id: n.id,
+      kind: "owner_notice",
+      title: n.summary.slice(0, 200),
+      projectSlug: null,
+      type: n.fromAgentId,
+      createdAt: n.createdAt.toISOString(),
+      hrefHint: "/mesajlar",
     });
   }
 

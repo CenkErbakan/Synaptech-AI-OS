@@ -163,9 +163,19 @@ export async function registerWorkerInstance(role: string): Promise<string> {
 
 export async function heartbeatWorkerInstance(): Promise<void> {
   const prisma = getPrisma();
+  const now = new Date();
   await prisma.workerInstance.updateMany({
     where: { id: getWorkerId() },
-    data: { lastSeenAt: new Date(), status: "running" },
+    data: { lastSeenAt: now, status: "running" },
+  });
+  const staleBefore = new Date(now.getTime() - 90_000);
+  await prisma.workerInstance.updateMany({
+    where: {
+      status: "running",
+      lastSeenAt: { lt: staleBefore },
+      NOT: { id: getWorkerId() },
+    },
+    data: { status: "stale", stopReason: "heartbeat_timeout" },
   });
 }
 
@@ -184,14 +194,17 @@ export async function listWorkerHealth(staleMs = 90_000) {
   const leases = await prisma.workerLease.findMany({ orderBy: { lockKey: "asc" } });
   return {
     workerId: getWorkerId(),
-    workers: workers.map((w) => ({
-      id: w.id,
-      role: w.role,
-      status: w.status,
-      lastSeenAt: w.lastSeenAt.toISOString(),
-      stale: now - w.lastSeenAt.getTime() > staleMs,
-      stopReason: w.stopReason,
-    })),
+    workers: workers.map((w) => {
+      const stale = now - w.lastSeenAt.getTime() > staleMs;
+      return {
+        id: w.id,
+        role: w.role,
+        status: stale && w.status === "running" ? "stale" : w.status,
+        lastSeenAt: w.lastSeenAt.toISOString(),
+        stale,
+        stopReason: w.stopReason,
+      };
+    }),
     leases: leases.map((l) => ({
       lockKey: l.lockKey,
       holderId: l.holderId,

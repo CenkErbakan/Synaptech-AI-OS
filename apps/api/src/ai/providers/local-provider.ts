@@ -1,6 +1,36 @@
 import { AgentWorkResultSchema, CeoPlanSchema, type ModelCompletion } from "@synaptech/shared";
 
+import { buildCeoPlanPrompt } from "../ceo-plan-prompt.js";
 import type { AgentWorkRequest, ChatRequest, ModelProvider, PlanRequest } from "../model-provider.js";
+
+export const LOCAL_LLM_GENERATE_TIMEOUT_MS = 180_000;
+export const CEO_PLAN_NUM_PREDICT = 640;
+export const AGENT_WORK_NUM_PREDICT = 900;
+
+export type OllamaGenerateMetrics = {
+  promptEvalCount: number | null;
+  evalCount: number | null;
+  promptEvalDurationMs: number | null;
+  evalDurationMs: number | null;
+  totalDurationMs: number | null;
+  loadDurationMs: number | null;
+};
+
+type FetchLike = typeof fetch;
+let fetchImpl: FetchLike = globalThis.fetch.bind(globalThis);
+let generatesInFlight = 0;
+
+export function setLocalProviderFetchForTests(fn: FetchLike | null): void {
+  fetchImpl = fn ?? globalThis.fetch.bind(globalThis);
+}
+
+export function resetLocalProviderInFlightForTests(): void {
+  generatesInFlight = 0;
+}
+
+export function localProviderGeneratesInFlight(): number {
+  return generatesInFlight;
+}
 
 const SAFETY_RULES = [
   "Onay, izin, bütçe, kill switch, Cloud Agent, On-Demand, GitHub allow-list veya yayın kararını KENDİN VERME / DEĞİŞTİRME.",
@@ -18,7 +48,8 @@ const SAFETY_RULES = [
 export function normalizeLocalCeoPlanJson(raw: unknown): unknown {
   if (!raw || typeof raw !== "object") return raw;
   const obj = { ...(raw as Record<string, unknown>) };
-  const tasks = Array.isArray(obj.tasks) ? obj.tasks.slice(0, 3) : [];
+  if (typeof obj.summary === "string") obj.summary = obj.summary.slice(0, 240);
+  const tasks = Array.isArray(obj.tasks) ? obj.tasks.slice(0, 8) : [];
   obj.tasks = tasks.map((t) => {
     if (!t || typeof t !== "object") return t;
     const task = { ...(t as Record<string, unknown>) };
@@ -27,8 +58,17 @@ export function normalizeLocalCeoPlanJson(raw: unknown): unknown {
     else if (["high", "critical", "urgent", "yüksek", "yuksek", "kritik"].includes(p)) {
       task.priority = "high";
     } else task.priority = "medium";
+    if (typeof task.title === "string") task.title = task.title.slice(0, 140);
+    if (typeof task.description === "string") task.description = task.description.slice(0, 400);
+    if (typeof task.acceptanceCriteria === "string") {
+      task.acceptanceCriteria = task.acceptanceCriteria.slice(0, 400);
+    }
+    if (typeof task.evidenceHint === "string") task.evidenceHint = task.evidenceHint.slice(0, 200);
     return task;
   });
+  if (Array.isArray(obj.risks)) {
+    obj.risks = obj.risks.map((r) => String(r).slice(0, 200)).slice(0, 8);
+  }
   obj.requiresOwnerApproval = true;
   obj.estimatedAiCost = obj.estimatedAiCost === "none" ? "none" : "local_compute";
   return obj;
@@ -139,7 +179,7 @@ export class LocalModelProvider implements ModelProvider {
     try {
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), 2500);
-      const res = await fetch(`${this.baseUrl.replace(/\/$/, "")}/api/tags`, {
+      const res = await fetchImpl(`${this.baseUrl.replace(/\/$/, "")}/api/tags`, {
         signal: ctrl.signal,
       });
       clearTimeout(t);
@@ -178,48 +218,89 @@ export class LocalModelProvider implements ModelProvider {
 
   private async complete(
     prompt: string,
-    opts?: { json?: boolean },
-  ): Promise<{ text: string; durationMs: number }> {
-    const started = Date.now();
-    const res = await fetch(`${this.baseUrl.replace(/\/$/, "")}/api/generate`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        model: this.modelId,
-        prompt,
-        stream: false,
-        ...(opts?.json ? { format: "json" } : {}),
-      }),
-    });
-    if (!res.ok) {
-      throw new Error(`local_llm_http_${res.status}`);
+    opts?: {
+      json?: boolean;
+      timeoutMs?: number;
+      numPredict?: number;
+      onHeartbeat?: () => void | Promise<void>;
+    },
+  ): Promise<{ text: string; durationMs: number; metrics: OllamaGenerateMetrics; aborted: boolean }> {
+    if (generatesInFlight > 0) {
+      throw new Error("local_llm_duplicate_in_flight");
     }
-    const json = (await res.json()) as { response?: string };
-    return { text: json.response ?? "", durationMs: Date.now() - started };
+    generatesInFlight += 1;
+    const started = Date.now();
+    const timeoutMs = opts?.timeoutMs ?? LOCAL_LLM_GENERATE_TIMEOUT_MS;
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), timeoutMs);
+    const beat = setInterval(() => {
+      void (async () => {
+        await opts?.onHeartbeat?.();
+        const { renewLocalLlmCallLease } = await import("../llm-call-guard.js");
+        await renewLocalLlmCallLease();
+      })().catch(() => undefined);
+    }, 20_000);
+    let aborted = false;
+    try {
+      const res = await fetchImpl(`${this.baseUrl.replace(/\/$/, "")}/api/generate`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        signal: ac.signal,
+        body: JSON.stringify({
+          model: this.modelId,
+          prompt,
+          stream: true,
+          keep_alive: "10m",
+          ...(opts?.json ? { format: "json" } : {}),
+          options: {
+            temperature: 0.1,
+            num_predict: opts?.numPredict ?? CEO_PLAN_NUM_PREDICT,
+            num_ctx: 4096,
+          },
+        }),
+      });
+      if (!res.ok) {
+        throw new Error(`local_llm_http_${res.status}`);
+      }
+      const parsedStream = await readOllamaGenerateStream(res, ac.signal);
+      if (parsedStream.aborted || ac.signal.aborted) {
+        throw new Error(`local_llm_timeout:${timeoutMs}`);
+      }
+      return {
+        text: parsedStream.text,
+        durationMs: Date.now() - started,
+        metrics: parsedStream.metrics,
+        aborted: false,
+      };
+    } catch (error) {
+      aborted = ac.signal.aborted;
+      if (aborted || (error instanceof Error && error.name === "AbortError")) {
+        throw new Error(`local_llm_timeout:${timeoutMs}`);
+      }
+      throw error;
+    } finally {
+      clearTimeout(timer);
+      clearInterval(beat);
+      generatesInFlight = Math.max(0, generatesInFlight - 1);
+      void aborted;
+    }
   }
 
-  async generateCeoPlan(request: PlanRequest): Promise<ModelCompletion> {
+  async generateCeoPlan(
+    request: PlanRequest,
+    runtime?: { onHeartbeat?: () => void | Promise<void> },
+  ): Promise<ModelCompletion> {
     const probe = await this.probe();
     if (!probe.ok) {
       throw new Error(`local_llm_unavailable:${probe.message}`);
     }
-    const prompt = [
-      "Sen SynapTech AI OS yerel AI CEO'susun. Yalnızca JSON döndür.",
-      SAFETY_RULES,
-      "Şema alanları: summary, goalsAddressed[], tasks[{title,description,projectSlug,assigneeId,priority,acceptanceCriteria,evidenceHint?}], risks[], requiresOwnerApproval, estimatedAiCost.",
-      "projectSlug yalnızca: synaptech-ai-os|synaptech|subify|marivo",
-      "assigneeId: ceo|cto|developer|tester|security|growth-lead|seo-specialist|content-manager|ads-manager",
-      "priority yalnızca: low|medium|high (critical/urgent/yüksek yazma).",
-      "tasks dizisinde en fazla 3 madde üret.",
-      "Bağlam (MSSQL özeti):",
-      JSON.stringify({
-        goals: request.goals,
-        opportunities: request.opportunities,
-        openTaskCount: request.openTaskCount,
-        instruction: request.instruction ?? null,
-      }),
-    ].join("\n");
-    const { text: content, durationMs } = await this.complete(prompt, { json: true });
+    const built = buildCeoPlanPrompt(request);
+    const { text: content, durationMs, metrics } = await this.complete(built.prompt, {
+      json: true,
+      timeoutMs: LOCAL_LLM_GENERATE_TIMEOUT_MS,
+      numPredict: CEO_PLAN_NUM_PREDICT,
+      onHeartbeat: runtime?.onHeartbeat,
+    });
     let parsed: unknown;
     try {
       parsed = JSON.parse(content);
@@ -238,8 +319,13 @@ export class LocalModelProvider implements ModelProvider {
         { kind: "audit", ref: `local_llm:${this.modelId}` },
         { kind: "mssql", ref: "ceo_plan_context" },
         { kind: "artifact", ref: `durationMs:${durationMs}` },
+        { kind: "artifact", ref: `promptChars:${built.promptChars}` },
+        ...metricsToEvidence(metrics),
       ],
-      usage: { inputTokens: 0, outputTokens: 0 },
+      usage: {
+        inputTokens: metrics.promptEvalCount ?? 0,
+        outputTokens: metrics.evalCount ?? 0,
+      },
     };
   }
 
@@ -253,7 +339,7 @@ export class LocalModelProvider implements ModelProvider {
       `Bağlam:\n${request.contextSummary}`,
       `Kullanıcı: ${request.message}`,
     ].join("\n");
-    const { text: content, durationMs } = await this.complete(prompt, { json: false });
+    const { text: content, durationMs, metrics } = await this.complete(prompt, { json: false, numPredict: 400 });
     return {
       providerId: "local",
       modelId: this.modelId,
@@ -262,7 +348,12 @@ export class LocalModelProvider implements ModelProvider {
       evidence: [
         { kind: "audit", ref: `local_llm_chat:${this.modelId}` },
         { kind: "artifact", ref: `durationMs:${durationMs}` },
+        ...metricsToEvidence(metrics),
       ],
+      usage: {
+        inputTokens: metrics.promptEvalCount ?? 0,
+        outputTokens: metrics.evalCount ?? 0,
+      },
     };
   }
 
@@ -279,7 +370,10 @@ export class LocalModelProvider implements ModelProvider {
       `task=${JSON.stringify(request.task)}`,
       `context=${request.contextSummary}`,
     ].join("\n");
-    const { text: content, durationMs } = await this.complete(prompt, { json: true });
+    const { text: content, durationMs, metrics } = await this.complete(prompt, {
+      json: true,
+      numPredict: AGENT_WORK_NUM_PREDICT,
+    });
     let parsed: unknown;
     try {
       parsed = JSON.parse(content);
@@ -305,8 +399,104 @@ export class LocalModelProvider implements ModelProvider {
         { kind: "audit" as const, ref: `local_agent:${request.agentId}:${this.modelId}` },
         { kind: "mssql" as const, ref: `task:${request.task.id}` },
         { kind: "artifact" as const, ref: `durationMs:${durationMs}` },
+        ...metricsToEvidence(metrics),
       ],
-      usage: { inputTokens: 0, outputTokens: 0 },
+      usage: {
+        inputTokens: metrics.promptEvalCount ?? 0,
+        outputTokens: metrics.evalCount ?? 0,
+      },
     };
+  }
+}
+
+function nsToMs(ns: unknown): number | null {
+  if (typeof ns !== "number" || !Number.isFinite(ns)) return null;
+  return Math.round(ns / 1_000_000);
+}
+
+function numOrNull(v: unknown): number | null {
+  return typeof v === "number" && Number.isFinite(v) ? v : null;
+}
+
+export function metricsFromOllamaChunk(chunk: Record<string, unknown>): OllamaGenerateMetrics {
+  return {
+    promptEvalCount: numOrNull(chunk.prompt_eval_count),
+    evalCount: numOrNull(chunk.eval_count),
+    promptEvalDurationMs: nsToMs(chunk.prompt_eval_duration),
+    evalDurationMs: nsToMs(chunk.eval_duration),
+    totalDurationMs: nsToMs(chunk.total_duration),
+    loadDurationMs: nsToMs(chunk.load_duration),
+  };
+}
+
+export function metricsToEvidence(metrics: OllamaGenerateMetrics) {
+  const parts: Array<{ kind: "artifact"; ref: string }> = [];
+  if (metrics.promptEvalCount != null) parts.push({ kind: "artifact", ref: `prompt_eval_count:${metrics.promptEvalCount}` });
+  if (metrics.evalCount != null) parts.push({ kind: "artifact", ref: `eval_count:${metrics.evalCount}` });
+  if (metrics.promptEvalDurationMs != null) {
+    parts.push({ kind: "artifact", ref: `prompt_eval_ms:${metrics.promptEvalDurationMs}` });
+  }
+  if (metrics.evalDurationMs != null) parts.push({ kind: "artifact", ref: `eval_ms:${metrics.evalDurationMs}` });
+  if (metrics.totalDurationMs != null) parts.push({ kind: "artifact", ref: `ollama_total_ms:${metrics.totalDurationMs}` });
+  if (metrics.loadDurationMs != null) parts.push({ kind: "artifact", ref: `load_ms:${metrics.loadDurationMs}` });
+  return parts;
+}
+
+export async function readOllamaGenerateStream(
+  res: Response,
+  signal?: AbortSignal,
+): Promise<{ text: string; metrics: OllamaGenerateMetrics; aborted: boolean }> {
+  const empty: OllamaGenerateMetrics = {
+    promptEvalCount: null,
+    evalCount: null,
+    promptEvalDurationMs: null,
+    evalDurationMs: null,
+    totalDurationMs: null,
+    loadDurationMs: null,
+  };
+  if (!res.body) {
+    const json = (await res.json()) as Record<string, unknown>;
+    return {
+      text: String(json.response ?? ""),
+      metrics: metricsFromOllamaChunk(json),
+      aborted: false,
+    };
+  }
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = "";
+  let text = "";
+  let metrics = empty;
+  try {
+    while (true) {
+      if (signal?.aborted) {
+        await reader.cancel().catch(() => undefined);
+        return { text, metrics, aborted: true };
+      }
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split("\n");
+      buf = lines.pop() ?? "";
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        let chunk: Record<string, unknown>;
+        try {
+          chunk = JSON.parse(trimmed) as Record<string, unknown>;
+        } catch {
+          continue;
+        }
+        if (typeof chunk.response === "string") text += chunk.response;
+        if (chunk.done === true) metrics = metricsFromOllamaChunk(chunk);
+      }
+    }
+    return { text, metrics, aborted: false };
+  } catch (error) {
+    if (signal?.aborted || (error instanceof Error && error.name === "AbortError")) {
+      await reader.cancel().catch(() => undefined);
+      return { text, metrics, aborted: true };
+    }
+    throw error;
   }
 }

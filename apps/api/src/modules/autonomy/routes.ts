@@ -108,6 +108,8 @@ export async function autonomyRoutes(app: FastifyInstance) {
         finishedAt: r.finishedAt?.toISOString() ?? null,
         message: r.message,
         idempotencyKey: r.idempotencyKey,
+        idleSkip: r.status === "skipped" || Boolean(r.message?.startsWith("skipped:")),
+        realAiExecution: r.message?.includes("realAiExecution=true") === true,
       })),
     };
   });

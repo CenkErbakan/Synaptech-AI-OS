@@ -25,30 +25,49 @@ describe("yerel operasyon — boşta iş uydurma", () => {
     expect(r).toEqual({ skip: true, reason: "queue_cap_reached" });
   });
 
-  it("aralık içinde yeni kanıt yoksa skip", () => {
-    const now = new Date("2026-11-19T00:10:00.000Z");
+  it("açık child varken yeni plan yok", () => {
     const r = evaluateIdleSkip({
       openTaskCount: 3,
-      queueCap: 48,
-      failedOpenCount: 0,
-      pendingOwnerDecisionCount: 0,
-      lastCeoAt: new Date("2026-11-19T00:00:00.000Z"),
-      newestAgentResultAt: new Date("2026-11-18T23:00:00.000Z"),
-      minIntervalMs: 1_800_000,
-      now,
-    });
-    expect(r.reason).toBe("idle_no_new_evidence");
-  });
-
-  it("yeni ajan sonucu varsa CEO çalışır", () => {
-    const r = evaluateIdleSkip({
-      openTaskCount: 3,
+      childOpenCount: 2,
       queueCap: 48,
       failedOpenCount: 0,
       pendingOwnerDecisionCount: 0,
       lastCeoAt: new Date("2026-11-19T00:00:00.000Z"),
       newestAgentResultAt: new Date("2026-11-19T00:05:00.000Z"),
       minIntervalMs: 1_800_000,
+      now: new Date("2026-11-19T00:06:00.000Z"),
+    });
+    expect(r.reason).toBe("work_in_flight");
+  });
+
+  it("aralık içinde yeni kanıt yoksa skip", () => {
+    const now = new Date("2026-11-19T00:10:00.000Z");
+    const r = evaluateIdleSkip({
+      openTaskCount: 1,
+      childOpenCount: 0,
+      queueCap: 48,
+      failedOpenCount: 0,
+      pendingOwnerDecisionCount: 0,
+      lastCeoAt: new Date("2026-11-19T00:00:00.000Z"),
+      newestAgentResultAt: new Date("2026-11-18T23:00:00.000Z"),
+      minIntervalMs: 1_800_000,
+      planCooldownMs: 60_000,
+      now,
+    });
+    expect(r.reason).toBe("idle_no_new_evidence");
+  });
+
+  it("kuyruk tükenip yeni ajan sonucu varsa CEO çalışır", () => {
+    const r = evaluateIdleSkip({
+      openTaskCount: 1,
+      childOpenCount: 0,
+      queueCap: 48,
+      failedOpenCount: 0,
+      pendingOwnerDecisionCount: 0,
+      lastCeoAt: new Date("2026-11-19T00:00:00.000Z"),
+      newestAgentResultAt: new Date("2026-11-19T00:05:00.000Z"),
+      minIntervalMs: 1_800_000,
+      planCooldownMs: 60_000,
       now: new Date("2026-11-19T00:06:00.000Z"),
     });
     expect(r.skip).toBe(false);

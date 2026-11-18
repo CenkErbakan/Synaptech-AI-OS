@@ -34,6 +34,16 @@ export async function evaluateAndDispatchAutonomous(taskId: string): Promise<Dis
     return { taskId, authority: "OWNER-APPROVAL", allowed: false, reason: "task_not_found", cloudAttempted: false };
   }
 
+  if (["done", "failed", "awaiting_approval"].includes(task.status)) {
+    return {
+      taskId,
+      authority: "AUTO",
+      allowed: false,
+      reason: `terminal_status:${task.status}`,
+      cloudAttempted: false,
+    };
+  }
+
   const policyKey = task.executionPolicy ?? "AUTO";
   const authority = (["AUTO", "POLICY-AUTO", "OWNER-APPROVAL"].includes(policyKey)
     ? policyKey

@@ -3,8 +3,12 @@ import { getEnv } from "../lib/env.js";
 import {
   acquireLease,
   releaseLease,
+  renewLease,
   type LeaseAcquireResult,
 } from "../engines/worker-lease.js";
+
+/** Generate timeout 180s + yenileme payı. */
+export const LOCAL_LLM_LEASE_TTL_MS = 240_000;
 import {
   budgetResult,
   countQuotaFromRows,
@@ -169,10 +173,14 @@ export async function assertPerAgentDailyBudget(
 }
 
 export async function acquireLocalLlmCallLease(
-  ttlMs = 180_000,
+  ttlMs = LOCAL_LLM_LEASE_TTL_MS,
   purpose = "scheduler-ai-ceo",
 ): Promise<LeaseAcquireResult> {
   return acquireLease(LOCAL_LLM_CALL_LEASE_KEY, ttlMs, { purpose });
+}
+
+export async function renewLocalLlmCallLease(ttlMs = LOCAL_LLM_LEASE_TTL_MS): Promise<boolean> {
+  return renewLease(LOCAL_LLM_CALL_LEASE_KEY, ttlMs);
 }
 
 export async function releaseLocalLlmCallLease(): Promise<void> {

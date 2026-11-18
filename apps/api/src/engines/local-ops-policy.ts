@@ -14,6 +14,11 @@ export type LocalOpsSkipInput = {
   newestAgentResultAt: Date | null;
   minIntervalMs: number;
   now: Date;
+  /** CEO parent hariç açık child. */
+  childOpenCount?: number;
+  /** Son gerçek plan yazımından bu yana ms; varsayılan 5 dk. */
+  planCooldownMs?: number;
+  lastPlanPersistedChildren?: number;
 };
 
 export function evaluateIdleSkip(input: LocalOpsSkipInput): { skip: boolean; reason?: string } {
@@ -21,10 +26,28 @@ export function evaluateIdleSkip(input: LocalOpsSkipInput): { skip: boolean; rea
     return { skip: true, reason: "queue_cap_reached" };
   }
 
+  const childOpen = input.childOpenCount ?? input.openTaskCount;
+  if (childOpen > 0) {
+    return { skip: true, reason: "work_in_flight" };
+  }
+
   const lastCeo = input.lastCeoAt?.getTime();
+  const cooldown = input.planCooldownMs ?? 5 * 60_000;
+  if (lastCeo && input.now.getTime() - lastCeo < cooldown) {
+    return { skip: true, reason: "ceo_plan_cooldown" };
+  }
+
+  if (lastCeo && (input.lastPlanPersistedChildren ?? 1) <= 0 && input.now.getTime() - lastCeo < cooldown * 3) {
+    return { skip: true, reason: "empty_plan_backoff" };
+  }
+
   if (lastCeo && input.minIntervalMs > 0 && input.now.getTime() - lastCeo < input.minIntervalMs) {
     const newest = input.newestAgentResultAt?.getTime() ?? 0;
     const hasNewEvidence = newest > lastCeo;
+    const queueExhausted = childOpen === 0;
+    if (queueExhausted && hasNewEvidence) {
+      return { skip: false };
+    }
     if (!hasNewEvidence && input.failedOpenCount === 0 && input.pendingOwnerDecisionCount === 0) {
       return { skip: true, reason: "idle_no_new_evidence" };
     }
@@ -69,11 +92,17 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
     return { skip: false };
   }
 
+  const { readCeoProviderCircuit, evaluateCeoCircuit } = await import("../ai/ceo-provider-circuit.js");
+  const circuit = evaluateCeoCircuit(await readCeoProviderCircuit(), now);
+  if (circuit.skip) {
+    return { skip: true, reason: circuit.reason };
+  }
+
   const { readOperationEpoch } = await import("./operation-epoch.js");
   const epoch = await readOperationEpoch();
   const after = epoch ? new Date(epoch.startedAt) : undefined;
 
-  const [openTaskCount, failedOpenCount, pendingOwnerDecisionCount, lastCeo, newestResult] =
+  const [openTaskCount, childOpenCount, failedOpenCount, pendingOwnerDecisionCount, lastCeo, newestResult] =
     await Promise.all([
       prisma.task.count({
         where: {
@@ -81,6 +110,15 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
           source: "real",
           ...(after ? { createdAt: { gte: after } } : {}),
           status: { in: ["planned", "in_progress", "testing", "in_review", "awaiting_approval"] },
+        },
+      }),
+      prisma.task.count({
+        where: {
+          archivedAt: null,
+          source: "real",
+          parentTaskId: { not: null },
+          ...(after ? { createdAt: { gte: after } } : {}),
+          status: { in: ["planned", "in_progress", "testing", "backlog"] },
         },
       }),
       prisma.task.count({
@@ -95,7 +133,7 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
           ...(after ? { at: { gte: after } } : {}),
         },
         orderBy: { at: "desc" },
-        select: { at: true },
+        select: { at: true, metadata: true, summary: true },
       }),
       prisma.agentMessage.findFirst({
         where: {
@@ -107,8 +145,20 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
       }),
     ]);
 
+  let lastPlanPersistedChildren = 1;
+  if (lastCeo?.metadata) {
+    try {
+      const meta = JSON.parse(lastCeo.metadata) as { extra?: { childCount?: number }; childCount?: number };
+      const n = meta.extra?.childCount ?? meta.childCount;
+      if (typeof n === "number") lastPlanPersistedChildren = n;
+    } catch {
+      lastPlanPersistedChildren = lastCeo.summary?.includes("yazılmadı") ? 0 : 1;
+    }
+  }
+
   return evaluateIdleSkip({
     openTaskCount,
+    childOpenCount,
     queueCap: env.LOCAL_OPS_OPEN_TASK_CAP,
     failedOpenCount,
     pendingOwnerDecisionCount,
@@ -116,5 +166,6 @@ export async function evaluateScheduledCeoIdleSkip(now = new Date()): Promise<{
     newestAgentResultAt: newestResult?.createdAt ?? null,
     minIntervalMs,
     now,
+    lastPlanPersistedChildren,
   });
 }

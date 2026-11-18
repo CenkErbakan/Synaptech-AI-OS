@@ -1,4 +1,6 @@
-import type { CeoPlan, CeoPlanTask } from "@synaptech/shared";
+import type { CeoPlan } from "@synaptech/shared";
+
+type CeoPlanTask = CeoPlan["tasks"][number];
 
 import { getPrisma } from "../db/prisma.js";
 
@@ -52,6 +54,14 @@ export async function validateAndGroundPlanTasks(plan: CeoPlan): Promise<{
     if (!PRIORITIES.has(task.priority)) reasons.push("invalid_priority");
     if (!task.acceptanceCriteria?.trim()) reasons.push("missing_acceptance_criteria");
     if (!task.title?.trim() || task.title.trim().length < 3) reasons.push("invalid_title");
+    const blob = `${task.title}\n${task.description}\n${task.acceptanceCriteria}`;
+    if (
+      task.assigneeId === "growth-lead" &&
+      /\b(teknik borç|tech debt|refactor|mimari|architecture)\b/i.test(blob) &&
+      !/\b(müşteri|lead|pazar|büyüme)\b/i.test(blob)
+    ) {
+      reasons.push("invalid_assignee_role");
+    }
 
     let verified = false;
     let evidenceResolved: string | null = null;
@@ -141,6 +151,7 @@ export async function validateAndGroundPlanTasks(plan: CeoPlan): Promise<{
         "invalid_priority",
         "missing_acceptance_criteria",
         "invalid_title",
+        "invalid_assignee_role",
       ].includes(r),
     );
     const ok = !structuralFail;

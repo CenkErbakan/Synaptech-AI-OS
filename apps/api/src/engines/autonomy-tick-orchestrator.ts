@@ -176,6 +176,9 @@ export async function runControlledAutonomyTick(input?: {
     }).catch(() => undefined);
   }
 
+  const { closeSettledCeoParents } = await import("./parent-task-lifecycle.js");
+  await closeSettledCeoParents().catch(() => 0);
+
   await writeAudit({
     category: "autonomy",
     action: "autonomy.controlled_tick",
